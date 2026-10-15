@@ -6,6 +6,16 @@ import struct
 
 ROOT = Path(__file__).resolve().parents[1]
 
+
+def read_resource(directory, filename):
+    # Windows can resolve a differently cased name, masking a broken Git asset
+    # reference until actool reads it on a case-sensitive build volume.
+    names = {path.name for path in directory.iterdir() if path.is_file()}
+    if filename not in names:
+        raise ValueError(f'Missing resource or filename case mismatch: {directory / filename}')
+    return (directory / filename).read_bytes()
+
+
 def check():
     entries = json.loads((ROOT / 'Brand/AppearanceIcons/manifest.json').read_text(encoding='utf-8'))
     assert len(entries) == 9 and len({e['asset'] for e in entries}) == 9
@@ -21,13 +31,13 @@ def check():
         assert len(images) == 3
         assert [i.get('appearances', [{}])[0].get('value', 'any') for i in images] == ['any','dark','tinted']
         for image in images:
-            data = (directory / image['filename']).read_bytes()
+            data = read_resource(directory, image['filename'])
             assert data[:8] == b'\x89PNG\r\n\x1a\n'
             width,height,depth,color = struct.unpack_from('>IIBB',data,16)
             assert (width,height) == (1024,1024)
             assert depth == 8 and color in (0,2), 'App icons must have no alpha channel'
         preview = ROOT / 'Locus/Resources/IconPreviews' / (entry['preview'] + '.png')
-        assert preview.is_file()
+        read_resource(preview.parent, preview.name)
     assert 'Permission to use' in (ROOT / 'Brand/AppearanceIcons/LICENSE-Lucide.txt').read_text(encoding='utf-8-sig')
     print('Verified 9 icon choices, 27 native appearance images, previews and license.')
 

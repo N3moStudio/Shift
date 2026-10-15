@@ -14,6 +14,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Verify source-only helper downloads
         run: python3 scripts/package_helpers.py --check
+      - name: Test IPA validation and icon sources
+        run: python3 -m unittest discover -s scripts/tests -p 'test_*.py' -v
       - name: Show Apple toolchain
         run: xcodebuild -version
       - name: Install project generator

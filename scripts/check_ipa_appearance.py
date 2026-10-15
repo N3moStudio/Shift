@@ -49,13 +49,19 @@ def check(path):
         info = plistlib.loads(archive.read(app + 'Info.plist'))
         has_catalog = app + 'Assets.car' in names and archive.getinfo(app + 'Assets.car').file_size > 0
         for key in ['CFBundleIcons', 'CFBundleIcons~ipad']:
-            entries = info[key]
-            require(set(entries['CFBundleAlternateIcons']) == {e['asset'] for e in manifest[1:]}, 'Incomplete alternate icons')
+            entries = info.get(key, {})
+            require(set(entries.get('CFBundleAlternateIcons', {})) == {e['asset'] for e in manifest[1:]}, f'Incomplete alternate icons: {key}')
             for entry in manifest:
-                icon = entries['CFBundlePrimaryIcon'] if entry == manifest[0] else entries['CFBundleAlternateIcons'][entry['asset']]
-                require(bool(icon.get('CFBundleIconFiles')), 'Missing icon declaration')
+                icon = entries.get('CFBundlePrimaryIcon', {}) if entry == manifest[0] else entries['CFBundleAlternateIcons'][entry['asset']]
+                label = f"{key}/{entry['asset']}"
                 if has_catalog:
-                    continue  # actool supplies the other renditions; source variants checked separately.
+                    # actool may emit a catalog name without loose PNG filenames,
+                    # especially for alternate icons. Require the correct asset
+                    # reference, not the portable builder's CFBundleIconFiles.
+                    require(icon.get('CFBundleIconName') == entry['asset'],
+                            'Missing or incorrect asset catalog icon declaration: ' + label)
+                    continue  # Source renditions are checked by check_appearance.py.
+                require(bool(icon.get('CFBundleIconFiles')), 'Missing icon file declaration: ' + label)
                 for points, scales in [(20, [1, 2, 3]), (29, [1, 2, 3]), (40, [1, 2, 3]), (60, [2, 3])]:
                     stem = entry['asset'] + '-' + str(points)
                     require(stem in icon['CFBundleIconFiles'], 'Missing system icon declaration: ' + stem)
