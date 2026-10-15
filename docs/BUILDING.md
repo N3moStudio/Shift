@@ -8,7 +8,7 @@ No Apple signing credentials or deployed helper are included.
 
 1. Upload the extracted repository using **GitHub Desktop**. Preserve `.github`, `Vendor`, `Shared`, and `LocusActivity`; put `project.yml` at the repository root.
 2. Open **Actions → Build Shift IPA → Run workflow**. Choose the branch containing these files.
-3. After the run succeeds, download **Shift-2.4.4-unsigned** under Artifacts. Extract **Shift-unsigned.ipa** and sign it with SideStore. Retain its extension.
+3. After the run succeeds, download **Shift 2.4.4.ipa** directly under Artifacts and sign it with SideStore. There is no extra ZIP to extract. Retain its extension. The filename automatically follows the app version in future builds.
 
 The manual workflow uses GitHub’s `xcode-27` runner, verifies bundled helper
 downloads, runs Python helper tests and Swift model tests, regenerates the
@@ -28,7 +28,8 @@ swift test
 bash scripts/build-ipa.sh
 ```
 
-Output: `build/Shift-unsigned.ipa`. The packager verifies the extension,
+Output: `build/Shift <version>.ipa` (currently `build/Shift 2.4.4.ipa`).
+The filename uses the built app’s version. The packager verifies the extension,
 required resources, app-group entitlements, and appearance metadata. Its ad-hoc
 signatures are placeholders; SideStore still needs to sign the installation.
 

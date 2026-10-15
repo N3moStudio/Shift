@@ -25,8 +25,13 @@ codesign --verify --deep --strict "$app"
 stage="$(mktemp -d "$PWD/build/package.XXXXXX")"
 mkdir -p "$stage/Payload"
 ditto "$app" "$stage/Payload/Locus.app"
-output="$PWD/build/Shift-unsigned.ipa"
+version=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$app/Info.plist")
+[[ "$version" =~ ^[0-9]+(\.[0-9]+){0,2}$ ]] || { echo "Invalid app version for IPA filename: $version" >&2; exit 1; }
+output="$PWD/build/Shift $version.ipa"
 if [ -f "$output" ]; then rm "$output"; fi
 (cd "$stage" && /usr/bin/zip -qry "$output" Payload)
 python3 scripts/check_ipa_appearance.py "$output"
+if [ -n "${GITHUB_OUTPUT:-}" ]; then
+  printf 'ipa_path=%s\n' "$output" >> "$GITHUB_OUTPUT"
+fi
 echo "Created $output (ad-hoc placeholders; SideStore must sign it for your device)."
