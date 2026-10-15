@@ -1,40 +1,54 @@
-# Shift X.Y.Z — Short description
+# Shift X.Y.Z — Short release title
 
-One or two sentences explaining the main improvement and who benefits.
-Replace all placeholders and remove unused sections before publishing.
+**RELEASE X.Y.Z** &nbsp; / &nbsp; Build N &nbsp; / &nbsp; N3mo Studio
 
-## New
+Write two sentences about this release's main improvement. Keep the general
+feature catalog in the README. Replace all placeholders before publishing.
 
-- Describe a feature included in this version.
+> **Download:** `Shift X.Y.Z.ipa` from **Assets** below.
+> Install through **SideStore**, keeping the app extension.
 
-## Improved
+---
 
-- Describe a visible behavior or efficiency improvement without unmeasured claims.
+## What changed
 
-## Fixed
+| Refinement | The difference |
+| :--- | :--- |
+| **Change one** | Explain the improvement users will notice. |
+| **Change two** | Describe the problem and corrected behavior. |
 
-- State the problem and the corrected behavior.
+If necessary, add a short migration or upgrade note here. Link the complete
+changelog at this release's tag using a full GitHub URL.
 
 ## Install
 
 1. Download **Shift X.Y.Z.ipa** from Assets.
-2. Sign and install through SideStore, keeping the LocusActivity extension.
-3. For an update, use the same signing setup and install over the existing app.
+2. Sign through SideStore, keeping the LocusActivity extension.
+3. Follow the setup guide, or update over the existing app using the same signing setup.
 
-**Version:** X.Y.Z · **Build:** N · **Minimum iOS deployment target:** N.
-Include any migration or changed pairing requirement here.
+---
 
-## Validation
+<details>
+<summary><strong>Build & device checks</strong></summary>
 
-- Build: actual workflow run URL and source commit.
-- Automated checks: actual results.
-- Device: model, iOS version, installation method and the flows actually tested.
-- Remaining limitations: known issues or important untested behavior.
+- **Build:** link the actual workflow run and source commit.
+- **Automated checks:** record actual results.
+- **On iPhone:** record device/iOS, installation method and flows actually tested.
+- **Compatibility:** app version, build number and minimum deployment target.
 
-## Links and credits
+</details>
 
-Link the setup guide and changelog at this release's tag using full GitHub URLs.
-Retain relevant upstream and contributor credits. Shift is MIT licensed; see
-the repository's LICENSE and NOTICE.md.
+<details>
+<summary><strong>Known behavior & limitations</strong></summary>
 
-If a checksum is provided, calculate it from the exact attached IPA.
+Record material known issues and unverified behavior. Link the current privacy
+and validation documents at this tag. Remove this section only if it adds nothing.
+
+</details>
+
+---
+
+**Made by N3mo Studio.** Retain relevant upstream and contributor credits.
+Link the MIT license and NOTICE.md at the release tag.
+
+If attaching a checksum, calculate it from the exact tested IPA.

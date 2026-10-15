@@ -9,7 +9,7 @@ The workflow builds the IPA; publishing a release is a separate, deliberate step
 | --- | --- |
 | App version / build | `2.4.4` / `47` |
 | Git tag | `v2.4.4` |
-| Release title | `Shift 2.4.4 — Make your next move` |
+| Release title | `Shift 2.4.4 — Finishing touches` |
 | IPA filename | `Shift 2.4.4.ipa` |
 | Release label | Stable; leave **Pre-release** unselected |
 | Target | The finalized source commit on `main`, including the icon build fixes |
