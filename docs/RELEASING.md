@@ -74,6 +74,17 @@ $releaseName = [System.IO.Path]::GetFileName($releaseIpa)
 Attach both files. The checksum identifies those exact bytes; it does not
 replace device testing or SideStore signing.
 
+## Working links before publication
+
+Use full GitHub documentation URLs pinned to an already-pushed commit when
+preparing the release body. Those links work in draft previews and remain tied
+to that source snapshot. A `blob/vX.Y.Z/...` URL works only after that tag exists
+on GitHub; selecting a new tag in a draft does not make it available yet.
+
+Open every documentation link before publishing. The current 2.4.4 notes use
+commit `ff8d20436da5bdaade616f33bb3715cbbcaa0331`, which was already published
+when the links were checked. The release can still use tag `v2.4.4`.
+
 ## Repository topics
 
 These describe the project and are separate from version tags. Add them using

@@ -18,7 +18,8 @@ feature catalog in the README. Replace all placeholders before publishing.
 | **Change two** | Describe the problem and corrected behavior. |
 
 If necessary, add a short migration or upgrade note here. Link the complete
-changelog at this release's tag using a full GitHub URL.
+changelog using a full GitHub URL pinned to an already-pushed source commit.
+Use a release-tag URL only if that tag already exists; open every link before publishing.
 
 ## Install
 
@@ -42,13 +43,13 @@ changelog at this release's tag using a full GitHub URL.
 <summary><strong>Known behavior & limitations</strong></summary>
 
 Record material known issues and unverified behavior. Link the current privacy
-and validation documents at this tag. Remove this section only if it adds nothing.
+and validation documents at the same published source commit. Remove this section only if it adds nothing.
 
 </details>
 
 ---
 
 **Made by N3mo Studio.** Retain relevant upstream and contributor credits.
-Link the MIT license and NOTICE.md at the release tag.
+Link the MIT license and NOTICE.md at the same published source commit.
 
 If attaching a checksum, calculate it from the exact tested IPA.
