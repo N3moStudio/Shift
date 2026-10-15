@@ -36,7 +36,7 @@ The 2.4 series adds the three appearance families and independent icon choices,
 fixes a first-launch appearance crash, and refreshes native tab navigation and
 system icon resources. **2.4.4 removes the temporary notification-preview tool.**
 
-[Release notes](docs/releases/v2.4.4.md) · [Everything since the original Locus base](CHANGELOG.md)
+[Everything since the original Locus base](CHANGELOG.md)
 
 ## Get Shift
 

@@ -29,7 +29,6 @@ preview—are present now. Current features are in the [README](README.md).
 - Added 12 packaging regression tests to GitHub Actions. The local regression suite passed; earlier build logs recorded 279 Swift model tests and 69 helper tests passing.
 - Confirmed a successful GitHub Actions build after the validation fix. The maintainer reported that the IPA installs and works on their iPhone; this is a device smoke check, not verification of every feature or supported configuration.
 - Configured direct IPA artifact downloads and automatic filenames from the built app version, currently `Shift 2.4.4.ipa`, without an outer artifact ZIP.
-- Refreshed the public release notes and added a reusable release template and version/tag guide. These follow-up changes retain app version 2.4.4 and build 47.
 
 ## Public repository preparation · 14 October 2026
 
