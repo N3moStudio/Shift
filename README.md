@@ -62,6 +62,14 @@ and continuous background operation are not guaranteed.
 
 [Privacy and limitations](docs/PRIVACY.md) · [Validation and device checks](docs/TESTING.md)
 
+## Community & contact
+
+Have a question, found a bug, or have an idea for Shift? Get in touch.
+
+[Community · r/ShiftForiOS](https://www.reddit.com/r/ShiftForiOS/) ·
+[Reddit · u/DaManYOUNeeded](https://www.reddit.com/user/DaManYOUNeeded/) ·
+[Email · that25s1k@gmail.com](mailto:that25s1k@gmail.com)
+
 ## Open to everyone
 
 Use it, change it, share it, sell a fork, or help make it better. **No permission
