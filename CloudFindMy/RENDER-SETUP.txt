@@ -1,0 +1,104 @@
+SHIFT REMOTE FIND MY — RENDER FREE (Shift 2.3.2 / 40)
+
+Start here for Render. START-HERE.txt covers the separate Oracle terminal helper.
+Use your own Apple Account and your own iPhone. This checks Find My Devices,
+not People or Life360. A match does not prove what another person sees.
+
+This download contains reusable source only. It includes no deployed service,
+Apple login, helper key, or pairing file. Each user creates their own helper.
+Its address comes from Render's RENDER_EXTERNAL_URL environment variable;
+its owner key comes from SHIFT_ADMIN_KEY. Neither is built into the iPhone app.
+
+1. Push this update first
+In GitHub Desktop, commit the Render update and Push origin.
+Build and install Shift 2.3.2 (40), or newer, from GitHub Actions. Earlier app
+versions reject the Render setup file. Keep the same signing identity and app.
+Do not uninstall your existing app just to update it.
+
+2. Render service form, top to bottom
+Source Code: your existing Shift source repository
+Name: choose your own unique service name (for example, shift-helper)
+Language: Python 3
+Branch: main
+Region: choose a region offered for your plan
+Root Directory: EMPTY (the helper also reads Companion/reports.py)
+Build Command: pip install -r CloudFindMy/requirements.txt
+Start Command: python CloudFindMy/render_server.py
+Compute: Free, $0/month
+Environment Variables: add SHIFT_ADMIN_KEY and click Generate for its value.
+  Keep this generated helper key in your password manager. It must be at least
+  32 characters. Use it on your helper website and in Shift's Connect Render form.
+  Shift derives and stores a separate phone key, not the admin key.
+  Do not add an Apple password, Apple verification code, or pairing file here.
+Advanced: set Health Check Path to /healthz if shown. Leave other defaults.
+Python is pinned by the repository's .python-version file.
+Leave payment details unset for the free prototype. Verify the form says $0.
+Then Deploy web service. No Render Postgres, disk, or paid worker is needed.
+
+3. Connect Apple from your phone or computer
+Once Render says Live, open YOUR service's https://...onrender.com address.
+Unlock it with SHIFT_ADMIN_KEY. Sign into Apple on that helper page, complete
+verification, and select YOUR iPhone. This is your own helper, not Apple's site.
+Download ShiftFindMyPairing.json. Keep it private: it contains a helper access key.
+
+In Shift 2.3.2 or later:
+Settings > Find My checks > Cloud helper > Connect your helper.
+Enter your HTTPS onrender.com URL and helper key, then Connect.
+Alternatively, tap Import setup file instead and choose ShiftFindMyPairing.json.
+Existing saved cloud pairings remain compatible. No Render service recreation
+is needed: deploy the updated source to your existing service with the same key.
+
+Tap Test connection. This confirms the helper accepts the phone key and says
+whether Apple is signed in. It does not send points or request a location.
+Then turn on Use cloud helper and start a location session. Wait for a recent
+report. Old Apple data must never count as a current match.
+
+The 3-15 second Connection checks setting controls Shift's own iPhone connection
+and Live Activity freshness. Apple helper checks remain about once a minute.
+
+4. Optional free uptime requests
+Create a cron-job.org job visiting YOUR https://...onrender.com/healthz
+every 5 minutes. Use GET, with no authentication headers, body, or access key.
+Do not put your Apple details or pairing token in the job.
+Test it: the response is just ok. This tests that the server answers, not Apple.
+The first request to a sleeping Render service can time out while it wakes;
+open the helper website, wait for it to load, then test the job again.
+These requests can prevent inactivity sleep under Render's current rules.
+They do not prevent maintenance/restarts, enforce Apple's login lifetime, or
+extend Shift's 150-second monitoring lease when the iPhone stops sending updates.
+
+5. After a restart or Apple sign-out
+Shift will show Apple sign-in needed once it can reach the helper again.
+Tap Open helper / sign in in Cloud helper, unlock with the same helper key,
+and connect Apple again. You can do this over cellular with the laptop off.
+Keep the existing pairing file if the service address and SHIFT_ADMIN_KEY are
+unchanged. Changing the key revokes the old phone token; reconnect with the new
+key or import a new setup file.
+If the helper is still waking, a check can temporarily show unavailable. Wait
+for the helper website to load and finish sign-in, then tap Check now in Shift.
+
+What is kept
+The generated helper key is a Render environment secret. The phone's separate
+API key is derived from it. Browser unlock sessions last up to 12 hours.
+Apple credentials and location comparisons are not persistently stored.
+Apple's library holds credentials/session state in memory; temporary session
+files use /dev/shm on Linux when available. Restarting loses that Apple login.
+The unofficial Apple session is not an Apple-enforced read-only credential,
+although this helper only reads locations and exposes no account controls.
+Normal HTTPS certificate validation protects Render connections; Oracle's
+original pinned-certificate pairing format remains separate and unchanged.
+
+Limits
+Render Free may restart, sleep, or suspend on quota limits. Health pings do not
+make it guaranteed 24/7 hosting. Staying awake uses the shared free instance
+hours. Keep only the one free service for this prototype.
+Checking while the iPhone is locked still depends on iOS allowing Shift to run.
+There is no independent push-warning service if iOS suspends or kills Shift.
+If only the health check is running, Find My checking has NOT been confirmed.
+Apple authentication from Render and locked-phone behavior need your real test.
+
+Official hosting references (checked 2026-10-09)
+https://render.com/docs/web-services
+https://render.com/docs/free
+https://render.com/docs/faq
+https://cron-job.org/en/faq/

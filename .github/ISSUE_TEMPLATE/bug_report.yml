@@ -1,0 +1,26 @@
+name: Bug report
+description: Report a reproducible problem in Shift
+title: "[Bug] "
+body:
+  - type: markdown
+    attributes:
+      value: "Please do not upload pairing files, helper keys, passwords, or unreviewed location logs."
+  - type: input
+    id: versions
+    attributes:
+      label: Shift version, iOS version and installation method
+      placeholder: "2.4.4 (47), iOS version, direct SideStore or LiveContainer"
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: What happened?
+      description: Include steps to reproduce, what you expected, and what actually happened.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Screenshots or reviewed logs
+      description: Optional. Remove private locations and credentials before attaching anything.

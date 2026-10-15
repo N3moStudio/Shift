@@ -1,0 +1,6 @@
+*.swift text eol=lf
+*.sh text eol=lf
+*.yml text eol=lf
+*.pbxproj text eol=lf
+*.plist text eol=lf
+*.xcscheme text eol=lf

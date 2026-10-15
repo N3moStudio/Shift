@@ -1,0 +1,149 @@
+Using Render instead of Oracle? Open RENDER-SETUP.txt. Render needs Shift 2.2.3 or later.
+
+SHIFT REMOTE FIND MY — PRIVATE PROTOTYPE (2.1.0 / 25)
+
+What this does
+Your own cloud server asks Apple for your selected iPhone's Find My Devices
+location. Shift sends recent acknowledged spoofing points during an active
+session and compares reports at the same time. The computer can be shut down.
+This does not check Find My People or Life360, repair the spoofing connection,
+or prove what somebody else sees. Apple can return old data or require sign-in.
+
+What has and has not been verified
+Automated tests cover the comparison rules, timeouts, authentication errors,
+HTTPS, request ordering and session expiry. Actual Apple account access and
+locked-phone/Low Power Mode behavior need the device tests in TEST-CHECKLIST.txt.
+No cloud service is already deployed. There are no Apple credentials in this ZIP.
+
+1. Create your free cloud account
+https://www.oracle.com/cloud/free/
+Use an Always Free-eligible VM in your home region. A small Ubuntu 24.04 VM
+with at least 1 GB RAM is enough to TRY this single-account prototype.
+Confirm Always Free eligibility in the console for the VM, boot volume and
+network resources. Do not select a paid shape or upgrade just for this test.
+Capacity can be unavailable and idle free VMs can be reclaimed:
+https://docs.oracle.com/en-us/iaas/Content/FreeTier/freetier_topic-Always_Free_Resources.htm
+
+Create your SSH key as part of the VM setup and keep its private key private.
+Choose a public IPv4 address and note it. If the IP changes later, regenerate
+the helper's pairing in a NEW empty data directory and import that new file.
+You complete cloud signup, any payment verification, and Apple sign-in yourself.
+
+2. Allow connections to your helper
+In the VM's Oracle subnet security list or network security group, allow inbound
+TCP destination port 8765. Your phone's cellular address can change, so remote
+use may need that one port accessible from the internet (source 0.0.0.0/0).
+Keep SSH (port 22) restricted to your own administration connection where possible.
+Do not disable the firewall or open all ports. If Ubuntu's UFW is already active,
+allow 8765/tcp there too. A cloud rule and a host firewall can both apply.
+The helper accepts only TLS plus its random secret access key. It exposes no
+Apple login, device erase, sound, account-management or spoof-control endpoint.
+This is a private experimental deployment, not a public multi-user service.
+
+3. Transfer the ZIP and connect
+Use your normal SSH/SFTP client to copy Shift-2.1.0-FindMy-Cloud.zip to the VM.
+Use Windows Terminal/PowerShell or Oracle's Cloud Shell for SSH. For example,
+replace BOTH placeholders with your actual SSH key path and VM public address:
+
+  ssh -i "C:\path\to\your-private-key" ubuntu@YOUR_SERVER_IP
+
+On that Ubuntu VM, install the tools and unzip the package:
+
+  sudo apt-get update
+  sudo apt-get install -y python3-venv unzip tmux
+  unzip Shift-2.1.0-FindMy-Cloud.zip
+  cd Shift-FindMy-Cloud
+  python3 -m venv .venv
+  .venv/bin/python -m pip install -r CloudFindMy/requirements.txt
+  .venv/bin/python -m unittest discover -s CloudFindMy -p 'test_*.py' -v
+
+Create the certificate and secret pairing file ONCE (replace YOUR_SERVER_IP):
+
+  .venv/bin/python CloudFindMy/server.py init --host YOUR_SERVER_IP
+
+It saves these private files outside the source folder:
+  ~/.local/share/shift-findmy/ShiftFindMyPairing.json
+  ~/.local/share/shift-findmy/key.pem
+  ~/.local/share/shift-findmy/cert.pem
+  ~/.local/share/shift-findmy/port.txt
+
+The server reads its saved port on each launch. Do not re-run init in that
+directory; it refuses to overwrite existing keys. The certificate lasts a year;
+make a new empty data directory and new pairing for renewal or key rotation.
+
+4. Start the helper in a terminal that survives your laptop disconnecting
+From the Shift-FindMy-Cloud folder on the VM:
+
+  tmux new -s shift-findmy
+  .venv/bin/python CloudFindMy/server.py serve
+
+Enter YOUR Apple Account login in that private terminal, complete verification,
+and select YOUR iPhone. Do not use someone else's Apple credentials. No login
+or 2FA code should be pasted into chat, GitHub or any exported developer log.
+If your account requires a physical security key, this remote terminal flow may
+not be suitable. Keep that protection enabled; do not disable it for this helper.
+New Apple terms must be reviewed and accepted by you in Apple's official site.
+
+When the helper says Ready, press Ctrl+B, release, then D to detach tmux.
+You can now disconnect SSH and shut down your laptop. The VM must stay on.
+Server restarts need you to launch serve and sign in again. This prototype does
+not save an Apple password or automatically sign in after a reboot.
+
+Apple passwords/authentication are held by the running library in memory.
+Temporary session files use /dev/shm on Linux when available and are cleaned
+on normal exit. An abrupt process kill can leave temporary files until reboot.
+The Apple session is sensitive and is NOT an Apple-enforced read-only token,
+even though this helper's code only reads locations. Keep the VM private.
+
+5. Pair your phone
+Privately copy ShiftFindMyPairing.json to your iPhone's Files app using SFTP
+and a private transfer. Never put it on GitHub. It is an access key, not a
+regular settings backup. Do not upload the helper's key.pem anywhere.
+
+Install Shift 2.1.0 (25) over the existing app with SideStore.
+Shift > Settings > Find My checks > Set up Remote Find My.
+Choose I already have a setup file, then Import setup file.
+Review the data-sharing prompt and allow notifications if you want warnings.
+Start spoofing and wait up to two check cycles (about two minutes) for the first
+comparable Apple report. Apple may still return an older location; that must
+show Waiting rather than a green match.
+
+The main app normally exchanges a report every 60 seconds during a session.
+The helper requests a location from Apple at most once per 60 seconds while
+the session is active. Check now refreshes the report, not Apple's rate limit.
+Only points acknowledged after connecting this checking session are uploaded.
+Up to five minutes of history stay in RAM. Stop clears them; loss of the phone's
+updates expires the helper session and clears history within 150 seconds.
+No location history, account response body or access token is written to logs.
+The iPhone Keychain item is device-only; helper keys are excluded from app exports.
+
+6. Apple sign-in expired, blocked, or the helper stopped?
+Reopen SSH to the VM and:
+
+  tmux attach -t shift-findmy
+
+If the helper is still running, press Ctrl+C. From its folder, run:
+
+  .venv/bin/python CloudFindMy/server.py serve
+
+Sign in again. Keep the same pairing JSON unless you changed keys or server IP.
+Return to Remote Find My and tap Check now. If the app says Reconnect helper,
+toggle Check while spoofing off and back on; reimport the pairing if necessary.
+If a server clock error occurs, correct the server clock rather than extending
+the freshness rules. After a phone/server clock change, restart checks.
+
+Warnings and limits
+The phone can create local notifications while its session is running. If iOS
+suspends or force-closes Shift, it cannot detect new Apple errors. A previously
+scheduled 'No recent Find My confirmation' reminder may still be delivered by
+iOS; notification permissions, Focus and notification scheduling affect delivery.
+This prototype does not yet include an independent web-push service.
+Turning checking off or stopping spoofing cancels the fallback reminder.
+iPhone Low Power Mode is a separate system
+setting; it does not switch this feature off, but locked-phone behavior needs
+real testing. No monitoring result changes or stops the spoofing engine.
+
+To stop the cloud process: attach tmux and press Ctrl+C. To revoke phone access,
+stop the helper and create fresh keys in a new private directory; pair again.
+Disconnecting in Shift deletes the phone's key and ends its check session, but
+cannot revoke copies of that same pairing file held elsewhere.

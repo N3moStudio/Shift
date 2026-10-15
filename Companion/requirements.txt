@@ -1,0 +1,3 @@
+pyicloud[cli]==2.7.0
+life360==7.2.0
+cryptography>=46,<48

@@ -1,0 +1,56 @@
+[
+  {
+    "design": "Glacier",
+    "finish": "Default",
+    "asset": "AppIcon",
+    "preview": "ShiftIcon-Glacier-Default"
+  },
+  {
+    "design": "Glacier",
+    "finish": "Dark",
+    "asset": "AppIconGlacierDark",
+    "preview": "ShiftIcon-Glacier-Dark"
+  },
+  {
+    "design": "Glacier",
+    "finish": "Tinted",
+    "asset": "AppIconGlacierTinted",
+    "preview": "ShiftIcon-Glacier-Tinted"
+  },
+  {
+    "design": "Afterhours",
+    "finish": "Default",
+    "asset": "AppIconAfterhours",
+    "preview": "ShiftIcon-Afterhours-Default"
+  },
+  {
+    "design": "Afterhours",
+    "finish": "Dark",
+    "asset": "AppIconAfterhoursDark",
+    "preview": "ShiftIcon-Afterhours-Dark"
+  },
+  {
+    "design": "Afterhours",
+    "finish": "Tinted",
+    "asset": "AppIconAfterhoursTinted",
+    "preview": "ShiftIcon-Afterhours-Tinted"
+  },
+  {
+    "design": "Porcelain",
+    "finish": "Default",
+    "asset": "AppIconPorcelain",
+    "preview": "ShiftIcon-Porcelain-Default"
+  },
+  {
+    "design": "Porcelain",
+    "finish": "Dark",
+    "asset": "AppIconPorcelainDark",
+    "preview": "ShiftIcon-Porcelain-Dark"
+  },
+  {
+    "design": "Porcelain",
+    "finish": "Tinted",
+    "asset": "AppIconPorcelainTinted",
+    "preview": "ShiftIcon-Porcelain-Tinted"
+  }
+]

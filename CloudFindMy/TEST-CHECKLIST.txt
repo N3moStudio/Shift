@@ -1,0 +1,61 @@
+SHIFT 2.1.0 (25) — REMOTE FIND MY PROTOTYPE ONLY
+
+No need to repeat your route-editor, drawing, setup or appearance tests.
+Keep your 2.0.1 IPA/source as a fallback. Install over the existing app.
+Do not send Apple passwords, 2FA codes, pairing JSON or server private keys.
+
+1. First actual Apple report (gate before relying on any other test)
+   Pair YOUR cloud helper; choose YOUR iPhone, not an iPad or Watch.
+   Start at a static spoofed spot. Allow two minutes for a comparable report.
+   Compare the selected iPhone in icloud.com/find with Remote Find My's result.
+   Note the Apple location age. A stale report must not be green.
+   If this does not agree, stop testing and report the status + timestamps.
+
+2. Laptop off / cellular / locked
+   Establish spoofing normally first. Keep LocalDevVPN connected.
+   Detach the server's tmux session; shut down the Windows laptop.
+   Turn phone Wi-Fi off while keeping cellular on. Keep Shift running.
+   Try 10 minutes at a static spot, then 10 minutes following a short route.
+   Lock the phone during each; reopen and check the report age.
+   Note warnings, whether movement continued, and whether Apple caught up.
+   This does NOT test restarting a force-closed spoofing connection on cellular.
+
+3. iPhone Low Power Mode
+   Repeat the locked portion once with iPhone Low Power Mode enabled.
+   Remote Find My should stay enabled; check report freshness and notifications.
+   Disable Check while spoofing: checks and its pending reminder should stop.
+   Enable it again: a new check session should start, without reusing old green status.
+
+4. Warning path (controlled, not a real account logout)
+   While spoofing, stop only the CLOUD helper in its private terminal.
+   By the next check, Shift should say Check unavailable and warn once.
+   The warning must not say spoofing stopped; movement should be unaffected.
+   Restart the cloud helper and sign in, then tap Check now in Shift.
+   A real expired Apple sign-in still needs later observation; do not force
+   an account-wide logout or change your password solely for this test.
+
+5. Old data / route timing
+   On a moving route, compare Apple's location age with the checker.
+   Normal delayed points should be compared to Shift's point at that time.
+   Do not judge against the latest marker alone. Report false mismatch alerts
+   with the developer log, Apple location age, and an approximate test time.
+
+6. Force-close fallback (only when Wi-Fi will be available for recovery)
+   After a fresh report, force-close Shift and lock the phone.
+   The scheduled no-recent-confirmation reminder should appear around three
+   minutes after that Apple location's time, subject to notification settings.
+   It must NOT claim it detected a force-close or a specific Apple logout.
+   Reopen Shift: no green result should survive from the previous process.
+   Reconnect the spoofing session with Wi-Fi + LocalDevVPN as usual.
+
+7. Stop / disable / re-enable
+   Stop spoofing normally. There should be no new Find My warning after that.
+   Do the same after turning Check while spoofing off. Wait three minutes.
+   Re-enable during a session: it must wait for valid evidence, not reuse an
+   old session's green result. Import/export normal backups: no helper key
+   or Apple authentication should be included.
+
+Send back: version/build, which numbered test failed, approximate time,
+Wi-Fi/cellular + Low Power Mode state, exact displayed status and report age,
+and the developer log if useful. Its existing location history is sensitive;
+share it only through the private channel you intend to use.

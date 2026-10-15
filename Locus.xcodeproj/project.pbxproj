@@ -1,0 +1,818 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+		A68F36F00FF7143DF4B0EA8C = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Shared/ShiftAppearance.swift"; sourceTree = SOURCE_ROOT; };
+		49E19D180747BD2015CC1822 = { isa = PBXBuildFile; fileRef = A68F36F00FF7143DF4B0EA8C; };
+		FFD910D654B236508C81F15F = { isa = PBXBuildFile; fileRef = A68F36F00FF7143DF4B0EA8C; };
+		76BDD51EE845130449935C49 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locus/Support/ShiftAppearanceController.swift"; sourceTree = SOURCE_ROOT; };
+		949FFE663229488FA8FDF298 = { isa = PBXBuildFile; fileRef = 76BDD51EE845130449935C49; };
+		632DF4024D1C38A964B99238 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locus/Features/Settings/AppearanceSettingsView.swift"; sourceTree = SOURCE_ROOT; };
+		93D3296BC1D49CF6515AAD7F = { isa = PBXBuildFile; fileRef = 632DF4024D1C38A964B99238; };
+		ED63F16DD3FD97822ECD1EB2 = { isa = PBXFileReference; lastKnownFileType = image.png; path = "Locus/Resources/IconPreviews/ShiftIcon-Afterhours-Dark.png"; sourceTree = SOURCE_ROOT; };
+		E6F9BED258DA6525F9CFFAAD = { isa = PBXBuildFile; fileRef = ED63F16DD3FD97822ECD1EB2; };
+		A70AE5BDA89A61308BDA0EFE = { isa = PBXFileReference; lastKnownFileType = image.png; path = "Locus/Resources/IconPreviews/ShiftIcon-Afterhours-Default.png"; sourceTree = SOURCE_ROOT; };
+		23FA2B42924BD8A7472AEB4C = { isa = PBXBuildFile; fileRef = A70AE5BDA89A61308BDA0EFE; };
+		BF9DDC1ADB193F534E0614ED = { isa = PBXFileReference; lastKnownFileType = image.png; path = "Locus/Resources/IconPreviews/ShiftIcon-Afterhours-Tinted.png"; sourceTree = SOURCE_ROOT; };
+		EDDDA6FCBDFCE00B874A9703 = { isa = PBXBuildFile; fileRef = BF9DDC1ADB193F534E0614ED; };
+		0B787A1536A747FA7B31834C = { isa = PBXFileReference; lastKnownFileType = image.png; path = "Locus/Resources/IconPreviews/ShiftIcon-Glacier-Dark.png"; sourceTree = SOURCE_ROOT; };
+		D410B380AD38AB36353BCDF1 = { isa = PBXBuildFile; fileRef = 0B787A1536A747FA7B31834C; };
+		6B0E048CBE15253617634546 = { isa = PBXFileReference; lastKnownFileType = image.png; path = "Locus/Resources/IconPreviews/ShiftIcon-Glacier-Default.png"; sourceTree = SOURCE_ROOT; };
+		997F157ACA50120A7051FC5C = { isa = PBXBuildFile; fileRef = 6B0E048CBE15253617634546; };
+		5E06C43CD60E7C79B24A5C51 = { isa = PBXFileReference; lastKnownFileType = image.png; path = "Locus/Resources/IconPreviews/ShiftIcon-Glacier-Tinted.png"; sourceTree = SOURCE_ROOT; };
+		82732E78AF30D41C4866F695 = { isa = PBXBuildFile; fileRef = 5E06C43CD60E7C79B24A5C51; };
+		A83A84DD6A6F590B609FFDC4 = { isa = PBXFileReference; lastKnownFileType = image.png; path = "Locus/Resources/IconPreviews/ShiftIcon-Porcelain-Dark.png"; sourceTree = SOURCE_ROOT; };
+		4F8F05FE97F74AD8C707FDE1 = { isa = PBXBuildFile; fileRef = A83A84DD6A6F590B609FFDC4; };
+		91456A5B992DE8879A7AF0ED = { isa = PBXFileReference; lastKnownFileType = image.png; path = "Locus/Resources/IconPreviews/ShiftIcon-Porcelain-Default.png"; sourceTree = SOURCE_ROOT; };
+		57A8044207DEA82FA7AE4DF8 = { isa = PBXBuildFile; fileRef = 91456A5B992DE8879A7AF0ED; };
+		67F008928C7C632B60D35026 = { isa = PBXFileReference; lastKnownFileType = image.png; path = "Locus/Resources/IconPreviews/ShiftIcon-Porcelain-Tinted.png"; sourceTree = SOURCE_ROOT; };
+		D0C141A195B9C2658163BFC5 = { isa = PBXBuildFile; fileRef = 67F008928C7C632B60D35026; };
+		4D32AC5EE87F36649BB05C30 = { isa = PBXBuildFile; fileRef = 582D1BC630434055ECB840B2; };
+		582D1BC630434055ECB840B2 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Shared/CompanionConnectionIssue.swift"; sourceTree = SOURCE_ROOT; };
+		BA3147704A7D34E963114049 = { isa = PBXBuildFile; fileRef = 582D1BC630434055ECB840B2; };
+		E174DF1903831C41A51AB068 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locus/Features/Settings/FindMyChecksView.swift"; sourceTree = SOURCE_ROOT; };
+		280D2D439A2FD6F9DA4E99AA = { isa = PBXBuildFile; fileRef = E174DF1903831C41A51AB068; };
+		084AE736C95B43066DD792A3 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Shared/MapPanProjection.swift"; sourceTree = SOURCE_ROOT; };
+		77884A5A5681C027376C0281 = { isa = PBXBuildFile; fileRef = 084AE736C95B43066DD792A3; };
+		68D32DFD656FC744959B4B8E = { isa = PBXBuildFile; fileRef = 084AE736C95B43066DD792A3; };
+		EFF21BF9875141FBF58C2CBF = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locus/Features/Map/MapPinAdjustment.swift"; sourceTree = SOURCE_ROOT; };
+		8E3DD7A116571B676C67FA21 = { isa = PBXBuildFile; fileRef = EFF21BF9875141FBF58C2CBF; };
+		6EE5E3F388D5C3C3477F81A0 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locus/Features/Settings/SavedPlaceEditorSheet.swift"; sourceTree = SOURCE_ROOT; };
+		2A4732FE6806D837F0F518D8 = { isa = PBXBuildFile; fileRef = 6EE5E3F388D5C3C3477F81A0; };
+		DBF687FF0BD1C053A0A2BE3D = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Shared/Personalization.swift"; sourceTree = SOURCE_ROOT; };
+		B188142719D355D2A6675D59 = { isa = PBXBuildFile; fileRef = DBF687FF0BD1C053A0A2BE3D; };
+		FDF0AE1506411D5AF7E4CC16 = { isa = PBXBuildFile; fileRef = DBF687FF0BD1C053A0A2BE3D; };
+		821B8BD70058B2E2882A1F29 = { isa = PBXFileReference; lastKnownFileType = archive.zip; path = "Locus/Resources/Shift-FindMy-Cloud.zip"; sourceTree = SOURCE_ROOT; };
+		D39D51C74479A72249AEEDAA = { isa = PBXBuildFile; fileRef = 821B8BD70058B2E2882A1F29; };
+		FF1CF781F830C942BD4E768B = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locus/Features/Settings/RemoteFindMyView.swift"; sourceTree = SOURCE_ROOT; };
+		DFD7A94473E37C4917DE11A9 = { isa = PBXBuildFile; fileRef = FF1CF781F830C942BD4E768B; };
+		101B23F7D794087824814FEC = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locus/Support/RemoteFindMyController.swift"; sourceTree = SOURCE_ROOT; };
+		D7DE35B86CADB55D9809737A = { isa = PBXBuildFile; fileRef = 101B23F7D794087824814FEC; };
+		C6E52A54DF844413D4187CE1 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Shared/RemoteFindMy.swift"; sourceTree = SOURCE_ROOT; };
+		CFB10A8970F110824B69E58A = { isa = PBXBuildFile; fileRef = C6E52A54DF844413D4187CE1; };
+		422E767DBE1FBA0F01E164AE = { isa = PBXBuildFile; fileRef = C6E52A54DF844413D4187CE1; };
+		42ED85301958C8B6789AD99A = { isa = PBXFileReference; lastKnownFileType = archive.zip; path = "Locus/Resources/Shift-Windows-Helper.zip"; sourceTree = SOURCE_ROOT; };
+		67C59C5F47EEFCA3B74A9D34 = { isa = PBXBuildFile; fileRef = 42ED85301958C8B6789AD99A; };
+		62CA99C6F4CD813848608578 = { isa = PBXFileReference; lastKnownFileType = text; path = "Locus/Resources/OpenSourceNotices.txt"; sourceTree = SOURCE_ROOT; };
+		E9C0ECFF63CB73986A452284 = { isa = PBXBuildFile; fileRef = 62CA99C6F4CD813848608578; };
+		CB9438150A7B481598BC6B82 = { isa = PBXBuildFile; fileRef = ECCCA5E6C7115F869BECE6DB; };
+		ECCCA5E6C7115F869BECE6DB = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locus/Support/ShiftDesign.swift"; sourceTree = SOURCE_ROOT; };
+		9F3EC6379702CE8255C3EB4F = { isa = PBXBuildFile; fileRef = 7BC25CFEDB8BF0ACFD9CEF5B; };
+		2B147E0689086E21CD58ABFA = { isa = PBXBuildFile; fileRef = 7BC25CFEDB8BF0ACFD9CEF5B; };
+		7BC25CFEDB8BF0ACFD9CEF5B = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Shared/ShiftBrandViews.swift"; sourceTree = SOURCE_ROOT; };
+		0B5DBDDFDEC485E669E50C78 = { isa = PBXBuildFile; fileRef = 9C316DC2DB1CC5057185CD97; };
+		9C316DC2DB1CC5057185CD97 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locus/Features/Settings/SessionTimelineView.swift"; sourceTree = SOURCE_ROOT; };
+		401C07EC2AFC35C4FEAE4480 = { isa = PBXBuildFile; fileRef = 802EE3FA7DF36131AD968691; };
+		802EE3FA7DF36131AD968691 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locus/Features/Routes/TripEditHistoryView.swift"; sourceTree = SOURCE_ROOT; };
+		FC0EED4D98691FDAEA8F0A2B = { isa = PBXBuildFile; fileRef = D830DC897F80046444BB60F8; };
+		DBB57812C3542D074169E4F1 = { isa = PBXBuildFile; fileRef = D830DC897F80046444BB60F8; };
+		D830DC897F80046444BB60F8 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Shared/TripEditHistory.swift"; sourceTree = SOURCE_ROOT; };
+		4CC856E2DA87246B4180ED47 = { isa = PBXBuildFile; fileRef = 8FD6D90B07403321350F2EBF; };
+		13A3092F8F3718EBCEF999B1 = { isa = PBXBuildFile; fileRef = 8FD6D90B07403321350F2EBF; };
+		8FD6D90B07403321350F2EBF = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Shared/SessionTimeline.swift"; sourceTree = SOURCE_ROOT; };
+		85EA2E01D8614C076EB8C8E3 = { isa = PBXBuildFile; fileRef = 1394C2F6E53348963549E4A6; };
+		1394C2F6E53348963549E4A6 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locus/Support/DeveloperLogObserver.swift"; sourceTree = SOURCE_ROOT; };
+		BC58D89C033AF8902F7289EA = { isa = PBXBuildFile; fileRef = D764BA6779FE7C1E9566EBAC; };
+		D764BA6779FE7C1E9566EBAC = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locus/Features/Settings/DeveloperLogExportSection.swift"; sourceTree = SOURCE_ROOT; };
+		263F501343CBEA91BFEA7931 = { isa = PBXBuildFile; fileRef = 946DF2BBA4D0A83F7F783F67; };
+		A47A6808D1363A81E39B057B = { isa = PBXBuildFile; fileRef = 946DF2BBA4D0A83F7F783F67; };
+		946DF2BBA4D0A83F7F783F67 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Shared/DeveloperLogStore.swift"; sourceTree = SOURCE_ROOT; };
+		D0CE3BC20B083B86F78CC1CC = { isa = PBXBuildFile; fileRef = EA01725BD7173E8ABD3A66AD; };
+		E9B5B034A9AFC40F271F1964 = { isa = PBXBuildFile; fileRef = EA01725BD7173E8ABD3A66AD; };
+		EA01725BD7173E8ABD3A66AD = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Shared/DeveloperLogRules.swift"; sourceTree = SOURCE_ROOT; };
+		0773A18B806F98AF76C33CEB = { isa = PBXBuildFile; fileRef = 6DD9F4E6E133584A05AB9F42; };
+		6DD9F4E6E133584A05AB9F42 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocusActivity/LocusHomeWidgets.swift"; sourceTree = SOURCE_ROOT; };
+		2323F50EC44977AEC7D36EF6 = { isa = PBXBuildFile; fileRef = 94B596DEB58E8CEB94186B58; };
+		94B596DEB58E8CEB94186B58 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locus/Support/RecentlyDeletedStore.swift"; sourceTree = SOURCE_ROOT; };
+		5E5B65AF58596C1D262C4F82 = { isa = PBXBuildFile; fileRef = 1A1357B97889FEABFAD0ACF0; };
+		1A1357B97889FEABFAD0ACF0 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locus/Support/LocationVerificationController.swift"; sourceTree = SOURCE_ROOT; };
+		938DE8C317A4D773C9FA8F8B = { isa = PBXBuildFile; fileRef = B04C32FFAFEF2D214EEEB423; };
+		B04C32FFAFEF2D214EEEB423 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locus/Support/HomeWidgetPublisher.swift"; sourceTree = SOURCE_ROOT; };
+		B1807CBCEE6752143DBCE1A9 = { isa = PBXBuildFile; fileRef = 3EA922264FD342505F4C75DE; };
+		3EA922264FD342505F4C75DE = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locus/Support/CompanionClient.swift"; sourceTree = SOURCE_ROOT; };
+		663E44113D2D50F393CBFF47 = { isa = PBXBuildFile; fileRef = 36CAEEC289B12B0C32D55748; };
+		36CAEEC289B12B0C32D55748 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locus/Features/Settings/RecentlyDeletedView.swift"; sourceTree = SOURCE_ROOT; };
+		81BA1F51F9EE912B34DB115C = { isa = PBXBuildFile; fileRef = D12006026C77FC8F75F649EE; };
+		D12006026C77FC8F75F649EE = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locus/Features/Settings/HomeWidgetsSettingsView.swift"; sourceTree = SOURCE_ROOT; };
+		7E40B0F6D7A85A89F658A7EE = { isa = PBXBuildFile; fileRef = C29690194CAADCF0D0D9BED7; };
+		C29690194CAADCF0D0D9BED7 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locus/Features/Settings/ConnectionDetailsView.swift"; sourceTree = SOURCE_ROOT; };
+		92A06B09EB382C0AA940F80A = { isa = PBXBuildFile; fileRef = 7C6B72E3AAF90A1FB5EB1C9D; };
+		7C6B72E3AAF90A1FB5EB1C9D = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locus/Features/Routes/PathEditorSheet.swift"; sourceTree = SOURCE_ROOT; };
+		CDF25E7020D765CB7DD60DA5 = { isa = PBXBuildFile; fileRef = 83B16C741961C7D01E51FBDD; };
+		9507FD1E2539C1697CC6F0B3 = { isa = PBXBuildFile; fileRef = 83B16C741961C7D01E51FBDD; };
+		83B16C741961C7D01E51FBDD = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Shared/WidgetLibrary.swift"; sourceTree = SOURCE_ROOT; };
+		80580EECD7DF0D594A82215F = { isa = PBXBuildFile; fileRef = DC4E86B257D3E4638AE2FEF6; };
+		C6355BEEE6E2841EB7A6C174 = { isa = PBXBuildFile; fileRef = DC4E86B257D3E4638AE2FEF6; };
+		DC4E86B257D3E4638AE2FEF6 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Shared/LocationVerification.swift"; sourceTree = SOURCE_ROOT; };
+		42B438EEF438D4CFEDD412B7 = { isa = PBXBuildFile; fileRef = F18882278B2FD11CE297C4AC; };
+		1C3FC2BCFF8A31A49DE33783 = { isa = PBXBuildFile; fileRef = F18882278B2FD11CE297C4AC; };
+		F18882278B2FD11CE297C4AC = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Shared/DrawnPathEdit.swift"; sourceTree = SOURCE_ROOT; };
+		79BED890431B06345BE08558 = { isa = PBXBuildFile; fileRef = 352FE78A2A30DD695A14EB6F; };
+		FD9E818BACAD9A6293366457 = { isa = PBXBuildFile; fileRef = 352FE78A2A30DD695A14EB6F; };
+		352FE78A2A30DD695A14EB6F = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Shared/DeletedLibraryItem.swift"; sourceTree = SOURCE_ROOT; };
+		95C5CD36AB5BFF23D938BCD9 = { isa = PBXBuildFile; fileRef = 9C29479134656826A4E0A3DC; };
+		FCFD93B9BCC3C245BA9738B1 = { isa = PBXBuildFile; fileRef = 9C29479134656826A4E0A3DC; };
+		9C29479134656826A4E0A3DC = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Shared/CompanionLink.swift"; sourceTree = SOURCE_ROOT; };
+		8833A84E7804836A69C3B303 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locus/Features/Map/SketchMapView.swift"; sourceTree = SOURCE_ROOT; };
+		6BEC9132180294D94F94BB40 = { isa = PBXBuildFile; fileRef = 8833A84E7804836A69C3B303; };
+		AFA2B4B606133577824F8F22 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locus/Features/Settings/NamedAreasView.swift"; sourceTree = SOURCE_ROOT; };
+		D2D58934F45868622B292C1E = { isa = PBXBuildFile; fileRef = AFA2B4B606133577824F8F22; };
+		821515BAE7BCA3D36769BED5 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locus/Features/Routes/RoutePlacesEditor.swift"; sourceTree = SOURCE_ROOT; };
+		C62324C2C4A8341695CDEC0A = { isa = PBXBuildFile; fileRef = 821515BAE7BCA3D36769BED5; };
+		A2D1F03A46802292A4ED7B68 = { isa = PBXBuildFile; fileRef = 84EA6995D4EEBECE0BD0D9D2; };
+		84EA6995D4EEBECE0BD0D9D2 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Shared/NamedArea.swift"; sourceTree = SOURCE_ROOT; };
+		47F318C7CB2C470CA0CABD11 = { isa = PBXBuildFile; fileRef = 84EA6995D4EEBECE0BD0D9D2; };
+		034BE5057C6E161D1821BAC2 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locus/Support/TripRecoveryStore.swift"; sourceTree = SOURCE_ROOT; };
+		0D9BC69477387BDBC934F882 = { isa = PBXBuildFile; fileRef = 034BE5057C6E161D1821BAC2; };
+		7703067F29DFC48A13AABFB7 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locus/Support/ReliabilityRecorder.swift"; sourceTree = SOURCE_ROOT; };
+		78FF1457C2C7D9C70AEBE167 = { isa = PBXBuildFile; fileRef = 7703067F29DFC48A13AABFB7; };
+		17AB0AACA2589F9A4902F0AA = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locus/Features/Settings/TripToolsViews.swift"; sourceTree = SOURCE_ROOT; };
+		E4C822C723AA3803020277C9 = { isa = PBXBuildFile; fileRef = 17AB0AACA2589F9A4902F0AA; };
+		91DC168998970B6A203564F8 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locus/Features/Settings/LibraryBackupView.swift"; sourceTree = SOURCE_ROOT; };
+		9FA51F39347BDEEBCA2493B1 = { isa = PBXBuildFile; fileRef = 91DC168998970B6A203564F8; };
+		A447F16991CCA2EFA0C6D30A = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locus/Engine/RouteContinuation.swift"; sourceTree = SOURCE_ROOT; };
+		C31EA5FDE19B76EC22275F79 = { isa = PBXBuildFile; fileRef = A447F16991CCA2EFA0C6D30A; };
+		7AD9C596D28A4D3A13AEF6C6 = { isa = PBXBuildFile; fileRef = 0926FB70D460A0306259A2C0; };
+		0926FB70D460A0306259A2C0 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Shared/TripRecovery.swift"; sourceTree = SOURCE_ROOT; };
+		822D18BEC9492C8A2DAABF5D = { isa = PBXBuildFile; fileRef = 0926FB70D460A0306259A2C0; };
+		545DA6B1ADA256B6DA9F6FD7 = { isa = PBXBuildFile; fileRef = BA8F1026030B50848F01F3D6; };
+		BA8F1026030B50848F01F3D6 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Shared/ReliabilityRun.swift"; sourceTree = SOURCE_ROOT; };
+		1838BCEC109D41255B453207 = { isa = PBXBuildFile; fileRef = BA8F1026030B50848F01F3D6; };
+		38ADFC633E43270045A2EDE8 = { isa = PBXBuildFile; fileRef = 855DE100F90CA7241C4D01B1; };
+		855DE100F90CA7241C4D01B1 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Shared/LibraryBackup.swift"; sourceTree = SOURCE_ROOT; };
+		2F9033C965DD47AD18369EA7 = { isa = PBXBuildFile; fileRef = 855DE100F90CA7241C4D01B1; };
+		440AFBCD548B2AD58A031CCC = { isa = PBXBuildFile; fileRef = 1F60893816CA75CF51EE6339; };
+		1F60893816CA75CF51EE6339 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Shared/RouteLifecycle.swift"; sourceTree = SOURCE_ROOT; };
+		2A7A81100B07209E82C3D7D9 = { isa = PBXBuildFile; fileRef = 1F60893816CA75CF51EE6339; };
+		C36B19EFC91601155C621362 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locus/Features/Settings/UsualSpeedsSettingsView.swift"; sourceTree = SOURCE_ROOT; };
+		4DBFACDBEA208967B72554A9 = { isa = PBXBuildFile; fileRef = C36B19EFC91601155C621362; };
+		48D52EDD1408F47455179F88 = { isa = PBXBuildFile; fileRef = AFC8B919EC224BAACD161C0C; };
+		AFC8B919EC224BAACD161C0C = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Shared/SetupReadiness.swift"; sourceTree = SOURCE_ROOT; };
+		DAA5CC6CB1206607BA840583 = { isa = PBXBuildFile; fileRef = AFC8B919EC224BAACD161C0C; };
+		763D98F087E5777AEDCDFA77 = { isa = PBXBuildFile; fileRef = 9CB7878D001A80D558F1B457; };
+		9CB7878D001A80D558F1B457 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Shared/RouteEditing.swift"; sourceTree = SOURCE_ROOT; };
+		EBE95334F4F1375100E77A62 = { isa = PBXBuildFile; fileRef = 9CB7878D001A80D558F1B457; };
+		A0A6C839B1CE31AF3FB513B2 = { isa = PBXBuildFile; fileRef = 92CBBB6F88C62DDAE6A18A6E; };
+		92CBBB6F88C62DDAE6A18A6E = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Shared/ProblemReport.swift"; sourceTree = SOURCE_ROOT; };
+		EDDB8F2525421413C1E84D2D = { isa = PBXBuildFile; fileRef = 92CBBB6F88C62DDAE6A18A6E; };
+		801A094DCCACC9450367F2FF = { isa = PBXBuildFile; fileRef = 170BAE02E6C22B079357BF02; };
+		170BAE02E6C22B079357BF02 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Shared/PrivacyRules.swift"; sourceTree = SOURCE_ROOT; };
+		C45F5983DE5194E0C67471A2 = { isa = PBXBuildFile; fileRef = 170BAE02E6C22B079357BF02; };
+		1D864E79EEE4F1F0E8B576A3 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locus/Support/SetupConnectionModel.swift"; sourceTree = SOURCE_ROOT; };
+		485B99F91FD83BD2F8B5E8CE = { isa = PBXBuildFile; fileRef = 1D864E79EEE4F1F0E8B576A3; };
+		4371BEEBCF4D210F13BEF503 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locus/Support/SessionDiagnostics.swift"; sourceTree = SOURCE_ROOT; };
+		7C08371EBBBD52A64CFCE760 = { isa = PBXBuildFile; fileRef = 4371BEEBCF4D210F13BEF503; };
+		FA1A0844095A2A2CE29F8B52 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locus/Support/AppPrivacyController.swift"; sourceTree = SOURCE_ROOT; };
+		02BC36A669FBE6BB9FA7D6E6 = { isa = PBXBuildFile; fileRef = FA1A0844095A2A2CE29F8B52; };
+		759AE70AD7793C1F7DF98D98 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locus/Features/Settings/ProblemReportView.swift"; sourceTree = SOURCE_ROOT; };
+		B51892AACE6B3035B5E1614B = { isa = PBXBuildFile; fileRef = 759AE70AD7793C1F7DF98D98; };
+		9FD8447F6FCED0DE18303337 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locus/Features/Settings/PrivacySettingsSection.swift"; sourceTree = SOURCE_ROOT; };
+		1AD487D18FC5BD0739A6ABA4 = { isa = PBXBuildFile; fileRef = 9FD8447F6FCED0DE18303337; };
+		11F3CF5D82DA461B142291FA = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locus/Features/Routes/RouteEditorViews.swift"; sourceTree = SOURCE_ROOT; };
+		24A064A8BBAEB67B5B9FDB0C = { isa = PBXBuildFile; fileRef = 11F3CF5D82DA461B142291FA; };
+		35E8EBECFCB437B3920B0C18 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locus/Features/Routes/TripViews.swift"; sourceTree = SOURCE_ROOT; };
+		1685877EC3D92933D67C01FD = { isa = PBXBuildFile; fileRef = 35E8EBECFCB437B3920B0C18; };
+		62651FDCEB78D2C4C0047058 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locus/Support/TripLibrary.swift"; sourceTree = SOURCE_ROOT; };
+		B0FB1B8C448FF93C280C79D5 = { isa = PBXBuildFile; fileRef = 62651FDCEB78D2C4C0047058; };
+		E021DAEA3FB36FE40E2E40C8 = { isa = PBXBuildFile; fileRef = 3D0C8838D4B637C01BBE878B; };
+		3D0C8838D4B637C01BBE878B = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Shared/TripFeatures.swift"; sourceTree = SOURCE_ROOT; };
+		351EA016F32FC4463FC16783 = { isa = PBXBuildFile; fileRef = 3D0C8838D4B637C01BBE878B; };
+		07DD93D733942E4923D6A4B7 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locus/Features/Routes/TravelControls.swift"; sourceTree = SOURCE_ROOT; };
+		28699FC6EC6E5A8F688F89C9 = { isa = PBXBuildFile; fileRef = 07DD93D733942E4923D6A4B7; };
+		86A08BAA92E8E029F4CBF72A = { isa = PBXBuildFile; fileRef = F3015C3B60DBDEABD10979BA; };
+		F3015C3B60DBDEABD10979BA = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Shared/RouteGeometry.swift"; sourceTree = SOURCE_ROOT; };
+		530F93A28E6795329924BB7D = { isa = PBXBuildFile; fileRef = F3015C3B60DBDEABD10979BA; };
+		18615E854C2145FBE2B9D093 = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locus/Features/Routes/JourneyCard.swift"; sourceTree = SOURCE_ROOT; };
+		187F1B7CC9DFE52E3205EA37 = { isa = PBXBuildFile; fileRef = 18615E854C2145FBE2B9D093; };
+		7528E6423170AD904ABA2D9A = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locus/Features/Routes/RoutePlaceSearchSheet.swift"; sourceTree = SOURCE_ROOT; };
+		BCD32DDCDC8C26BD2B680992 = { isa = PBXBuildFile; fileRef = 7528E6423170AD904ABA2D9A; };
+		AC40BA75F11F966FB81EC9DC = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locus/Engine/RoutePlanner.swift"; sourceTree = SOURCE_ROOT; };
+		5721A6A2BA4A0145E9FA6F61 = { isa = PBXBuildFile; fileRef = AC40BA75F11F966FB81EC9DC; };
+		E382DC48DF99DE489F086BFC = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Shared/RoutePlanning.swift"; sourceTree = SOURCE_ROOT; };
+		0C36EFD807789CE693702F36 = { isa = PBXBuildFile; fileRef = E382DC48DF99DE489F086BFC; };
+		1DC01295ADEC4BF077E3C1DF = { isa = PBXBuildFile; fileRef = E382DC48DF99DE489F086BFC; };
+
+/* Session experience */
+		CBD1D7CFDD96EB0207E70956 /* Shared/SessionPresentation.swift */ = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Shared/SessionPresentation.swift"; sourceTree = SOURCE_ROOT; };
+		DDB2EF6A377B5BFF75E7F34A /* Shared/SessionPresentation.swift-app */ = { isa = PBXBuildFile; fileRef = CBD1D7CFDD96EB0207E70956; };
+		3856AD7E9B2AD8FF5D06DFA2 /* Shared/SessionPresentation.swift-widget */ = { isa = PBXBuildFile; fileRef = CBD1D7CFDD96EB0207E70956; };
+		0AB4D42DFCAABF41C2436204 /* Shared/LocusActivityAttributes.swift */ = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Shared/LocusActivityAttributes.swift"; sourceTree = SOURCE_ROOT; };
+		9D32BA6977AC41DC7798DFF6 /* Shared/LocusActivityAttributes.swift-app */ = { isa = PBXBuildFile; fileRef = 0AB4D42DFCAABF41C2436204; };
+		3DC6978AAEEF8D897930F5B6 /* Shared/LocusActivityAttributes.swift-widget */ = { isa = PBXBuildFile; fileRef = 0AB4D42DFCAABF41C2436204; };
+		98CF0529F4545BC967840D77 /* Locus/Support/SessionPreferences.swift */ = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locus/Support/SessionPreferences.swift"; sourceTree = SOURCE_ROOT; };
+		3D887E5FA67A5DE8118B3012 /* Locus/Support/SessionPreferences.swift-app */ = { isa = PBXBuildFile; fileRef = 98CF0529F4545BC967840D77; };
+		ED1812BAE64C847BE97630DB /* Locus/Engine/SessionActivityController.swift */ = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locus/Engine/SessionActivityController.swift"; sourceTree = SOURCE_ROOT; };
+		F0D0258117455360A826D2BC /* Locus/Engine/SessionActivityController.swift-app */ = { isa = PBXBuildFile; fileRef = ED1812BAE64C847BE97630DB; };
+		C6CFA6515A05C9DA73175A60 /* Locus/Engine/SessionNotifications.swift */ = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locus/Engine/SessionNotifications.swift"; sourceTree = SOURCE_ROOT; };
+		7F99DFDB9EB43B9D08372CA1 /* Locus/Engine/SessionNotifications.swift-app */ = { isa = PBXBuildFile; fileRef = C6CFA6515A05C9DA73175A60; };
+		04DF9D06A5AEE8A4EC596B37 /* Locus/Features/Settings/SessionSettingsSections.swift */ = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Locus/Features/Settings/SessionSettingsSections.swift"; sourceTree = SOURCE_ROOT; };
+		B8C0E51D2380BC5C766D3910 /* Locus/Features/Settings/SessionSettingsSections.swift-app */ = { isa = PBXBuildFile; fileRef = 04DF9D06A5AEE8A4EC596B37; };
+		B5E09EB144988D31B1294814 /* LocusActivity/LocusLiveActivity.swift */ = { isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LocusActivity/LocusLiveActivity.swift"; sourceTree = SOURCE_ROOT; };
+		EC9527A6C96047521B61769E /* LocusActivity/LocusLiveActivity.swift-widget */ = { isa = PBXBuildFile; fileRef = B5E09EB144988D31B1294814; };
+		BAC62D6FEA518A44E04F825E /* activity-plist */ = { isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = LocusActivity/Info.plist; sourceTree = SOURCE_ROOT; };
+		3E0AF5B53D842F1200CB4672 /* Session experience */ = { isa = PBXGroup; name = "Session experience"; children = (582D1BC630434055ECB840B2, E174DF1903831C41A51AB068, 084AE736C95B43066DD792A3, EFF21BF9875141FBF58C2CBF, 6EE5E3F388D5C3C3477F81A0, DBF687FF0BD1C053A0A2BE3D, 821B8BD70058B2E2882A1F29, FF1CF781F830C942BD4E768B, 101B23F7D794087824814FEC, C6E52A54DF844413D4187CE1, 42ED85301958C8B6789AD99A, 62CA99C6F4CD813848608578, ECCCA5E6C7115F869BECE6DB, 7BC25CFEDB8BF0ACFD9CEF5B, 9C316DC2DB1CC5057185CD97, 802EE3FA7DF36131AD968691, D830DC897F80046444BB60F8, 8FD6D90B07403321350F2EBF, 1394C2F6E53348963549E4A6, D764BA6779FE7C1E9566EBAC, 946DF2BBA4D0A83F7F783F67, EA01725BD7173E8ABD3A66AD, 6DD9F4E6E133584A05AB9F42, 94B596DEB58E8CEB94186B58, 1A1357B97889FEABFAD0ACF0, B04C32FFAFEF2D214EEEB423, 3EA922264FD342505F4C75DE, 36CAEEC289B12B0C32D55748, D12006026C77FC8F75F649EE, C29690194CAADCF0D0D9BED7, 7C6B72E3AAF90A1FB5EB1C9D, 83B16C741961C7D01E51FBDD, DC4E86B257D3E4638AE2FEF6, F18882278B2FD11CE297C4AC, 352FE78A2A30DD695A14EB6F, 9C29479134656826A4E0A3DC, 8833A84E7804836A69C3B303, AFA2B4B606133577824F8F22, 821515BAE7BCA3D36769BED5, 84EA6995D4EEBECE0BD0D9D2, 034BE5057C6E161D1821BAC2, 7703067F29DFC48A13AABFB7, 17AB0AACA2589F9A4902F0AA, 91DC168998970B6A203564F8, A447F16991CCA2EFA0C6D30A, 0926FB70D460A0306259A2C0, BA8F1026030B50848F01F3D6, 855DE100F90CA7241C4D01B1, 1F60893816CA75CF51EE6339, C36B19EFC91601155C621362, AFC8B919EC224BAACD161C0C, 9CB7878D001A80D558F1B457, 92CBBB6F88C62DDAE6A18A6E, 170BAE02E6C22B079357BF02, 1D864E79EEE4F1F0E8B576A3, 4371BEEBCF4D210F13BEF503, FA1A0844095A2A2CE29F8B52, 759AE70AD7793C1F7DF98D98, 9FD8447F6FCED0DE18303337, 11F3CF5D82DA461B142291FA, 35E8EBECFCB437B3920B0C18, 62651FDCEB78D2C4C0047058, 3D0C8838D4B637C01BBE878B, 07DD93D733942E4923D6A4B7, F3015C3B60DBDEABD10979BA, 18615E854C2145FBE2B9D093, 7528E6423170AD904ABA2D9A, AC40BA75F11F966FB81EC9DC, E382DC48DF99DE489F086BFC, CBD1D7CFDD96EB0207E70956, 0AB4D42DFCAABF41C2436204, 98CF0529F4545BC967840D77, ED1812BAE64C847BE97630DB, C6CFA6515A05C9DA73175A60, 04DF9D06A5AEE8A4EC596B37, B5E09EB144988D31B1294814, BAC62D6FEA518A44E04F825E,); sourceTree = "<group>"; };
+		A86E637667479CBA109B82D0 /* LocusActivity.appex */ = { isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = LocusActivity.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		6D23F3D373AF7A5D9CEE96DA /* Embed LocusActivity */ = { isa = PBXBuildFile; fileRef = A86E637667479CBA109B82D0; settings = { ATTRIBUTES = (RemoveHeadersOnCopy,); }; };
+		8EEC5572B728D1E7FB046D09 /* Embed App Extensions */ = { isa = PBXCopyFilesBuildPhase; buildActionMask = 2147483647; dstPath = ""; dstSubfolderSpec = 13; files = (6D23F3D373AF7A5D9CEE96DA,); name = "Embed App Extensions"; runOnlyForDeploymentPostprocessing = 0; };
+		9828FA96A0DF8F162C474DFE /* Activity Sources */ = { isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (FFD910D654B236508C81F15F, 4D32AC5EE87F36649BB05C30, 68D32DFD656FC744959B4B8E, FDF0AE1506411D5AF7E4CC16, 422E767DBE1FBA0F01E164AE, 9F3EC6379702CE8255C3EB4F, FC0EED4D98691FDAEA8F0A2B, 4CC856E2DA87246B4180ED47, 263F501343CBEA91BFEA7931, D0CE3BC20B083B86F78CC1CC, 0773A18B806F98AF76C33CEB, CDF25E7020D765CB7DD60DA5, 80580EECD7DF0D594A82215F, 42B438EEF438D4CFEDD412B7, 79BED890431B06345BE08558, 95C5CD36AB5BFF23D938BCD9, A2D1F03A46802292A4ED7B68, 7AD9C596D28A4D3A13AEF6C6, 545DA6B1ADA256B6DA9F6FD7, 38ADFC633E43270045A2EDE8, 440AFBCD548B2AD58A031CCC, 48D52EDD1408F47455179F88, 763D98F087E5777AEDCDFA77, A0A6C839B1CE31AF3FB513B2, 801A094DCCACC9450367F2FF, E021DAEA3FB36FE40E2E40C8, 86A08BAA92E8E029F4CBF72A, 1DC01295ADEC4BF077E3C1DF, 3856AD7E9B2AD8FF5D06DFA2, 3DC6978AAEEF8D897930F5B6, EC9527A6C96047521B61769E,); runOnlyForDeploymentPostprocessing = 0; };
+		76B76E4D4BB9AB1CD18CA1F8 /* Activity Frameworks */ = { isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
+		62CF3B4982FDF46C11264E74 /* Activity Debug */ = {
+isa = XCBuildConfiguration;
+buildSettings = {
+    APPLICATION_EXTENSION_API_ONLY = YES;
+    CODE_SIGN_STYLE = Automatic;
+    CURRENT_PROJECT_VERSION = 41;
+    GENERATE_INFOPLIST_FILE = NO;
+    CODE_SIGN_ENTITLEMENTS = LocusActivity/LocusActivity.entitlements;
+				INFOPLIST_FILE = LocusActivity/Info.plist;
+    IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+    LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+    MARKETING_VERSION = 2.4.0;
+    PRODUCT_BUNDLE_IDENTIFIER = com.chrismack.locus.activity;
+    PRODUCT_NAME = LocusActivity;
+    SDKROOT = iphoneos;
+    SKIP_INSTALL = YES;
+    SWIFT_VERSION = 5.0;
+    TARGETED_DEVICE_FAMILY = "1,2";
+}; name = Debug; };
+		D21E0BF1EDAA73838B53DA91 /* Activity Release */ = {
+isa = XCBuildConfiguration;
+buildSettings = {
+    APPLICATION_EXTENSION_API_ONLY = YES;
+    CODE_SIGN_STYLE = Automatic;
+    CURRENT_PROJECT_VERSION = 41;
+    GENERATE_INFOPLIST_FILE = NO;
+    CODE_SIGN_ENTITLEMENTS = LocusActivity/LocusActivity.entitlements;
+				INFOPLIST_FILE = LocusActivity/Info.plist;
+    IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+    LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
+    MARKETING_VERSION = 2.4.0;
+    PRODUCT_BUNDLE_IDENTIFIER = com.chrismack.locus.activity;
+    PRODUCT_NAME = LocusActivity;
+    SDKROOT = iphoneos;
+    SKIP_INSTALL = YES;
+    SWIFT_VERSION = 5.0;
+    TARGETED_DEVICE_FAMILY = "1,2";
+}; name = Release; };
+		59B0EC300AA6D69AFF9E36FA /* Activity configurations */ = { isa = XCConfigurationList; buildConfigurations = (62CF3B4982FDF46C11264E74, D21E0BF1EDAA73838B53DA91,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
+		C49277D289019D189ED1A874 /* LocusActivity */ = { isa = PBXNativeTarget; buildConfigurationList = 59B0EC300AA6D69AFF9E36FA; buildPhases = (9828FA96A0DF8F162C474DFE, 76B76E4D4BB9AB1CD18CA1F8,); buildRules = (); dependencies = (); name = LocusActivity; productName = LocusActivity; productReference = A86E637667479CBA109B82D0; productType = "com.apple.product-type.app-extension"; };
+		94A5FE5E7407673005327F1E /* Activity proxy */ = { isa = PBXContainerItemProxy; containerPortal = EB04EC8B4299D1D64DC4EDE5; proxyType = 1; remoteGlobalIDString = C49277D289019D189ED1A874; remoteInfo = LocusActivity; };
+		37CED8229B0E9A689D850209 /* Activity dependency */ = { isa = PBXTargetDependency; target = C49277D289019D189ED1A874; targetProxy = 94A5FE5E7407673005327F1E; };
+
+
+/* Begin PBXBuildFile section */
+		0C78ABD1E0B70A0732F7EE2F /* PairOnDeviceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE84038C9223A84BAFFAE233 /* PairOnDeviceView.swift */; };
+		170627CC7AAA8335B2A3277F /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = D8943CD40A866E202F7964F6 /* AppIcon.icon */; };
+		1A9609434342E76342B42B54 /* LocusEasterEggView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 361C48381EA09BB299BD110E /* LocusEasterEggView.swift */; };
+		1CBCD6A08AA473AB0CB526CA /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EA9F9A2A821575AEE768E67 /* Theme.swift */; };
+		2D719677D77D851D73D2BA60 /* PairingDocumentPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E6BE765DFC4FB848609C8AA /* PairingDocumentPicker.swift */; };
+		39FCB8C0E7050B9161E600C6 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E1C1367D937C33DF4F1FBE6 /* SettingsView.swift */; };
+		3F84179EF76E8AA074797361 /* SavedPlace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 799094E9B1F051BEAD82D2C1 /* SavedPlace.swift */; };
+		41622C4D112CF14318210A71 /* PairOnDeviceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2BC5277FD75A01A31B9830D /* PairOnDeviceService.swift */; };
+		4A19A245C3B57EB4E5B02CDE /* DeviceTunnel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91E2EBD3F6F937176E4EC13F /* DeviceTunnel.swift */; };
+		74A5BCF6953128864737A070 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2D4CA41C622A34E45EF21F54 /* Assets.xcassets */; };
+		824D08C2AC8FD477F58DE51F /* LocalDevVPN.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFAD463F53BD704A35A8E65F /* LocalDevVPN.swift */; };
+		83D63478BF012E572D329843 /* PairableHostAdvertiser.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD401B2BF295561897BDABE6 /* PairableHostAdvertiser.swift */; };
+		87B0D41458D6AF0D39C9AAA4 /* RoutePlannerSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = D76779E56819A74B78236EF1 /* RoutePlannerSheet.swift */; };
+		8EAFB147F0F0E2AAE207D276 /* RouteBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FC0C702516F159A7EF6D853 /* RouteBuilder.swift */; };
+		976D8B4B49C6B6588EA59B2F /* LocusApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03DE64DA7097F210F1075553 /* LocusApp.swift */; };
+		AB35A419877FF9CA0B4AB114 /* JoystickPad.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFF6D1EA6EBAAF543339FF81 /* JoystickPad.swift */; };
+		AC1BBA0F82E89EB56800992E /* PairingStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7977CA785FF0B09F4F88DE7D /* PairingStore.swift */; };
+		B10A777C5622EE884A890643 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF1AF0F32E88B4227CA45694 /* RootView.swift */; };
+		C5B176B29163E524B776757A /* BackgroundKeepAlive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5415BEF759B8C8AF04096B3E /* BackgroundKeepAlive.swift */; };
+		C8CC0EF3E134ADF2BE9F995F /* MapDropPin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 797AA07D5CE5A7FD9D385F5F /* MapDropPin.swift */; };
+		D5613248D3DDD96C0D62BF7F /* MapHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F714A23C4C718E67E978565F /* MapHomeView.swift */; };
+		DA2B8023B167C95C2A034C47 /* LocationEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 377FB9983B927B5898D09160 /* LocationEngine.swift */; };
+		EA7795A0D36F3F0AFA464944 /* SpoofSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6C3F15BC482A2CBF13B1EA6 /* SpoofSession.swift */; };
+		F42C461AA339262E17E26A10 /* SetupFlowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429366C3732ACF4031A7006B /* SetupFlowView.swift */; };
+		F8A8DEF1249AB260C4FF901A /* SilentAudioKeepAlive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DF917A85B507FDDCF382E2F /* SilentAudioKeepAlive.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		03DE64DA7097F210F1075553 /* LocusApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocusApp.swift; sourceTree = "<group>"; };
+		0E1C1367D937C33DF4F1FBE6 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		1FC0C702516F159A7EF6D853 /* RouteBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteBuilder.swift; sourceTree = "<group>"; };
+		21D5BB24B768AA010AB8CD40 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
+		2D4CA41C622A34E45EF21F54 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		2E6BE765DFC4FB848609C8AA /* PairingDocumentPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairingDocumentPicker.swift; sourceTree = "<group>"; };
+		361C48381EA09BB299BD110E /* LocusEasterEggView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocusEasterEggView.swift; sourceTree = "<group>"; };
+		377FB9983B927B5898D09160 /* LocationEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationEngine.swift; sourceTree = "<group>"; };
+		3B51D4F370EFC220A54A082F /* Locus.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Locus.entitlements; sourceTree = "<group>"; };
+		429366C3732ACF4031A7006B /* SetupFlowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupFlowView.swift; sourceTree = "<group>"; };
+		5415BEF759B8C8AF04096B3E /* BackgroundKeepAlive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundKeepAlive.swift; sourceTree = "<group>"; };
+		6DF917A85B507FDDCF382E2F /* SilentAudioKeepAlive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SilentAudioKeepAlive.swift; sourceTree = "<group>"; };
+		7977CA785FF0B09F4F88DE7D /* PairingStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairingStore.swift; sourceTree = "<group>"; };
+		797AA07D5CE5A7FD9D385F5F /* MapDropPin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapDropPin.swift; sourceTree = "<group>"; };
+		799094E9B1F051BEAD82D2C1 /* SavedPlace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedPlace.swift; sourceTree = "<group>"; };
+		8EA9F9A2A821575AEE768E67 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		91E2EBD3F6F937176E4EC13F /* DeviceTunnel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceTunnel.swift; sourceTree = "<group>"; };
+		AD401B2BF295561897BDABE6 /* PairableHostAdvertiser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairableHostAdvertiser.swift; sourceTree = "<group>"; };
+		AEFB9A10F8784355D5344D95 /* Locus.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Locus.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BE84038C9223A84BAFFAE233 /* PairOnDeviceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairOnDeviceView.swift; sourceTree = "<group>"; };
+		BFAD463F53BD704A35A8E65F /* LocalDevVPN.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalDevVPN.swift; sourceTree = "<group>"; };
+		C6C3F15BC482A2CBF13B1EA6 /* SpoofSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpoofSession.swift; sourceTree = "<group>"; };
+		CFF6D1EA6EBAAF543339FF81 /* JoystickPad.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoystickPad.swift; sourceTree = "<group>"; };
+		D76779E56819A74B78236EF1 /* RoutePlannerSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoutePlannerSheet.swift; sourceTree = "<group>"; };
+		D8943CD40A866E202F7964F6 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = wrapper.icon; path = AppIcon.icon; sourceTree = "<group>"; };
+		E2BC5277FD75A01A31B9830D /* PairOnDeviceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairOnDeviceService.swift; sourceTree = "<group>"; };
+		F714A23C4C718E67E978565F /* MapHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapHomeView.swift; sourceTree = "<group>"; };
+		FE9BF680256F4FF39E4FECB0 /* idevice.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = idevice.h; sourceTree = "<group>"; };
+		FF1AF0F32E88B4227CA45694 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		04819CB404D166B850594890 /* Settings */ = {
+			isa = PBXGroup;
+			children = (A68F36F00FF7143DF4B0EA8C, 76BDD51EE845130449935C49, 632DF4024D1C38A964B99238, ED63F16DD3FD97822ECD1EB2, A70AE5BDA89A61308BDA0EFE, BF9DDC1ADB193F534E0614ED, 0B787A1536A747FA7B31834C, 6B0E048CBE15253617634546, 5E06C43CD60E7C79B24A5C51, A83A84DD6A6F590B609FFDC4, 91456A5B992DE8879A7AF0ED, 67F008928C7C632B60D35026, 
+				361C48381EA09BB299BD110E /* LocusEasterEggView.swift */,
+				BE84038C9223A84BAFFAE233 /* PairOnDeviceView.swift */,
+				0E1C1367D937C33DF4F1FBE6 /* SettingsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		06A40F4AE45561D4957AE6E5 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				03DE64DA7097F210F1075553 /* LocusApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		1034C21D9930A5F35D463962 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A86E637667479CBA109B82D0,
+				AEFB9A10F8784355D5344D95 /* Locus.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		23291CD2DE893C55FE7B446B /* idevice */ = {
+			isa = PBXGroup;
+			children = (
+				FE9BF680256F4FF39E4FECB0 /* idevice.h */,
+				21D5BB24B768AA010AB8CD40 /* module.modulemap */,
+			);
+			path = idevice;
+			sourceTree = "<group>";
+		};
+		2C7F6D726AC574C9600B5F9A /* Map */ = {
+			isa = PBXGroup;
+			children = (
+				797AA07D5CE5A7FD9D385F5F /* MapDropPin.swift */,
+				F714A23C4C718E67E978565F /* MapHomeView.swift */,
+				FF1AF0F32E88B4227CA45694 /* RootView.swift */,
+			);
+			path = Map;
+			sourceTree = "<group>";
+		};
+		36D52643D1CA99DF029BE655 /* Joystick */ = {
+			isa = PBXGroup;
+			children = (
+				CFF6D1EA6EBAAF543339FF81 /* JoystickPad.swift */,
+			);
+			path = Joystick;
+			sourceTree = "<group>";
+		};
+		39D1E1A92FC48FF828B78A3E /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				36D52643D1CA99DF029BE655 /* Joystick */,
+				2C7F6D726AC574C9600B5F9A /* Map */,
+				B8E755C6C753821B2A8E141A /* Routes */,
+				04819CB404D166B850594890 /* Settings */,
+				8A34AD0FBFBBBC1E8E32A474 /* Setup */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		796058090ADB9656F1AC489F = {
+			isa = PBXGroup;
+			children = (
+				3E0AF5B53D842F1200CB4672,
+				D8943CD40A866E202F7964F6 /* AppIcon.icon */,
+				B9D7C7183910882434437EA5 /* Locus */,
+				A3FB89DD9A662FFEED373A60 /* Vendor */,
+				1034C21D9930A5F35D463962 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		8A34AD0FBFBBBC1E8E32A474 /* Setup */ = {
+			isa = PBXGroup;
+			children = (
+				429366C3732ACF4031A7006B /* SetupFlowView.swift */,
+			);
+			path = Setup;
+			sourceTree = "<group>";
+		};
+		A3FB89DD9A662FFEED373A60 /* Vendor */ = {
+			isa = PBXGroup;
+			children = (
+				23291CD2DE893C55FE7B446B /* idevice */,
+			);
+			path = Vendor;
+			sourceTree = "<group>";
+		};
+		B32582618AEAB100F3C055BD /* Engine */ = {
+			isa = PBXGroup;
+			children = (
+				5415BEF759B8C8AF04096B3E /* BackgroundKeepAlive.swift */,
+				91E2EBD3F6F937176E4EC13F /* DeviceTunnel.swift */,
+				377FB9983B927B5898D09160 /* LocationEngine.swift */,
+				AD401B2BF295561897BDABE6 /* PairableHostAdvertiser.swift */,
+				7977CA785FF0B09F4F88DE7D /* PairingStore.swift */,
+				E2BC5277FD75A01A31B9830D /* PairOnDeviceService.swift */,
+				1FC0C702516F159A7EF6D853 /* RouteBuilder.swift */,
+				6DF917A85B507FDDCF382E2F /* SilentAudioKeepAlive.swift */,
+				C6C3F15BC482A2CBF13B1EA6 /* SpoofSession.swift */,
+			);
+			path = Engine;
+			sourceTree = "<group>";
+		};
+		B67E43CBD395C80F3D3345CB /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				BFAD463F53BD704A35A8E65F /* LocalDevVPN.swift */,
+				2E6BE765DFC4FB848609C8AA /* PairingDocumentPicker.swift */,
+				799094E9B1F051BEAD82D2C1 /* SavedPlace.swift */,
+				8EA9F9A2A821575AEE768E67 /* Theme.swift */,
+			);
+			path = Support;
+			sourceTree = "<group>";
+		};
+		B8E755C6C753821B2A8E141A /* Routes */ = {
+			isa = PBXGroup;
+			children = (
+				D76779E56819A74B78236EF1 /* RoutePlannerSheet.swift */,
+			);
+			path = Routes;
+			sourceTree = "<group>";
+		};
+		B9D7C7183910882434437EA5 /* Locus */ = {
+			isa = PBXGroup;
+			children = (
+				06A40F4AE45561D4957AE6E5 /* App */,
+				B32582618AEAB100F3C055BD /* Engine */,
+				39D1E1A92FC48FF828B78A3E /* Features */,
+				FA27A5BC6D7A370C663C36F1 /* Resources */,
+				B67E43CBD395C80F3D3345CB /* Support */,
+			);
+			path = Locus;
+			sourceTree = "<group>";
+		};
+		FA27A5BC6D7A370C663C36F1 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				2D4CA41C622A34E45EF21F54 /* Assets.xcassets */,
+				3B51D4F370EFC220A54A082F /* Locus.entitlements */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		4896638691C4AFF8C4B6701D /* Locus */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 499F5785D4491853643B4C0D /* Build configuration list for PBXNativeTarget "Locus" */;
+			buildPhases = (
+				8EEC5572B728D1E7FB046D09,
+				3D126E6D0964BF8D319384BC /* Sources */,
+				DD475AF090311C77FAF727EA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				37CED8229B0E9A689D850209,
+			);
+			name = Locus;
+			packageProductDependencies = (
+			);
+			productName = Locus;
+			productReference = AEFB9A10F8784355D5344D95 /* Locus.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		EB04EC8B4299D1D64DC4EDE5 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					4896638691C4AFF8C4B6701D = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = E114DA24E8222F8A31A01840 /* Build configuration list for PBXProject "Locus" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 796058090ADB9656F1AC489F;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 1034C21D9930A5F35D463962 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				C49277D289019D189ED1A874,
+				4896638691C4AFF8C4B6701D /* Locus */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		DD475AF090311C77FAF727EA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (E6F9BED258DA6525F9CFFAAD, 23FA2B42924BD8A7472AEB4C, EDDDA6FCBDFCE00B874A9703, D410B380AD38AB36353BCDF1, 997F157ACA50120A7051FC5C, 82732E78AF30D41C4866F695, 4F8F05FE97F74AD8C707FDE1, 57A8044207DEA82FA7AE4DF8, D0C141A195B9C2658163BFC5, D39D51C74479A72249AEEDAA, 67C59C5F47EEFCA3B74A9D34, E9C0ECFF63CB73986A452284,
+				74A5BCF6953128864737A070 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		3D126E6D0964BF8D319384BC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (49E19D180747BD2015CC1822, 949FFE663229488FA8FDF298, 93D3296BC1D49CF6515AAD7F, BA3147704A7D34E963114049, 280D2D439A2FD6F9DA4E99AA, 77884A5A5681C027376C0281, 8E3DD7A116571B676C67FA21, 2A4732FE6806D837F0F518D8, B188142719D355D2A6675D59, DFD7A94473E37C4917DE11A9, D7DE35B86CADB55D9809737A, CFB10A8970F110824B69E58A, CB9438150A7B481598BC6B82, 2B147E0689086E21CD58ABFA, 0B5DBDDFDEC485E669E50C78, 401C07EC2AFC35C4FEAE4480, DBB57812C3542D074169E4F1, 13A3092F8F3718EBCEF999B1, 85EA2E01D8614C076EB8C8E3, BC58D89C033AF8902F7289EA, A47A6808D1363A81E39B057B, E9B5B034A9AFC40F271F1964, 2323F50EC44977AEC7D36EF6, 5E5B65AF58596C1D262C4F82, 938DE8C317A4D773C9FA8F8B, B1807CBCEE6752143DBCE1A9, 663E44113D2D50F393CBFF47, 81BA1F51F9EE912B34DB115C, 7E40B0F6D7A85A89F658A7EE, 92A06B09EB382C0AA940F80A, 9507FD1E2539C1697CC6F0B3, C6355BEEE6E2841EB7A6C174, 1C3FC2BCFF8A31A49DE33783, FD9E818BACAD9A6293366457, FCFD93B9BCC3C245BA9738B1, 6BEC9132180294D94F94BB40, D2D58934F45868622B292C1E, C62324C2C4A8341695CDEC0A, 47F318C7CB2C470CA0CABD11, 0D9BC69477387BDBC934F882, 78FF1457C2C7D9C70AEBE167, E4C822C723AA3803020277C9, 9FA51F39347BDEEBCA2493B1, C31EA5FDE19B76EC22275F79, 822D18BEC9492C8A2DAABF5D, 1838BCEC109D41255B453207, 2F9033C965DD47AD18369EA7, 2A7A81100B07209E82C3D7D9, 4DBFACDBEA208967B72554A9, DAA5CC6CB1206607BA840583, EBE95334F4F1375100E77A62, EDDB8F2525421413C1E84D2D, C45F5983DE5194E0C67471A2, 485B99F91FD83BD2F8B5E8CE, 7C08371EBBBD52A64CFCE760, 02BC36A669FBE6BB9FA7D6E6, B51892AACE6B3035B5E1614B, 1AD487D18FC5BD0739A6ABA4, 24A064A8BBAEB67B5B9FDB0C, 1685877EC3D92933D67C01FD, B0FB1B8C448FF93C280C79D5, 351EA016F32FC4463FC16783, 28699FC6EC6E5A8F688F89C9, 530F93A28E6795329924BB7D, 187F1B7CC9DFE52E3205EA37, BCD32DDCDC8C26BD2B680992, 5721A6A2BA4A0145E9FA6F61, 0C36EFD807789CE693702F36,
+				DDB2EF6A377B5BFF75E7F34A,
+				9D32BA6977AC41DC7798DFF6,
+				3D887E5FA67A5DE8118B3012,
+				F0D0258117455360A826D2BC,
+				7F99DFDB9EB43B9D08372CA1,
+				B8C0E51D2380BC5C766D3910,
+				C5B176B29163E524B776757A /* BackgroundKeepAlive.swift in Sources */,
+				4A19A245C3B57EB4E5B02CDE /* DeviceTunnel.swift in Sources */,
+				AB35A419877FF9CA0B4AB114 /* JoystickPad.swift in Sources */,
+				824D08C2AC8FD477F58DE51F /* LocalDevVPN.swift in Sources */,
+				DA2B8023B167C95C2A034C47 /* LocationEngine.swift in Sources */,
+				976D8B4B49C6B6588EA59B2F /* LocusApp.swift in Sources */,
+				1A9609434342E76342B42B54 /* LocusEasterEggView.swift in Sources */,
+				C8CC0EF3E134ADF2BE9F995F /* MapDropPin.swift in Sources */,
+				D5613248D3DDD96C0D62BF7F /* MapHomeView.swift in Sources */,
+				41622C4D112CF14318210A71 /* PairOnDeviceService.swift in Sources */,
+				0C78ABD1E0B70A0732F7EE2F /* PairOnDeviceView.swift in Sources */,
+				83D63478BF012E572D329843 /* PairableHostAdvertiser.swift in Sources */,
+				2D719677D77D851D73D2BA60 /* PairingDocumentPicker.swift in Sources */,
+				AC1BBA0F82E89EB56800992E /* PairingStore.swift in Sources */,
+				B10A777C5622EE884A890643 /* RootView.swift in Sources */,
+				8EAFB147F0F0E2AAE207D276 /* RouteBuilder.swift in Sources */,
+				87B0D41458D6AF0D39C9AAA4 /* RoutePlannerSheet.swift in Sources */,
+				3F84179EF76E8AA074797361 /* SavedPlace.swift in Sources */,
+				39FCB8C0E7050B9161E600C6 /* SettingsView.swift in Sources */,
+				F42C461AA339262E17E26A10 /* SetupFlowView.swift in Sources */,
+				F8A8DEF1249AB260C4FF901A /* SilentAudioKeepAlive.swift in Sources */,
+				EA7795A0D36F3F0AFA464944 /* SpoofSession.swift in Sources */,
+				1CBCD6A08AA473AB0CB526CA /* Theme.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		28BC1FD1E1ADCF31A64625B3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		7FE184EA7F574C71EE5B684D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "AppIconGlacierDark AppIconGlacierTinted AppIconAfterhours AppIconAfterhoursDark AppIconAfterhoursTinted AppIconPorcelain AppIconPorcelainDark AppIconPorcelainTinted";
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CODE_SIGN_ENTITLEMENTS = Locus/Resources/Locus.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 41;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_BITCODE = NO;
+				GENERATE_INFOPLIST_FILE = NO;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/Vendor/idevice";
+				INFOPLIST_FILE = Locus/Resources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Vendor/idevice",
+				);
+				MARKETING_VERSION = 2.4.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-lidevice_ffi",
+					"-lc++",
+					"-lz",
+				);
+				"OTHER_LDFLAGS[sdk=iphoneos*]" = (
+					"$(inherited)",
+					"-lidevice_ffi",
+					"-lc++",
+					"-lz",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.chrismack.locus;
+				PRODUCT_NAME = Locus;
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/Vendor/idevice";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		99E7112DC3789C83E2A09317 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		EC219525ECF2D2F87B9312BB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "AppIconGlacierDark AppIconGlacierTinted AppIconAfterhours AppIconAfterhoursDark AppIconAfterhoursTinted AppIconPorcelain AppIconPorcelainDark AppIconPorcelainTinted";
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
+				CODE_SIGN_ENTITLEMENTS = Locus/Resources/Locus.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 41;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_BITCODE = NO;
+				GENERATE_INFOPLIST_FILE = NO;
+				HEADER_SEARCH_PATHS = "$(PROJECT_DIR)/Vendor/idevice";
+				INFOPLIST_FILE = Locus/Resources/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Vendor/idevice",
+				);
+				MARKETING_VERSION = 2.4.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-lidevice_ffi",
+					"-lc++",
+					"-lz",
+				);
+				"OTHER_LDFLAGS[sdk=iphoneos*]" = (
+					"$(inherited)",
+					"-lidevice_ffi",
+					"-lc++",
+					"-lz",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.chrismack.locus;
+				PRODUCT_NAME = Locus;
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_INCLUDE_PATHS = "$(PROJECT_DIR)/Vendor/idevice";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		499F5785D4491853643B4C0D /* Build configuration list for PBXNativeTarget "Locus" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EC219525ECF2D2F87B9312BB /* Debug */,
+				7FE184EA7F574C71EE5B684D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		E114DA24E8222F8A31A01840 /* Build configuration list for PBXProject "Locus" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				99E7112DC3789C83E2A09317 /* Debug */,
+				28BC1FD1E1ADCF31A64625B3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = EB04EC8B4299D1D64DC4EDE5 /* Project object */;
+}

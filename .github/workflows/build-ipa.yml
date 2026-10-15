@@ -1,0 +1,36 @@
+name: Build Shift IPA
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: xcode-27
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify source-only helper downloads
+        run: python3 scripts/package_helpers.py --check
+      - name: Show Apple toolchain
+        run: xcodebuild -version
+      - name: Install project generator
+        run: brew install xcodegen
+      - name: Test Windows and cloud Find My helpers
+        run: |
+          python3 -m venv "$RUNNER_TEMP/findmy-qa"
+          "$RUNNER_TEMP/findmy-qa/bin/python" -m pip install -r CloudFindMy/requirements.txt
+          "$RUNNER_TEMP/findmy-qa/bin/python" -m unittest discover -s Companion -p "test_*.py" -v
+          "$RUNNER_TEMP/findmy-qa/bin/python" -m unittest discover -s CloudFindMy -p "test_*.py" -v
+      - name: Test status, privacy, and route rules
+        run: swift test
+      - name: Generate and build app with Live Activity extension
+        run: bash scripts/build-ipa.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Shift-2.4.4-unsigned
+          path: build/Shift-unsigned.ipa
+          if-no-files-found: error
+          retention-days: 7
