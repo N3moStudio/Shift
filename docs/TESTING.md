@@ -1,24 +1,29 @@
 # Validation
 
-## Included 2.4.4 IPA — build 47
+## Public GitHub build — 2.4.4, build 47 · 15 October 2026
 
-- 279 Foundation tests passed in the local Swift/Linux run.
-- The app and Live Activity/widget extension compiled for arm64 iOS with the installed iOS 27.1 SDK and an iOS 18 deployment target.
-- Archive checks verified bundle identities, app-group entitlements, 9 icon choices / 126 portable system-size icon PNGs, 9 previews, helper archive hashes, and license notices.
-- The diagnostic launch gate, unsafe trait-override getter, and rejected notification-preview code are absent.
+- The original uploaded run compiled the app and extension successfully but failed the final IPA icon validator. It also warned about the capitalization of two default-icon image filenames.
+- Those issues were corrected in commit `b7278e8`. The maintainer supplied a GitHub Actions screenshot showing the corrected run succeeded.
+- The supplied logs recorded 279 Swift model tests and 69 Windows/cloud helper tests passing. The 12 new IPA/resource regression tests passed locally and were added to the workflow before the successful rerun.
+- The maintainer subsequently confirmed that the IPA installs and works on their iPhone. This records basic on-device use; a detailed per-feature checklist and exact tested IPA checksum were not supplied.
+- Commit `53bb018` subsequently configured direct downloads and version-derived filenames. The successful screenshot above predates that download change; it is not evidence of a separate completed run for that upload behavior.
 
-The release preparation changes documentation, license attribution and GitHub
-issue templates; the Swift sources, app resources, vendor engine, project
-definition and build workflow match the verified 2.4.4 source. The supplied IPA
-has public-safe compiler paths: the release copy redacts local build paths and
-recomputes its existing ad-hoc signature/resource hashes. All executable and
-data sections, entitlements, app resources and bundle IDs remain unchanged.
-This is packaging work, not a new on-device test. A clean GitHub-hosted Xcode
-run of the public repository has not been performed during this packaging pass.
+The release notes no longer carry the checksum or SDK-specific packaging claims
+from the earlier portable IPA. Record the exact tested IPA's hash and build run
+when attaching it to a release. A renamed file keeps the same bytes and hash;
+a rebuilt or re-signed IPA may not.
 
-The portable IPA provides nine manual icon choices. The source also includes
-native any/dark/tinted asset-catalog artwork for Xcode builds. Automatic custom
-dark/tinted artwork selection is not claimed for the portable package.
+## Earlier portable package — historical evidence
+
+The earlier 2.4.4 portable package passed 279 Foundation tests in Swift/Linux,
+compiled the app and extension against iOS SDK 27.1, and passed archive,
+entitlement, resource, notice and portable-icon checks. Its public copy redacted
+local compiler paths and recomputed ad-hoc signature/resource hashes.
+
+That package used explicit system-size icon PNGs. Native Xcode builds use asset
+catalogs, including any/dark/tinted artwork. The two packages have different
+build evidence and must not share an assumed checksum simply because both
+identify as 2.4.4 (47).
 
 ## Device checks before relying on a release
 

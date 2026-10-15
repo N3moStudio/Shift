@@ -2,7 +2,7 @@
 
 ## Install
 
-1. Download **Shift-2.4.4.ipa** from this repository’s Releases, or build it using [GitHub Actions](docs/BUILDING.md).
+1. Download **Shift 2.4.4.ipa** from this repository’s Releases, or build it using [GitHub Actions](docs/BUILDING.md).
 2. Add the IPA to **SideStore** and keep the **LocusActivity** extension. SideStore signs both for your device.
 3. For an update, use the same signing setup and install over the current app. Do not uninstall first if you want to keep its data.
 

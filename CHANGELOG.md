@@ -22,6 +22,15 @@ preview—are present now. Current features are in the [README](README.md).
 | Optional checks | Self-hosted cloud/Windows helpers, Find My Devices comparisons, readiness tests and configurable Shift connection checks |
 | Privacy & efficiency | Device-authentication lock, display privacy, reviewed local exports, bounded logs, quieter timers and comparable reliability runs |
 
+## 2.4.4 · build 47 — Public build follow-up · 15 October 2026
+
+- Fixed the final IPA appearance check to accept Xcode asset-catalog icon declarations while still checking the expected icon names. Portable system-size PNG validation remains in place.
+- Corrected the default app icon's dark/tinted filename capitalization and added exact-name source checks so Windows cannot hide a mismatch from the build runner.
+- Added 12 packaging regression tests to GitHub Actions. The local regression suite passed; earlier build logs recorded 279 Swift model tests and 69 helper tests passing.
+- Confirmed a successful GitHub Actions build after the validation fix. The maintainer reported that the IPA installs and works on their iPhone; this is a device smoke check, not verification of every feature or supported configuration.
+- Configured direct IPA artifact downloads and automatic filenames from the built app version, currently `Shift 2.4.4.ipa`, without an outer artifact ZIP.
+- Refreshed the public release notes and added a reusable release template and version/tag guide. These follow-up changes retain app version 2.4.4 and build 47.
+
 ## Public repository preparation · 14 October 2026
 
 - Refreshed the README and brand presentation; consolidated private hand-off notes into this history and current guides.
