@@ -275,6 +275,16 @@ final class RoutePlanner: ObservableObject {
             if let stop = alternatives[index].stops.firstIndex(where: { $0.id == id }) { alternatives[index].stops[stop].waitSeconds = value }
         }
     }
+    func setAllWaits(seconds: Double) {
+        guard !isLoading, seconds.isFinite else { return }
+        let value = StopDuration.normalized(seconds)
+        waypoints = waypoints.map { var stop = $0; stop.waitSeconds = value; return stop }
+        alternatives = alternatives.map { route in
+            var updated = route
+            updated.stops = route.stops.map { var stop = $0; stop.waitSeconds = value; return stop }
+            return updated
+        }
+    }
     func addPathStop(name: String, fraction: Double, wait: Double) {
         guard let route = selectedRoute, route.stops.count < 20, fraction.isFinite, wait.isFinite else { return }
         let title = String(name.trimmingCharacters(in: .whitespacesAndNewlines).prefix(120))
