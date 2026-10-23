@@ -39,7 +39,7 @@ def png(size):
 def fixture(catalog=True):
     entries = {}
     files = {APP + 'Locus': executable(), EXTENSION + 'LocusActivity': executable(),
-             EXTENSION + 'Info.plist': plistlib.dumps({'CFBundleExecutable': 'LocusActivity'})}
+             EXTENSION + 'Info.plist': plistlib.dumps({'CFBundleExecutable': 'LocusActivity', 'CFBundleIdentifier': 'com.n3mostudio.shift.activity'})}
     for entry in MANIFEST:
         asset = entry['asset']
         if catalog:
@@ -55,7 +55,8 @@ def fixture(catalog=True):
                     files[APP + stem + suffix + '.png'] = png(points * scale)
             entries[asset] = {'CFBundleIconFiles': stems}
     icons = {'CFBundlePrimaryIcon': entries.pop('AppIcon'), 'CFBundleAlternateIcons': entries}
-    info = {'CFBundleExecutable': 'Locus', 'CFBundleIcons': icons, 'CFBundleIcons~ipad': deepcopy(icons)}
+    info = {'CFBundleExecutable': 'Locus', 'CFBundleIcons': icons, 'CFBundleIcons~ipad': deepcopy(icons),
+            'CFBundleIdentifier': 'com.n3mostudio.shift', 'CFBundleURLTypes': [{'CFBundleURLSchemes': ['shift']}]}
     if catalog:
         # This is a metadata fixture, not a real compiled CoreUI catalog.
         files[APP + 'Assets.car'] = b'catalog-fixture'
@@ -63,6 +64,23 @@ def fixture(catalog=True):
 
 
 class IPAIconTests(unittest.TestCase):
+    def test_rejects_upstream_identity_and_extension_mismatch(self):
+        for wrong_id in ['com.chrismack.locus', 'com.n3mostudio.shift.other']:
+            info, files = fixture()
+            info['CFBundleIdentifier'] = wrong_id
+            with self.assertRaisesRegex(ValueError, 'bundle identity'):
+                self.validate(info, files)
+        info, files = fixture()
+        files[EXTENSION + 'Info.plist'] = plistlib.dumps({'CFBundleExecutable': 'LocusActivity', 'CFBundleIdentifier': 'com.chrismack.locus.activity'})
+        with self.assertRaisesRegex(ValueError, 'bundle identity'):
+            self.validate(info, files)
+
+    def test_rejects_claiming_locus_url_scheme(self):
+        info, files = fixture()
+        info['CFBundleURLTypes'][0]['CFBundleURLSchemes'].append('locus')
+        with self.assertRaisesRegex(ValueError, 'URL scheme'):
+            self.validate(info, files)
+
     def validate(self, info, files):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / 'Shift.ipa'
