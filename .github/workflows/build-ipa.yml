@@ -12,6 +12,8 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+      - name: Verify app and extension identities
+        run: python3 scripts/check_app_identity.py
       - name: Verify source-only helper downloads
         run: python3 scripts/package_helpers.py --check
       - name: Test IPA validation and icon sources
