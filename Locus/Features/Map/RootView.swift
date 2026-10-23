@@ -12,8 +12,8 @@ struct RootView: View {
     @Environment(\.shiftVisualStyle) private var visualStyle
     @StateObject private var planner = RoutePlanner()
     @StateObject private var tripLibrary = TripLibrary()
-    private enum RootTab: Hashable { case map, library, settings }
-    @State private var selectedTab = RootTab.map
+    private enum RootTab: String { case map, library, settings }
+    @SceneStorage("shift.selectedTab") private var selectedTab = RootTab.map
     @State private var drawAfterPlanner = false
     @State private var showSettings = false
     @State private var showPlaces = false
@@ -277,6 +277,7 @@ struct StatusBarView: View {
 
 struct BottomControlsView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.dynamicTypeSize) private var typeSize
     @EnvironmentObject private var session: SpoofSession
     @EnvironmentObject private var pairing: PairingStore
     @EnvironmentObject private var planner: RoutePlanner
@@ -297,6 +298,9 @@ struct BottomControlsView: View {
 
     var body: some View {
         VStack(spacing: 10) {
+            if session.journey != nil {
+                compactJourneyPanel
+            } else {
             if session.joystickActive && collapsed {
                 JoystickPad(radius: 34) { session.updateJoystick(vector: $0) }
                     .frame(width: 104, height: 104)
@@ -328,12 +332,94 @@ struct BottomControlsView: View {
             .padding(.horizontal, 16)
             .modifier(ControlPanelStyle(useGlass: preferences.glassPanel))
             .shadow(color: .black.opacity(0.12), radius: 20, y: 8)
+            }
         }
         .sheet(isPresented: $showMovementSheet) { MovementControlsSheet() }
         .sheet(isPresented: $showRecovery) {
             NavigationStack {
                 TripRecoveryView().toolbar { ToolbarItem(placement: .cancellationAction) { Button("Done") { showRecovery = false } } }
             }
+        }
+    }
+
+    @ViewBuilder private var compactJourneyPanel: some View {
+        if let route = session.activeRoute, let trip = session.journey {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack(spacing: 8) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(route.destination.name).font(.headline).lineLimit(2)
+                        Text(trip.state.title).font(.caption).foregroundStyle(.secondary)
+                    }
+                    Spacer(minLength: 0)
+                    Menu {
+                        Button("Route details", systemImage: "list.bullet") { planner.isPresented = true }
+                        Button("Mode & speed", systemImage: "speedometer") { showMovementSheet = true }
+                        Button("End route and hold location", systemImage: "stop.fill") { session.stopRoute() }
+                            .disabled(session.isBusy || session.routeStopping)
+                        Divider()
+                        ForEach(PanelShortcut.allCases.filter { $0 != .pause && $0 != .speed && $0 != .batterySaver }) { item in
+                            Button { activate(item) } label: { Label(shortcutTitle(item), systemImage: shortcutIcon(item)) }
+                        }
+                    } label: {
+                        Image(systemName: "ellipsis").frame(width: 44, height: 44).contentShape(Rectangle())
+                    }.accessibilityLabel("Route controls and shortcuts")
+                }
+                let layout = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(alignment: .leading, spacing: 8)) : AnyLayout(HStackLayout(alignment: .top, spacing: 20))
+                layout {
+                    Button { showMovementSheet = true } label: {
+                        VStack(alignment: .leading, spacing: 3) {
+                            Text(preferences.speedUnit.formatted(mph: session.speedMPH(for: session.travelMode)))
+                                .font(.title3.weight(.semibold)).monospacedDigit()
+                            Label("Target speed", systemImage: session.travelMode.icon).font(.caption).foregroundStyle(.secondary)
+                        }.frame(maxWidth: .infinity, minHeight: 44, alignment: .leading).contentShape(Rectangle())
+                    }.buttonStyle(.plain).accessibilityHint("Adjust mode and speed")
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text(JourneyText.distance(trip.remainingMetres)).font(.title3.weight(.semibold)).monospacedDigit()
+                        Text("Remaining").font(.caption).foregroundStyle(.secondary)
+                    }.frame(maxWidth: .infinity, alignment: .leading)
+                }
+                ProgressView(value: trip.fraction).tint(LocusTheme.accent).accessibilityLabel("Route progress")
+                if trip.state == .arrived {
+                    Text("Arrived. Stop spoofing to return control to your iPhone.").font(.caption).foregroundStyle(.secondary)
+                } else if session.effectivePhase != .active {
+                    Text("Waiting for connection confirmation. ETA unavailable.").font(.caption).foregroundStyle(LocusTheme.statusWarn)
+                } else if let seconds = session.journeyRemainingSeconds {
+                    Text("About \(JourneyText.duration(seconds)) including stops").font(.caption).foregroundStyle(.secondary)
+                }
+                if session.currentStop == nil, let next = route.stops.first(where: { $0.metres > trip.travelledMetres + 0.001 }) {
+                    Text("Next: \(next.name)").font(.caption).foregroundStyle(.secondary).lineLimit(1)
+                }
+                if let note = route.source.playbackNote(mode: session.travelMode) {
+                    Text(note).font(.caption).foregroundStyle(LocusTheme.statusWarn)
+                }
+                RouteExtrasControls()
+                ArrivalControls()
+                if session.routeRerouting {
+                    HStack { ProgressView("Finding route…"); Spacer(); Button("Cancel") { session.cancelReroute() }.frame(minHeight: 44) }.font(.caption)
+                } else if session.routeJumping {
+                    ProgressView("Moving to selected point…").font(.caption)
+                }
+                let actions = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(spacing: 8)) : AnyLayout(HStackLayout(spacing: 10))
+                actions {
+                    if session.routeActive && !session.routeStopping {
+                        Button { session.toggleRoutePause() } label: {
+                            Label(trip.state == .pausing ? "Pausing…" : session.routePaused ? "Resume" : "Pause",
+                                  systemImage: session.routePaused ? "play.fill" : "pause.fill")
+                                .frame(maxWidth: .infinity, minHeight: 44).contentShape(Rectangle())
+                        }
+                        .buttonStyle(ShiftActionStyle())
+                        .disabled(!session.canEditRouteMovement || trip.state == .pausing || (session.routePaused && session.effectivePhase != .active))
+                    }
+                    if session.hasSession { stopSpoofing }
+                }
+                if session.routeStopping { ProgressView("Ending route…").font(.caption) }
+                if session.effectivePhase == .disconnected || session.effectivePhase == .unverified {
+                    SessionRetryButton().font(.caption.weight(.semibold))
+                }
+            }
+            .padding(16)
+            .modifier(ControlPanelStyle(useGlass: preferences.glassPanel))
+            .shadow(color: .black.opacity(0.10), radius: 16, y: 6)
         }
     }
 
