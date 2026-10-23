@@ -71,6 +71,7 @@ private struct StyleSwatch: View {
 struct AppIconSettingsView: View {
     @StateObject private var icons = ShiftIconController.shared
     @Environment(\.dynamicTypeSize) private var typeSize
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     var body: some View {
         List {
             Section {
@@ -80,7 +81,10 @@ struct AppIconSettingsView: View {
                         Text(icons.changing ? "Changing Icon…" : "Current Icon").font(.headline)
                         Text(icons.selected.title).font(.subheadline).foregroundStyle(.secondary)
                     }
-                    if icons.changing { ProgressView().accessibilityLabel("Changing app icon") }
+                    Spacer(minLength: 0)
+                    ProgressView().opacity(icons.changing ? 1 : 0)
+                        .accessibilityHidden(!icons.changing)
+                        .accessibilityLabel("Changing app icon")
                 }.padding(.vertical, 5)
             } footer: { Text("Independent of your interface style. Your Home Screen appearance can also tint icons.") }.shiftSettingsRows()
             ForEach(ShiftIconDesign.allCases) { design in
@@ -94,12 +98,18 @@ struct AppIconSettingsView: View {
                                         .padding(5)
                                         .overlay { RoundedRectangle(cornerRadius: 20).stroke(choice == icons.selected ? LocusTheme.accent : .clear, lineWidth: 2) }
                                     Text(finish.title).font(.subheadline).foregroundStyle(.primary)
-                                    Image(systemName: choice == icons.selected ? "checkmark.circle.fill" : "circle")
-                                        .foregroundStyle(choice == icons.selected ? LocusTheme.accent : .secondary)
+                                    ZStack {
+                                        Image(systemName: choice == icons.selected ? "checkmark.circle.fill" : "circle")
+                                            .foregroundStyle(choice == icons.selected ? LocusTheme.accent : .secondary)
+                                            .opacity(icons.pending == choice ? 0 : 1)
+                                        if icons.pending == choice { ProgressView().controlSize(.small) }
+                                    }.frame(height: 20)
+                                        .animation(reduceMotion ? nil : .easeOut(duration: 0.2), value: icons.selected)
                                 }.frame(maxWidth: .infinity).padding(.vertical, 8).contentShape(Rectangle())
                             }
-                            .buttonStyle(.plain).disabled(icons.changing || !icons.supported)
+                            .buttonStyle(.plain).disabled(!icons.supported)
                             .accessibilityLabel(choice.title)
+                            .accessibilityValue(icons.pending == choice ? "Changing icon" : choice == icons.selected ? "Selected" : "")
                             .accessibilityAddTraits(choice == icons.selected ? [.isSelected] : [])
                         }
                     }.padding(.vertical, 4)
