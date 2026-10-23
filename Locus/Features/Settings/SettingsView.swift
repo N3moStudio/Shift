@@ -221,6 +221,7 @@ struct ConnectionSettingsView: View {
 }
 
 private struct LocusAboutSettingsView: View {
+    @ScaledMetric(relativeTo: .largeTitle) private var titleSize = 48.0
     private var appVersion: String {
         let short = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "—"
         let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? ""
@@ -231,7 +232,7 @@ private struct LocusAboutSettingsView: View {
             Section {
                 VStack(alignment: .leading, spacing: 18) {
                     ShiftMark().fill(LocusTheme.accent.gradient).frame(width: 72, height: 72).accessibilityHidden(true)
-                    Text("Shift").font(.system(size: 48, weight: .bold, design: .rounded)).tracking(-2)
+                    Text("Shift").font(.system(size: titleSize, weight: .bold, design: .rounded)).tracking(-2)
                     ShiftSignature()
                 }.padding(.vertical, 24).frame(maxWidth: .infinity, alignment: .leading)
                     .listRowBackground(Color.clear)
@@ -258,6 +259,8 @@ struct PlacesView: View {
     private enum LibraryCategory: String, CaseIterable { case places = "Places", routes = "Routes", areas = "Areas" }
     var onTrip: (SavedTrip) -> Void = { _ in }
     var onPlace: (SavedPlace) -> Void = { _ in }
+    var onFindPlace: (() -> Void)? = nil
+    var onCreateRoute: (() -> Void)? = nil
     @EnvironmentObject private var session: SpoofSession
     @Environment(\.dismiss) private var dismiss
 
@@ -288,12 +291,16 @@ struct PlacesView: View {
                         }
                     }
                 }
-                if category == .routes { SavedTripsSection(onChoose: onTrip, search: search, folder: selectedFolder, folders: folders) }
+                if category == .routes { SavedTripsSection(onChoose: onTrip, search: search, folder: selectedFolder, folders: folders, onCreate: onCreateRoute) }
                 if category == .places {
                 Section("Favorites") {
                     if session.favorites.isEmpty {
                         Text("Star a pin from the map to save it.")
                             .foregroundStyle(.secondary)
+                        if let onFindPlace {
+                            Button("Find a place", systemImage: "magnifyingglass", action: onFindPlace)
+                                .frame(minHeight: 44)
+                        }
                     }
                     ForEach(session.favorites.filter { matches($0) && (selectedFolder == nil || $0.folder == selectedFolder) }) { place in
                         HStack {

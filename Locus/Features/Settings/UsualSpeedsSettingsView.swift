@@ -2,10 +2,18 @@ import SwiftUI
 
 struct UsualSpeedsSettingsView: View {
     @EnvironmentObject private var session: SpoofSession
+    @EnvironmentObject private var preferences: SessionPreferences
     @State private var restorePresets = false
 
     var body: some View {
         List {
+            Section {
+                Picker("Speed units", selection: $preferences.speedUnit) {
+                    ForEach(SpeedUnit.allCases) { Text($0.title).tag($0) }
+                }
+            } footer: {
+                Text("Applies throughout Shift. Switching units keeps your actual speed and saved trips unchanged.")
+            }.shiftSettingsRows()
             Section {
                 Text("Your presets for Reset speed. Active trips keep their current speed.").font(.footnote).foregroundStyle(.secondary)
             }.shiftSettingsRows()
@@ -14,22 +22,19 @@ struct UsualSpeedsSettingsView: View {
                     HStack {
                         Label(mode.title, systemImage: mode.icon)
                         Spacer()
-                        Text(String(format: "%.1f mph", session.usualSpeedMPH(for: mode)))
+                        Text(preferences.speedUnit.formatted(mph: session.usualSpeedMPH(for: mode)))
                             .monospacedDigit().bold()
                     }
-                    Slider(value: Binding(
-                        get: { session.usualSpeedMPH(for: mode) },
-                        set: { session.setUsualSpeedMPH($0, for: mode) }
-                    ), in: mode.speedRangeMPH, step: mode == .walk || mode == .run ? 0.1 : 1)
-                    .accessibilityLabel("\(mode.title) usual speed")
-                    Text(String(format: "Allowed range: %.0f–%.0f mph", mode.speedRangeMPH.lowerBound, mode.speedRangeMPH.upperBound))
+                    SpeedSlider(mph: Binding(get: { session.usualSpeedMPH(for: mode) },
+                                             set: { session.setUsualSpeedMPH($0, for: mode) }), mode: mode)
+                    Text("Allowed range: \(preferences.speedUnit.rangeLabel(for: mode))")
                         .font(.caption).foregroundStyle(.secondary)
                 }.shiftSettingsRows()
             }
             Section {
                 Button("Restore starting presets") { restorePresets = true }
             } footer: {
-                Text("Walk 3 · Run 6 · Bike 12 · E-bike 15 · Car 25 mph")
+                Text(TravelMode.allCases.map { "\($0.title) \(preferences.speedUnit.formatted(mph: UsualSpeedRules.value(for: $0, stored: [:])))" }.joined(separator: " · "))
             }.shiftSettingsRows()
         }
         .shiftSettingsScreen().loggedNavigationTitle("Usual speeds")
