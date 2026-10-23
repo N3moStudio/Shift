@@ -89,6 +89,63 @@ final class RouteEditingTests: XCTestCase {
         XCTAssertEqual(preview.metres, 30)
         XCTAssertEqual(preview.completedStops.count, 2)
     }
+    func testPreviewSeekPausesAndRearmsStopsWhenMovingBackwards() {
+        let stops = [RouteStop(name: "A", metres: 10, waitSeconds: 15), RouteStop(name: "B", metres: 20, waitSeconds: 30)]
+        var preview = RouteRehearsal()
+        preview.isPlaying = true
+        preview.rate = 50
+        preview.seek(to: 25, length: 40, stops: stops)
+        XCTAssertFalse(preview.isPlaying)
+        XCTAssertEqual(preview.completedStops, Set(stops.map(\.id)))
+        XCTAssertEqual(preview.rate, 50)
+        preview.seek(to: 5, length: 40, stops: stops)
+        XCTAssertTrue(preview.completedStops.isEmpty)
+        XCTAssertNil(preview.waitingID)
+        preview.isPlaying = true
+        preview.rate = 1
+        preview.advance(seconds: 0.25, length: 40, speed: 20, sections: [], stops: stops)
+        XCTAssertEqual(preview.metres, 10)
+        XCTAssertEqual(preview.waitingID, stops[0].id)
+        XCTAssertEqual(preview.waitingSeconds, 15)
+    }
+    func testPreviewSeekToStopRestoresWaitAndDoesNotAdvanceUntilPlayed() {
+        let stop = RouteStop(name: "Stop", metres: 10, waitSeconds: 15)
+        var preview = RouteRehearsal()
+        preview.seek(to: 10, length: 40, stops: [stop])
+        XCTAssertEqual(preview.waitingID, stop.id)
+        XCTAssertEqual(preview.waitingSeconds, 15)
+        preview.advance(seconds: 0.25, length: 40, speed: 10, sections: [], stops: [stop])
+        XCTAssertEqual(preview.waitingSeconds, 15)
+        preview.isPlaying = true
+        preview.rate = 1
+        preview.advance(seconds: 0.25, length: 40, speed: 10, sections: [], stops: [stop])
+        XCTAssertEqual(preview.waitingSeconds, 14.75)
+        preview.seek(to: 10, length: 40, stops: [stop])
+        XCTAssertEqual(preview.waitingSeconds, 15)
+    }
+    func testPreviewSeekClampsEndpointsAndRejectsNonFiniteInputs() {
+        var preview = RouteRehearsal()
+        preview.seek(to: 500, length: 100, stops: [])
+        XCTAssertEqual(preview.metres, 100)
+        preview.seek(to: .nan, length: 100, stops: [])
+        preview.seek(to: 5, length: .infinity, stops: [])
+        preview.seek(to: 5, length: 0, stops: [])
+        XCTAssertEqual(preview.metres, 100)
+        preview.seek(to: -5, length: 100, stops: [])
+        XCTAssertEqual(preview.metres, 0)
+    }
+    func testPreviewSeekPreservesCoincidentStopsAndDestinationWait() {
+        let stops = [RouteStop(name: "A", metres: 10, waitSeconds: 0), RouteStop(name: "B", metres: 10, waitSeconds: 1)]
+        var preview = RouteRehearsal()
+        preview.seek(to: 10, length: 10, stops: stops)
+        XCTAssertEqual(preview.waitingID, stops[0].id)
+        preview.rate = 10
+        preview.isPlaying = true
+        preview.advance(seconds: 0.1, length: 10, speed: 10, sections: [], stops: stops)
+        XCTAssertEqual(preview.completedStops, Set(stops.map(\.id)))
+        XCTAssertFalse(preview.isPlaying)
+        XCTAssertNil(preview.waitingID)
+    }
     func testSavedTripsDecodeOlderFilesAndRoundTripSectionSettings() throws {
         let points = [RoutePoint(latitude: 0, longitude: 0), RoutePoint(latitude: 0, longitude: 0.01)]
         let track = try XCTUnwrap(RouteTrack(points))
