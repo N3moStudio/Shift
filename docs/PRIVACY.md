@@ -12,7 +12,9 @@ Lock Screen and Dynamic Island does not hide information in other apps.
 
 Library exports contain readable location data and supported preferences. They
 exclude pairing secrets and helper credentials. Review where you save them.
-The developer log may include precise coordinates and user-entered notes;
+Detailed developer logging is off by default in new installations; an existing
+explicit recording preference is preserved. When enabled, the developer log may
+include precise coordinates and user-entered notes;
 review exports before sharing. It uses fixed 48-hour batches and a 256 MiB cap.
 Expiry cleanup needs the app to execute; exported copies are outside its control.
 No diagnostic log is automatically uploaded.

@@ -28,7 +28,7 @@ swift test
 bash scripts/build-ipa.sh
 ```
 
-Output: `build/Shift <version>.ipa` (currently `build/Shift 2.4.4.ipa`).
+Output: `build/Shift <version>.ipa` (currently `build/Shift 2.5.0.ipa`).
 The filename uses the built app’s version. The packager verifies the extension,
 required resources, app-group entitlements, and appearance metadata. Its ad-hoc
 signatures are placeholders; SideStore still needs to sign the installation.
@@ -41,6 +41,7 @@ The checked-in project can be older than the generator input.
 
 ```sh
 python3 scripts/check_appearance.py
+python3 scripts/check_app_identity.py
 python3 scripts/package_helpers.py --check
 python3 -m venv .venv
 .venv/bin/python -m pip install -r CloudFindMy/requirements.txt
@@ -68,6 +69,10 @@ The bundled engine is a prebuilt dependency, not a fresh build of the upstream
 Rust source. Its upstream source is [idevice](https://github.com/jkcoxson/idevice).
 No exact rebuild of that vendor binary is claimed here.
 
-Internal Locus names, bundle IDs, app group and storage keys are intentionally
-retained for existing installations. Renaming them can create a separate app or
-break access to saved data. Changing the display name is different.
+From 2.5.0, the app uses `com.n3mostudio.shift`, its extension uses
+`com.n3mostudio.shift.activity`, and both share `group.com.n3mostudio.shift`.
+Shift registers `shift://`; Locus keeps ownership of `locus://` links. This is a
+separate installation from 2.4.x; follow [the migration checklist](TESTING-2.5.md).
+Internal source/target names and serialized MPH fields remain compatible with
+existing backups. `check_app_identity.py` verifies the source configuration; the
+IPA validator checks the compiled bundle IDs and URL scheme.
