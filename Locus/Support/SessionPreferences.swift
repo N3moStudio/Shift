@@ -4,6 +4,7 @@ import WidgetKit
 @MainActor
 final class SessionPreferences: ObservableObject {
     static let shared = SessionPreferences()
+    @Published var speedUnit: SpeedUnit { didSet { defaults.set(speedUnit.rawValue, forKey: "shift.speedUnit") } }
     @Published var liveActivities: Bool { didSet { save(liveActivities, "liveActivities") } }
     @Published var hideLocation: Bool { didSet { save(hideLocation, "hideLocation") } }
     @Published var hideIslandLocation: Bool { didSet { save(hideIslandLocation, "hideIslandLocation") } }
@@ -64,6 +65,7 @@ final class SessionPreferences: ObservableObject {
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
+        speedUnit = SpeedUnit(rawValue: defaults.string(forKey: "shift.speedUnit") ?? "") ?? .mph
         let branding = ShiftAppearanceSelection(defaults: defaults)
         visualStyle = branding.style
         iconSelection = branding.icon

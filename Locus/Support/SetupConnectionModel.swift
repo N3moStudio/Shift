@@ -41,7 +41,7 @@ final class SetupConnectionModel: ObservableObject {
             }
         }
         monitor = observer
-        observer.start(queue: DispatchQueue(label: "com.chrismack.locus.setup-wifi"))
+        observer.start(queue: DispatchQueue(label: "com.n3mostudio.shift.setup-wifi"))
         refreshTunnel()
         refreshTask = Task { [weak self] in
             while !Task.isCancelled {
