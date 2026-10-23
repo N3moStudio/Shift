@@ -73,6 +73,32 @@ final class TripFeaturesTests: XCTestCase {
         XCTAssertNil(progress.currentID)
         XCTAssertEqual(progress.remainingWait(in: [first, second]), 120)
     }
+    func testSubMinuteStopsFinishAtTheirExactDuration() {
+        for seconds in [1.0, 15, 30, 59, 60, 90] {
+            let stop = RouteStop(name: "Short stop", metres: 100, waitSeconds: seconds)
+            var progress = RouteStopProgress()
+            progress.arrive(stop)
+            for _ in 0..<(Int(seconds * 2) - 1) { progress.tick(0.5) }
+            XCTAssertEqual(progress.remainingSeconds, 0.5)
+            XCTAssertEqual(progress.currentID, stop.id)
+            progress.tick(0.5)
+            XCTAssertEqual(progress.remainingSeconds, 0)
+            XCTAssertNil(progress.next(in: [stop]))
+        }
+    }
+    func testShortStopsSurviveSavingAndDurationLabelsKeepSeconds() throws {
+        var original = trip()
+        original.stops[0].waitSeconds = 15
+        let restored = try JSONDecoder().decode(SavedTrip.self, from: JSONEncoder().encode(original))
+        XCTAssertTrue(restored.isValid)
+        XCTAssertEqual(restored.stops[0].waitSeconds, 15)
+        XCTAssertEqual(StopDuration.label(0), "Pass through")
+        XCTAssertEqual(StopDuration.label(15), "15 sec")
+        XCTAssertEqual(StopDuration.label(90), "1 min 30 sec")
+        XCTAssertEqual(StopDuration.normalized(-1), 0)
+        XCTAssertEqual(StopDuration.normalized(.nan), 0)
+        XCTAssertEqual(StopDuration.normalized(5000), 3600)
+    }
     func testZeroWaitAndCompletedStopsDoNotLoopForever() {
         let stop = RouteStop(name: "Pass", metres: 100, waitSeconds: 0)
         var progress = RouteStopProgress()

@@ -14,6 +14,16 @@ final class LibraryBackupTests: XCTestCase {
         XCTAssertEqual(restored.trips, backup.trips)
         XCTAssertEqual(restored.preferences, backup.preferences)
     }
+    func testUnitPreferenceRoundTripsWithoutReinterpretingLegacySpeeds() throws {
+        var backup = fixture()
+        XCTAssertNil(try LibraryBackup.decode(backup.encoded()).preferences?.speedUnit)
+        backup.preferences?.speedUnit = .kilometersPerHour
+        backup.trips[0].stops = [RouteStop(name: "Quick stop", metres: 100, waitSeconds: 15)]
+        let restored = try LibraryBackup.decode(backup.encoded())
+        XCTAssertEqual(restored.preferences?.speedUnit, .kilometersPerHour)
+        XCTAssertEqual(restored.preferences?.usualSpeeds, backup.preferences?.usualSpeeds)
+        XCTAssertEqual(restored.trips, backup.trips)
+    }
     func testShiftExportsKeepOlderLibraryFilesReadable() throws {
         var backup = fixture()
         XCTAssertEqual(backup.format, "Shift library")

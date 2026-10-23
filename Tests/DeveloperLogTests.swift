@@ -58,11 +58,18 @@ final class DeveloperLogTests: XCTestCase {
         addTeardownBlock { try? FileManager.default.removeItem(at: folder) }
         return folder
     }
-    private func preferences() throws -> UserDefaults {
+    private func preferences(recording: Bool = true) throws -> UserDefaults {
         let name = "Shift-log-test-" + UUID().uuidString
         let defaults = try XCTUnwrap(UserDefaults(suiteName: name))
         addTeardownBlock { defaults.removePersistentDomain(forName: name) }
+        if recording { defaults.set(true, forKey: DeveloperLogStore.enabledKey) }
         return defaults
+    }
+    func testDetailedRecordingRequiresOptInOnFreshInstall() throws {
+        let log = DeveloperLogStore(folder: try temporaryFolder(), defaults: try preferences(recording: false))
+        XCTAssertFalse(log.enabled)
+        log.setEnabled(true)
+        XCTAssertTrue(log.enabled)
     }
     private func entries(_ data: Data) throws -> [[String: Any]] {
         try data.split(separator: 0x0A).map { try XCTUnwrap(JSONSerialization.jsonObject(with: Data($0)) as? [String: Any]) }

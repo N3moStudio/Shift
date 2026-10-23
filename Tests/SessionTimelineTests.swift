@@ -15,6 +15,7 @@ final class SessionTimelineTests: XCTestCase {
     private func defaults() throws -> UserDefaults {
         let name = "Shift-timeline-" + UUID().uuidString
         let defaults = try XCTUnwrap(UserDefaults(suiteName: name))
+        defaults.set(true, forKey: DeveloperLogStore.enabledKey)
         addTeardownBlock { defaults.removePersistentDomain(forName: name) }
         return defaults
     }
