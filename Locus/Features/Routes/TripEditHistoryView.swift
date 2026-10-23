@@ -46,6 +46,7 @@ struct TripEditHistoryView: View {
 }
 
 private struct TripRevisionPreview: View {
+    @EnvironmentObject private var preferences: SessionPreferences
     let revision: TripRevision
     @EnvironmentObject private var library: TripLibrary
     @EnvironmentObject private var session: SpoofSession
@@ -66,7 +67,7 @@ private struct TripRevisionPreview: View {
                 LabeledContent("Start", value: revision.trip.originName)
                 LabeledContent("End", value: revision.trip.destinationName)
                 LabeledContent("Mode", value: revision.trip.mode.title)
-                LabeledContent("Speed", value: String(format: "%.1f mph", revision.trip.speedMPH))
+                LabeledContent("Speed", value: preferences.speedUnit.formatted(mph: revision.trip.speedMPH))
                 LabeledContent("Folder", value: revision.trip.folder ?? "None")
                 LabeledContent("Smooth movement", value: revision.trip.smoothMovement ? "On" : "Off")
                 Text(revision.reason.title).font(.footnote).foregroundStyle(.secondary)
@@ -74,7 +75,7 @@ private struct TripRevisionPreview: View {
             if !revision.trip.stops.isEmpty {
                 Section("Stops in this version") {
                     ForEach(revision.trip.stops) { stop in
-                        LabeledContent(stop.name, value: String(format: "%.1f min", stop.waitSeconds / 60))
+                        LabeledContent(stop.name, value: StopDuration.label(stop.waitSeconds))
                     }
                 }
             }

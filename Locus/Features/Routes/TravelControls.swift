@@ -67,41 +67,42 @@ struct RouteModeMenu: View {
 
 struct MovementSpeedControl: View {
     @EnvironmentObject private var session: SpoofSession
+    @EnvironmentObject private var preferences: SessionPreferences
     private var mode: TravelMode { session.travelMode }
     private var value: Binding<Double> {
-        Binding(get: { session.speedMPH(for: mode) }, set: { session.setSpeedMPH($0, for: mode) })
+        Binding(get: { preferences.speedUnit.value(fromMPH: session.speedMPH(for: mode)) },
+                set: { session.setSpeedMPH(preferences.speedUnit.mph(from: $0), for: mode) })
     }
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
                 Label("Target speed", systemImage: "speedometer")
                 Spacer()
-                Text(String(format: "%.1f mph", session.speedMPH(for: mode))).monospacedDigit().bold()
+                Text(preferences.speedUnit.formatted(mph: session.speedMPH(for: mode))).monospacedDigit().bold()
             }
             .font(.subheadline)
             HStack(spacing: 8) {
-                Button { session.setSpeedMPH(session.speedMPH(for: mode) - 1, for: mode) } label: {
+                Button { value.wrappedValue -= 1 } label: {
                     Image(systemName: "minus.circle").frame(width: 44, height: 44).contentShape(Rectangle())
                 }
                 .accessibilityLabel("Decrease speed")
-                Slider(value: value, in: mode.speedRangeMPH, step: mode == .walk || mode == .run ? 0.1 : 1)
-                    .accessibilityLabel("\(mode.title) speed in miles per hour")
-                Button { session.setSpeedMPH(session.speedMPH(for: mode) + 1, for: mode) } label: {
+                SpeedSlider(mph: Binding(get: { session.speedMPH(for: mode) }, set: { session.setSpeedMPH($0, for: mode) }), mode: mode)
+                Button { value.wrappedValue += 1 } label: {
                     Image(systemName: "plus.circle").frame(width: 44, height: 44).contentShape(Rectangle())
                 }
                 .accessibilityLabel("Increase speed")
             }
             .buttonStyle(.borderless)
             HStack {
-                Text(String(format: "%.0f–%.0f mph", mode.speedRangeMPH.lowerBound, mode.speedRangeMPH.upperBound))
+                Text(preferences.speedUnit.rangeLabel(for: mode))
                 Spacer()
-                Text(String(format: "%.1f km/h", session.speedMPH(for: mode) * 1.609344))
+                Text(preferences.speedUnit.alternate.formatted(mph: session.speedMPH(for: mode)))
             }
             .font(.caption).foregroundStyle(.secondary)
             Button {
                 session.resetToUsualSpeed(for: mode)
             } label: {
-                Label(String(format: "Reset speed · %.1f mph", session.usualSpeedMPH(for: mode)), systemImage: "arrow.counterclockwise")
+                Label("Reset speed · \(preferences.speedUnit.formatted(mph: session.usualSpeedMPH(for: mode)))", systemImage: "arrow.counterclockwise")
                     .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading).contentShape(Rectangle())
             }
             .buttonStyle(.borderless)
@@ -113,7 +114,7 @@ struct MovementSpeedControl: View {
                     .font(.caption).foregroundStyle(.secondary)
             }
             if session.journey != nil {
-                Text(String(format: "Recent sent speed: %.1f mph", session.currentRouteSpeed / 0.44704))
+                Text("Recent sent speed: \(preferences.speedUnit.formatted(mph: SpeedConversion.mph(metresPerSecond: session.currentRouteSpeed)))")
                     .font(.caption).foregroundStyle(.secondary)
             }
             Text(session.smoothMovement

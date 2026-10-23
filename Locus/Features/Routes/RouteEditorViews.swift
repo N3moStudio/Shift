@@ -219,6 +219,7 @@ struct RouteWaypointEditor: View {
 }
 
 struct RouteSectionChoiceSheet: View {
+    @EnvironmentObject private var preferences: SessionPreferences
     let title: String
     let original: RouteLegChoice
     let onSave: (RouteLegChoice) -> Void
@@ -239,8 +240,8 @@ struct RouteSectionChoiceSheet: View {
                     Picker("Travel mode", selection: $mode) {
                         ForEach(TravelMode.allCases) { Label($0.title, systemImage: $0.icon).tag($0) }
                     }
-                    LabeledContent("Target speed", value: String(format: "%.1f mph", speed))
-                    Slider(value: $speed, in: mode.speedRangeMPH, step: mode == .walk || mode == .run ? 0.1 : 1)
+                    LabeledContent("Target speed", value: preferences.speedUnit.formatted(mph: speed))
+                    SpeedSlider(mph: $speed, mode: mode)
                 } footer: { Text("Only this section changes. Done recalculates directions before you can start. Bike and e-bike use the same cycling network; walking fallback stays labeled.") }
             }
             .shiftScreen().loggedNavigationTitle("Section settings").navigationBarTitleDisplayMode(.inline)

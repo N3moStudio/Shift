@@ -29,12 +29,14 @@ struct ArrivalControls: View {
 }
 
 struct SavedTripsSection: View {
+    @EnvironmentObject private var preferences: SessionPreferences
     @EnvironmentObject private var library: TripLibrary
     @EnvironmentObject private var session: SpoofSession
     let onChoose: (SavedTrip) -> Void
     var search = ""
     var folder: String?
     var folders: [String] = []
+    var onCreate: (() -> Void)? = nil
     @State private var editingPath: SavedTrip?
     @State private var folderTrip: SavedTrip?
     @State private var historyTrip: SavedTrip?
@@ -44,7 +46,13 @@ struct SavedTripsSection: View {
 
     var body: some View {
         Section {
-            if library.trips.isEmpty { Text("Save a trip from the route planner to reuse its path, speed, and stops.").foregroundStyle(.secondary) }
+            if library.trips.isEmpty {
+                Text("Save a trip from the route planner to reuse its path, speed, and stops.").foregroundStyle(.secondary)
+                if let onCreate {
+                    Button("Create a route", systemImage: "point.topleft.down.to.point.bottomright.curvepath", action: onCreate)
+                        .frame(minHeight: 44)
+                }
+            }
             ForEach(library.trips.filter {
                 (folder == nil || $0.folder == folder) && SavedNameSearch.matches(search, trip: $0)
             }) { trip in
@@ -55,7 +63,7 @@ struct SavedTripsSection: View {
                         VStack(alignment: .leading, spacing: 4) {
                             Text(trip.name).font(.body.weight(.semibold)).foregroundStyle(.primary)
                             Text("\(trip.originName) → \(trip.destinationName)").font(.caption).foregroundStyle(.secondary).lineLimit(2)
-                            Text("\(trip.mode.title) · \(String(format: "%.1f mph", trip.speedMPH)) · \(trip.stops.count) stops")
+                            Text("\(trip.mode.title) · \(preferences.speedUnit.formatted(mph: trip.speedMPH)) · \(trip.stops.count) stops")
                                 .font(.caption).foregroundStyle(.secondary)
                         }
                         Spacer()
@@ -133,7 +141,7 @@ struct AddPathStopSheet: View {
     @Environment(\.dismiss) private var dismiss
     @State private var fraction = 0.5
     @State private var name = ""
-    @State private var minutes = 1.0
+    @State private var waitSeconds = 60.0
     @State private var error: String?
     var body: some View {
         ShiftEditorContainer {
@@ -154,7 +162,7 @@ struct AddPathStopSheet: View {
                             .font(.caption).foregroundStyle(.secondary)
                     }
                     TextField("Stop name", text: $name)
-                    Stepper("Wait \(Int(minutes)) min", value: $minutes, in: 0...60)
+                    StopDurationControl(seconds: $waitSeconds)
                     if let error { Text(error).font(.caption).foregroundStyle(LocusTheme.statusWarn) }
                 } footer: { Text(liveRoute
                     ? "The route keeps moving. Choose a point ahead; if you pass it before tapping Add, choose a later point. Your current pause and progress stay intact."
@@ -170,7 +178,7 @@ struct AddPathStopSheet: View {
                 ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Add") {
-                        error = onAdd(name, fraction, minutes * 60)
+                        error = onAdd(name, fraction, waitSeconds)
                         if error == nil { dismiss() }
                     }
                 }

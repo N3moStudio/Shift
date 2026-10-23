@@ -6,6 +6,7 @@ import UniformTypeIdentifiers
 struct RoutePlannerSheet: View {
     var onDraw: () -> Void = {}
     @EnvironmentObject private var session: SpoofSession
+    @EnvironmentObject private var preferences: SessionPreferences
     @EnvironmentObject private var planner: RoutePlanner
     @EnvironmentObject private var library: TripLibrary
     @Environment(\.dismiss) private var dismiss
@@ -83,7 +84,7 @@ struct RoutePlannerSheet: View {
                 }
             }
             .navigationDestination(isPresented: $showPractice) {
-                if let route { RoutePracticeSheet(route: route, mode: displayMode, speed: (displaySpeed * 0.44704)) }
+                if let route { RoutePracticeSheet(route: route, mode: displayMode, speed: SpeedConversion.metresPerSecond(mph: displaySpeed)) }
             }
             .loggedConfirmationDialog("Edit this route?", isPresented: $confirmLiveEdit, titleVisibility: .visible) {
                 Button("Hold location and edit") {
@@ -265,13 +266,11 @@ struct RoutePlannerSheet: View {
             HStack {
                 Text("Speed").font(.subheadline).foregroundStyle(.secondary)
                 Spacer()
-                Text(String(format: "%.1f mph", displaySpeed)).font(.title2.weight(.semibold)).monospacedDigit()
+                Text(preferences.speedUnit.formatted(mph: displaySpeed)).font(.title2.weight(.semibold)).monospacedDigit()
             }
-            Slider(value: Binding(get: { planner.draftSpeedMPH }, set: { planner.draftSpeedMPH = displayMode.clampedSpeedMPH($0) }),
-                   in: displayMode.speedRangeMPH, step: displayMode == .walk || displayMode == .run ? 0.1 : 1)
-                .accessibilityLabel("Planned route speed in miles per hour")
+            SpeedSlider(mph: $planner.draftSpeedMPH, mode: displayMode)
             Button { planner.draftSpeedMPH = session.usualSpeedMPH(for: displayMode) } label: {
-                Label(String(format: "Use usual speed · %.1f mph", session.usualSpeedMPH(for: displayMode)), systemImage: "arrow.counterclockwise")
+                Label("Use usual speed · \(preferences.speedUnit.formatted(mph: session.usualSpeedMPH(for: displayMode)))", systemImage: "arrow.counterclockwise")
                     .font(.caption).frame(maxWidth: .infinity, minHeight: 44, alignment: .leading).contentShape(Rectangle())
             }.buttonStyle(.borderless)
         }
@@ -403,7 +402,7 @@ struct RoutePlannerSheet: View {
                                 HStack {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text(row.title).font(.subheadline).foregroundStyle(.primary)
-                                        Label(String(format: "%@ · %.1f mph", row.choice.mode.title, row.choice.speedMPH), systemImage: row.choice.mode.icon)
+                                        Label("\(row.choice.mode.title) · \(preferences.speedUnit.formatted(mph: row.choice.speedMPH))", systemImage: row.choice.mode.icon)
                                             .font(.caption).foregroundStyle(.secondary)
                                     }
                                     Spacer()
@@ -414,8 +413,7 @@ struct RoutePlannerSheet: View {
                     }
                 } else if let route, !route.travelSections.isEmpty {
                     ForEach(route.travelSections) { section in
-                        Label(String(format: "%@ · %.1f mph · %@–%@", section.mode.title, section.speedMPH,
-                            JourneyText.distance(section.startMetres), JourneyText.distance(section.endMetres)), systemImage: section.mode.icon)
+                        Label("\(section.mode.title) · \(preferences.speedUnit.formatted(mph: section.speedMPH)) · \(JourneyText.distance(section.startMetres))–\(JourneyText.distance(section.endMetres))", systemImage: section.mode.icon)
                             .font(.caption)
                     }
                 }
@@ -436,9 +434,7 @@ struct RoutePlannerSheet: View {
     }
 
     private func waitControl(id: UUID, seconds: Double) -> some View {
-        Stepper(seconds > 0 ? "Wait \(Int(seconds / 60)) min" : "Pass through", value: Binding(
-            get: { seconds / 60 }, set: { planner.setWait(id, seconds: $0 * 60) }
-        ), in: 0...60).font(.caption)
+        StopDurationControl(seconds: Binding(get: { seconds }, set: { planner.setWait(id, seconds: $0) }))
     }
 
     private var alternatives: some View {
@@ -450,7 +446,7 @@ struct RoutePlannerSheet: View {
                             .foregroundStyle(LocusTheme.accent)
                         VStack(alignment: .leading, spacing: 4) {
                             Text(option.name).font(.subheadline.weight(.semibold)).foregroundStyle(.primary)
-                            Text("\(JourneyText.distance(option.distance)) · \(JourneyText.duration(option.estimate(speed: (displaySpeed * 0.44704)))) simulated")
+                            Text("\(JourneyText.distance(option.distance)) · \(JourneyText.duration(option.estimate(speed: SpeedConversion.metresPerSecond(mph: displaySpeed)))) simulated")
                                 .font(.caption).foregroundStyle(.secondary)
                         }
                         Spacer(minLength: 0)
@@ -543,7 +539,7 @@ struct RoutePlannerSheet: View {
                 Divider().frame(height: 42)
                 VStack(alignment: .leading, spacing: 5) {
                     Text("Estimated time").font(.caption).foregroundStyle(.secondary)
-                    Text(JourneyText.duration(route.estimate(speed: (displaySpeed * 0.44704)))).font(.title3.weight(.semibold))
+                    Text(JourneyText.duration(route.estimate(speed: SpeedConversion.metresPerSecond(mph: displaySpeed)))).font(.title3.weight(.semibold))
                 }.frame(maxWidth: .infinity, alignment: .leading)
             }.padding(.vertical, 5)
             Button {

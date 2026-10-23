@@ -86,8 +86,7 @@ private struct RoutePlaceDetailEditor: View {
             }
             if isStop {
                 Section("Wait here") {
-                    Stepper(place.waitSeconds == 0 ? "Pass through" : "\(Int(place.waitSeconds / 60)) minutes", value: Binding(
-                        get: { place.waitSeconds / 60 }, set: { place.waitSeconds = $0 * 60 }), in: 0...60)
+                    StopDurationControl(seconds: $place.waitSeconds)
                 }
             }
         }
