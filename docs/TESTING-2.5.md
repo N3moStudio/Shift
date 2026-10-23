@@ -1,7 +1,19 @@
-# Shift 2.5.0 test build
+# Shift 2.5.x test builds
 
 This is a development build, not a published release. A successful IPA build is
 separate from testing on a signed iPhone. Record both results before release.
+
+## 2.5.1 (49) interface checks
+
+- Change an icon under Settings → Appearance → Choose App Icon. Stay on the same tab and scroll position before and after the iOS confirmation. Only the requested icon shows progress; rapid extra taps must not submit another request. Repeat with app lock and Hide in App Switcher enabled, then confirm real backgrounding still protects content. The flicker fix needs this physical-device check.
+- Start a route. The compact map panel exposes target speed, remaining distance, progress, Pause/Resume and Stop spoofing. Its menu retains Route details, Mode & speed, shortcuts and End route and hold location. Verify End route holds the last position and Stop spoofing attempts to clear simulation.
+- Inspect active, paused, waiting, arriving, disconnected, retrying and stopping states. Connection evidence and countdowns must remain visible. Check large text, landscape, VoiceOver and Reduce Motion; controls must remain reachable.
+- In the planner, tap a timeline place, a travel section, and a wait. Reorder or remove a stop through its menu. Verify mixed-mode settings, drawn/GPX paths and saved paths retain their original semantics.
+- Choose 0, 5, 15, 30 or 60 seconds, type a custom value, and test Cancel/Done. Apply to all should change every stop only after that explicit action. Save/reopen the trip and verify waits.
+- Open Preview. Drag the position slider forward/backwards and use Jump to a stop. Seeking pauses playback; earlier stops become eligible again when seeking backwards. Landing on a stop restores its complete wait. Preview controls must never move the actual device location or affect a concurrent session.
+
+This update keeps 2.5.0's app identity and can update that installation under the
+same signing setup. It does not introduce a rebrand or automatic route starts.
 
 ## Moving from Shift 2.4.x
 
