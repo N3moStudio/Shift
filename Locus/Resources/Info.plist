@@ -104,7 +104,7 @@
 			<key>UTTypeDescription</key>
 			<string>Remote Pairing File</string>
 			<key>UTTypeIdentifier</key>
-			<string>com.chrismack.locus.rppairing</string>
+			<string>com.n3mostudio.shift.rppairing</string>
 			<key>UTTypeTagSpecification</key>
 			<dict>
 				<key>public.filename-extension</key>
@@ -126,11 +126,10 @@
 	<array>
 		<dict>
 			<key>CFBundleURLName</key>
-			<string>com.chrismack.locus</string>
+			<string>com.n3mostudio.shift</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>shift</string>
-				<string>locus</string>
 			</array>
 		</dict>
 	</array>
