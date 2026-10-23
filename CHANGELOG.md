@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.5.0 (48) — development
+
+- Enter route-stop waits in seconds (0–3,600), including stops under a minute.
+- Choose mph or km/h throughout planning, movement controls, saved trips and history. Conversion uses exact factors; stored trip speeds keep full precision and remain backward compatible.
+- Give Shift an independent app/extension bundle ID and app group, and stop claiming Locus's URL scheme. See [migration notes](docs/TESTING-2.5.md) before installing.
+- Open session details from notification taps, suppress duplicate foreground connection banners, and offer connection details from session alerts.
+- Validate pairing candidates with the engine decoder before replacing the installed file.
+- Default detailed logging to off on fresh installs and scale the About title with Dynamic Type.
+- Add Find a place and Create a route actions to empty Library categories.
+
+
 The recorded evolution from the original Locus snapshot to **Shift 2.4.4 (47)**.
 This history was reconstructed from saved source archives and update notes,
 including changes made between Git pushes. These are this fork’s milestones,

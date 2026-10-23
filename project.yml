@@ -1,6 +1,6 @@
 name: Locus
 options:
-  bundleIdPrefix: com.chrismack
+  bundleIdPrefix: com.n3mostudio
   deploymentTarget:
     iOS: "18.0"
   xcodeVersion: "27.0"
@@ -31,10 +31,10 @@ targets:
         buildPhase: none
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.chrismack.locus
+        PRODUCT_BUNDLE_IDENTIFIER: com.n3mostudio.shift
         PRODUCT_NAME: Locus
-        MARKETING_VERSION: "2.4.4"
-        CURRENT_PROJECT_VERSION: "47"
+        MARKETING_VERSION: "2.5.0"
+        CURRENT_PROJECT_VERSION: "48"
         INFOPLIST_FILE: Locus/Resources/Info.plist
         CODE_SIGN_ENTITLEMENTS: Locus/Resources/Locus.entitlements
         CODE_SIGN_STYLE: Automatic
@@ -77,10 +77,10 @@ targets:
       - path: Shared
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.chrismack.locus.activity
+        PRODUCT_BUNDLE_IDENTIFIER: com.n3mostudio.shift.activity
         PRODUCT_NAME: LocusActivity
-        MARKETING_VERSION: "2.4.4"
-        CURRENT_PROJECT_VERSION: "47"
+        MARKETING_VERSION: "2.5.0"
+        CURRENT_PROJECT_VERSION: "48"
         CODE_SIGN_ENTITLEMENTS: LocusActivity/LocusActivity.entitlements
         INFOPLIST_FILE: LocusActivity/Info.plist
         GENERATE_INFOPLIST_FILE: false

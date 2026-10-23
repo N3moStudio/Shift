@@ -2,9 +2,9 @@
 
 ## Install
 
-1. Download **Shift 2.4.4.ipa** from this repository’s Releases, or build it using [GitHub Actions](docs/BUILDING.md).
+1. Download a released IPA from this repository’s Releases, or build the **2.5.0 development version** using [GitHub Actions](docs/BUILDING.md).
 2. Add the IPA to **SideStore** and keep the **LocusActivity** extension. SideStore signs both for your device.
-3. For an update, use the same signing setup and install over the current app. Do not uninstall first if you want to keep its data.
+3. **For 2.4.x → 2.5.0, export your library first:** the new app identity creates a separate installation. Follow [the migration checklist](docs/TESTING-2.5.md). For later updates with the same identity, use the same signing setup and install over the current app.
 
 Direct SideStore installation is the primary setup described here. Inside
 LiveContainer, file pickers and app-group/widget behavior depend on the host.
@@ -36,6 +36,8 @@ choose **Show route**, review it, then **Start route**. The joystick becomes
 available after a session is established.
 
 - **Pause route** holds the current point.
+- Set stop waits in seconds, from **0** (pass through) to **3,600**. For example, enter **15** for a short stop.
+- Choose **Settings → Usual speeds → Speed units** for mph or km/h. Changing units does not change a trip’s actual speed.
 - **End route** stops travel while retaining the held point.
 - **Stop spoofing** requests clearing the simulated location. A failed clear is not a successful reset; reconnect and retry.
 

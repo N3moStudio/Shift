@@ -2,7 +2,7 @@
   <img src="docs/images/shift-cover.png" alt="Shift by N3mo Studio. Make your next move. Location simulation for iPhone." width="100%">
 </p>
 
-<p align="center"><strong>2.4.4 · iOS 18+ · SwiftUI · MIT licensed</strong></p>
+<p align="center"><strong>2.5.0 dev · iOS 18+ · SwiftUI · MIT licensed</strong></p>
 <p align="center">
   <a href="SETUP.md">Get started</a> &nbsp;·&nbsp;
   <a href="CHANGELOG.md">Changelog</a> &nbsp;·&nbsp;
@@ -32,17 +32,20 @@ and accessibility settings.
 
 ## The latest
 
-The 2.4 series adds the three appearance families and independent icon choices,
-fixes a first-launch appearance crash, and refreshes native tab navigation and
-system icon resources. **2.4.4 removes the temporary notification-preview tool.**
+The **2.5.0 development build** adds second-based route stops, mph/km/h preferences,
+and an independent app identity so Shift can coexist with Locus. It also validates
+pairing imports before replacing a working file and improves notification handling.
+See [the test-build checklist and migration steps](docs/TESTING-2.5.md).
 
 [Everything since the original Locus base](CHANGELOG.md)
 
 ## Get Shift
 
 Download the IPA from this repository’s **Releases**, then sign and install it
-through SideStore. Keep the app extension. Updating an existing installation?
-Use the same signing setup and install over it.
+through SideStore. Keep the app extension. **Moving from 2.4.x to 2.5.0 creates a
+separate installation. Export your library from the old app before switching.**
+See [the migration steps](docs/TESTING-2.5.md). Later updates using the same bundle ID
+and signing setup can be installed over the new app.
 
 First use needs compatible device pairing and LocalDevVPN. The minimum deployment
 target is iOS 18; compatibility still depends on the device, iOS version, and
