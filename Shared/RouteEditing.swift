@@ -15,7 +15,7 @@ struct RouteTravelSection: Identifiable, Codable, Equatable {
     var endMetres: Double
     var mode: TravelMode
     var speedMPH: Double
-    var metresPerSecond: Double { mode.clampedSpeedMPH(speedMPH) * 0.44704 }
+    var metresPerSecond: Double { SpeedConversion.metresPerSecond(mph: mode.clampedSpeedMPH(speedMPH)) }
 
     static func valid(_ sections: [Self], length: Double) -> Bool {
         guard !sections.isEmpty, sections.count <= 21, length.isFinite, length > 0,
@@ -38,7 +38,7 @@ struct RouteTravelSection: Identifiable, Codable, Equatable {
                                  overrides: [UUID: Double] = [:]) -> Double {
         sections.reduce(0) { total, section in
             let remaining = max(0, section.endMetres - max(section.startMetres, metres))
-            let speed = section.mode.clampedSpeedMPH(overrides[section.id] ?? section.speedMPH) * 0.44704
+            let speed = SpeedConversion.metresPerSecond(mph: section.mode.clampedSpeedMPH(overrides[section.id] ?? section.speedMPH))
             return total + remaining / speed
         }
     }

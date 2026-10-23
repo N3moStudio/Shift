@@ -54,7 +54,7 @@ enum SettingsDestination: String, CaseIterable, Identifiable {
         case .activity: return "lock screen lockscreen dynamic island hide location progress timer"
         case .notifications: return "alert alerts warning warnings reminders sound"
         case .privacy: return "face id passcode app switcher contents recent locations history retention"
-        case .speeds: return "walk walking run running bike bicycle ebike e-bike car driving mph speed"
+        case .speeds: return "walk walking run running bike bicycle ebike e-bike car driving mph km/h kmh kilometers miles units speed"
         case .shortcuts: return "bottom menu buttons controls"
         case .widgets: return "home screen shortcuts favorite favorites saved places routes"
         case .recovery: return "recover restore interrupted route session trip"

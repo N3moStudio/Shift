@@ -41,7 +41,7 @@ final class DeveloperLogStore: @unchecked Sendable {
     private var logURL: URL { folder.appendingPathComponent("events.jsonl") }
     private var metadataURL: URL { folder.appendingPathComponent("window.json") }
     private var capacityURL: URL { folder.appendingPathComponent("capacity.flag") }
-    var enabled: Bool { defaults.object(forKey: Self.enabledKey) as? Bool ?? true }
+    var enabled: Bool { defaults.object(forKey: Self.enabledKey) as? Bool ?? false }
     private var writeOptions: Data.WritingOptions {
         #if os(iOS)
         return [.atomic, .completeFileProtectionUntilFirstUserAuthentication]

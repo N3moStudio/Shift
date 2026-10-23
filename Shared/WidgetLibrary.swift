@@ -23,7 +23,7 @@ struct WidgetLibraryItem: Codable, Identifiable, Equatable {
 }
 
 struct WidgetLibrary: Codable, Equatable {
-    static let group = "group.com.chrismack.locus"
+    static let group = "group.com.n3mostudio.shift"
     static let filename = "WidgetLibrary.json"
     var items: [WidgetLibraryItem]
     var primaryID: UUID?

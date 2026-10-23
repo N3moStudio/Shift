@@ -48,7 +48,7 @@ enum TravelMode: String, CaseIterable, Identifiable, Codable {
         case .drive: return 1...85
         }
     }
-    var defaultSpeedMPH: Double { self == .eBike ? EBikeSpeed.defaultMPH : (baseSpeed / 0.44704 * 10).rounded() / 10 }
+    var defaultSpeedMPH: Double { self == .eBike ? EBikeSpeed.defaultMPH : (SpeedConversion.mph(metresPerSecond: baseSpeed) * 10).rounded() / 10 }
     func clampedSpeedMPH(_ value: Double) -> Double {
         guard value.isFinite else { return defaultSpeedMPH }
         return min(speedRangeMPH.upperBound, max(speedRangeMPH.lowerBound, value))
@@ -77,7 +77,7 @@ enum EBikeSpeed {
         guard mph.isFinite else { return defaultMPH }
         return min(range.upperBound, max(range.lowerBound, mph))
     }
-    static func metresPerSecond(_ mph: Double) -> Double { clamped(mph) * 0.44704 }
+    static func metresPerSecond(_ mph: Double) -> Double { SpeedConversion.metresPerSecond(mph: clamped(mph)) }
 }
 
 /// Route provenance remains visible even when the user changes playback speed.

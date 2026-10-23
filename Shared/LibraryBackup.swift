@@ -25,6 +25,7 @@ struct BackupPreferences: Codable, Equatable {
     var preferWalkingPaths: Bool
     var shortcuts: [PanelShortcut]
     var display: BackupDisplayPreferences? = nil
+    var speedUnit: SpeedUnit? = nil
     var isValid: Bool {
         (display?.isValid ?? true) && ["system", "light", "dark"].contains(appearance) &&
         (shortcuts == PanelShortcut.normalized(shortcuts) ||
