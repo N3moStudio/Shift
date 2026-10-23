@@ -10,11 +10,13 @@ struct RoutePracticeSheet: View {
     let speed: Double
     @Environment(\.dismiss) private var dismiss
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.dynamicTypeSize) private var typeSize
     @State private var preview = RouteRehearsal()
     private var shouldPlay: Bool { scenePhase == .active && preview.isPlaying }
 
     var body: some View {
         ShiftEditorContainer {
+            ScrollView {
             VStack(spacing: 16) {
                 Label("Preview only — this moves the orange dot", systemImage: "eye")
                     .font(.subheadline.weight(.semibold)).foregroundStyle(LocusTheme.statusWarn)
@@ -33,12 +35,14 @@ struct RoutePracticeSheet: View {
                     }
                 }
                 .mapStyle(.standard(elevation: .flat)).mapControlVisibility(.hidden)
+                .frame(height: typeSize.isAccessibilitySize ? 220 : 300)
                 .clipShape(RoundedRectangle(cornerRadius: 18)).padding(.horizontal)
                 .accessibilityLabel("Practice route with a preview dot")
                 controls.padding(.horizontal)
             }
             .padding(.bottom)
-            .shiftScreen().loggedNavigationTitle("Practice route")
+            }
+            .shiftScreen().loggedNavigationTitle("Route preview")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } } }
             .task(id: shouldPlay) {
@@ -63,12 +67,30 @@ struct RoutePracticeSheet: View {
     }
     private var controls: some View {
         VStack(spacing: 12) {
-            ProgressView(value: min(1, preview.metres / route.track.length)).tint(.orange)
+            Slider(value: Binding(get: { preview.metres }, set: {
+                preview.seek(to: $0, length: route.track.length, stops: route.stops)
+            }), in: 0...max(1, route.track.length))
+                .tint(.orange)
+                .accessibilityLabel("Preview position")
+                .accessibilityValue(JourneyText.distance(preview.metres) + " from start")
             HStack {
                 Text(currentMode.title)
                 Spacer()
                 Text("\(JourneyText.distance(preview.metres)) of \(JourneyText.distance(route.track.length))")
             }.font(.caption).foregroundStyle(.secondary)
+            if !route.stops.isEmpty {
+                Menu {
+                    ForEach(route.stops) { stop in
+                        Button("\(stop.name) · \(StopDuration.label(stop.waitSeconds))") {
+                            preview.seek(to: stop.metres, length: route.track.length, stops: route.stops)
+                        }
+                    }
+                } label: {
+                    Label("Jump to a stop", systemImage: "mappin.and.ellipse")
+                        .frame(minHeight: 44)
+                }
+                .accessibilityHint("Pauses the preview at the selected stop")
+            }
             if preview.waitingID != nil {
                 HStack {
                     Text("Planned stop · \(Int(ceil(preview.waitingSeconds))) sec remaining").font(.caption)
@@ -83,7 +105,7 @@ struct RoutePracticeSheet: View {
             }.pickerStyle(.segmented)
             HStack(spacing: 12) {
                 Button {
-                    if preview.metres >= route.track.length { preview.reset() }
+                    if preview.metres >= route.track.length && preview.waitingID == nil { preview.reset() }
                     preview.isPlaying.toggle()
                 } label: {
                     Label(preview.isPlaying ? "Pause preview" : "Play preview", systemImage: preview.isPlaying ? "pause.fill" : "play.fill")
