@@ -2,7 +2,7 @@
   <img src="docs/images/shift-cover.png" alt="Shift by N3mo Studio. Make your next move. Location simulation for iPhone." width="100%">
 </p>
 
-<p align="center"><strong>2.5.0 dev · iOS 18+ · SwiftUI · MIT licensed</strong></p>
+<p align="center"><strong>2.5.1 dev · iOS 18+ · SwiftUI · MIT licensed</strong></p>
 <p align="center">
   <a href="SETUP.md">Get started</a> &nbsp;·&nbsp;
   <a href="CHANGELOG.md">Changelog</a> &nbsp;·&nbsp;
@@ -32,9 +32,11 @@ and accessibility settings.
 
 ## The latest
 
-The **2.5.0 development build** adds second-based route stops, mph/km/h preferences,
-and an independent app identity so Shift can coexist with Locus. It also validates
-pairing imports before replacing a working file and improves notification handling.
+The **2.5.1 development build** simplifies the active map controls, adds an ordered
+route timeline and quick stop-duration choices, and lets you scrub route previews.
+It also reduces appearance updates during the system icon-change transition.
+The second-based waits, mph/km/h preference, independent app identity and safer
+pairing imports from 2.5.0 remain included.
 See [the test-build checklist and migration steps](docs/TESTING-2.5.md).
 
 [Everything since the original Locus base](CHANGELOG.md)

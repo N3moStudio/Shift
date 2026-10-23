@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.5.1 (49) — development
+
+- Keep active route controls compact: target speed, distance, progress, Pause/Resume and Stop spoofing. Route details, movement tools and End route remain in the menu; connection warnings and stop countdowns stay visible.
+- Show starts, stops and destinations in a numbered route timeline. Open wait editing only when needed and keep optional movement settings collapsed.
+- Add 0/5/15/30/60-second stop presets and an explicit Apply to all stops action. Cancel leaves the draft unchanged.
+- Scrub the isolated route preview or jump directly to a stop; seeking pauses the preview and restores waits when moving backwards.
+- Defer icon preference updates until iOS returns the app to the active state, keep selection feedback local, and preserve the selected tab across scene restoration. Physical-device confirmation of the reported flicker is still required.
+
 ## 2.5.0 (48) — development
 
 - Enter route-stop waits in seconds (0–3,600), including stops under a minute.
