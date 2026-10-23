@@ -25,17 +25,32 @@ struct ShiftAppearanceAnchor: UIViewRepresentable {
 final class ShiftIconController: ObservableObject {
     static let shared = ShiftIconController()
     @Published private(set) var selected = ShiftIconSelection()
-    @Published private(set) var changing = false
+    @Published private(set) var pending: ShiftIconSelection?
     @Published var error: String?
+    private var completionReceived = false
+    private var completionFailed = false
+    var changing: Bool { pending != nil }
     var supported: Bool { UIApplication.shared.supportsAlternateIcons }
 
     func refresh() {
-        guard !changing else { return }
+        // iOS may deactivate the scene while its icon confirmation is visible.
+        // Keep global appearance/navigation stable until that transition ends.
+        guard UIApplication.shared.applicationState == .active else { return }
+        if let requested = pending {
+            guard completionReceived else { return }
+            let actual = ShiftIconSelection.installed(named: UIApplication.shared.alternateIconName)
+            if completionFailed || actual != requested {
+                error = "iOS couldn’t change the icon. Try again while Shift is open."
+            }
+            pending = nil
+            completionReceived = false
+            completionFailed = false
+        }
         guard let actual = ShiftIconSelection.installed(named: UIApplication.shared.alternateIconName) else {
             error = "This installation uses an unrecognized icon. Choose a Shift icon to replace it."
             return
         }
-        selected = actual
+        if selected != actual { selected = actual }
         SessionPreferences.shared.confirmIcon(actual)
     }
 
@@ -43,18 +58,17 @@ final class ShiftIconController: ObservableObject {
         guard !changing else { return }
         guard supported else { error = "This installation does not support changing the Home Screen icon."; return }
         guard UIApplication.shared.alternateIconName != choice.alternateName else { refresh(); return }
-        changing = true; error = nil
+        guard UIApplication.shared.applicationState == .active else { return }
+        pending = choice
+        completionReceived = false
+        completionFailed = false
+        error = nil
         UIApplication.shared.setAlternateIconName(choice.alternateName) { [weak self] failure in
             Task { @MainActor in
                 guard let self else { return }
-                self.changing = false
-                guard failure == nil, UIApplication.shared.alternateIconName == choice.alternateName else {
-                    self.error = "iOS couldn’t change the icon. Your previous icon is still selected. Try again while Shift is open."
-                    self.refresh()
-                    return
-                }
-                self.selected = choice
-                SessionPreferences.shared.confirmIcon(choice)
+                self.completionReceived = true
+                self.completionFailed = failure != nil
+                self.refresh()
             }
         }
     }
