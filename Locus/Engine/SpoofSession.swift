@@ -225,7 +225,7 @@ final class SpoofSession: ObservableObject {
                 islandProgress: preferences.islandProgress, islandTimer: preferences.islandTimer,
                 connectionAlerts: preferences.connectionAlerts, reminderMinutes: preferences.reminderMinutes,
                 saveRecentLocations: preferences.saveRecentLocations, recentHistoryRetention: preferences.recentHistoryRetention,
-                mapStyle: mapStyleIndex, connectionCheckSeconds: preferences.connectionCheckSeconds))
+                mapStyle: mapStyleIndex, connectionCheckSeconds: preferences.connectionCheckSeconds), speedUnit: preferences.speedUnit)
     }
     func importLibraryPlaces(_ places: [BackupPlace], settings: BackupPreferences?) {
         favorites = places.map { SavedPlace(name: $0.name, latitude: $0.latitude, longitude: $0.longitude, folder: $0.folder, icon: $0.icon, color: $0.color) }
@@ -234,6 +234,7 @@ final class SpoofSession: ObservableObject {
             usualSpeeds = settings.usualSpeeds
             preferences.glassPanel = settings.glassPanel
             preferences.appearance = settings.appearance
+            if let unit = settings.speedUnit { preferences.speedUnit = unit }
             preferences.panelShortcuts = settings.shortcuts
             smoothMovement = settings.smoothMovement
             if let display = settings.display {
@@ -841,7 +842,7 @@ final class SpoofSession: ObservableObject {
         else { modeSpeeds[mode.rawValue] = mode.clampedSpeedMPH(value) }
         publishActivity(force: false)
     }
-    func cruiseSpeed(for mode: TravelMode) -> Double { speedMPH(for: mode) * 0.44704 }
+    func cruiseSpeed(for mode: TravelMode) -> Double { SpeedConversion.metresPerSecond(mph: speedMPH(for: mode)) }
 
     func changeTravelMode(_ mode: TravelMode, keepCurrentPath: Bool = false) {
         guard canEditRouteMovement else { return }

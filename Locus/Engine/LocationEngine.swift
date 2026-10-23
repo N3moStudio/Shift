@@ -64,8 +64,8 @@ enum LocationEngineError: LocalizedError {
 
 /// Thin Swift wrapper around idevice’s DVT location simulation (injects into locationd).
 enum LocationEngine {
-    private static let queue = DispatchQueue(label: "com.chrismack.locus.location", qos: .userInitiated)
-    private static let setupQueue = DispatchQueue(label: "com.chrismack.locus.setup-check", qos: .userInitiated)
+    private static let queue = DispatchQueue(label: "com.n3mostudio.shift.location", qos: .userInitiated)
+    private static let setupQueue = DispatchQueue(label: "com.n3mostudio.shift.setup-check", qos: .userInitiated)
     private static let setupLock = NSLock()
     private static var setupCheckRunning = false
 

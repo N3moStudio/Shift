@@ -1,9 +1,18 @@
 import Foundation
 import UserNotifications
+import Combine
+
+/// Retains a cold-launch tap until the map and privacy gate can consume it.
+@MainActor
+final class SessionNotificationNavigation: ObservableObject {
+    static let shared = SessionNotificationNavigation()
+    @Published var pendingSessionDetails = false
+}
 
 final class SessionNotifications: NSObject, UNUserNotificationCenterDelegate {
     static let shared = SessionNotifications()
     static let reminderID = "locus.session.reminder"
+    static let connectionID = "locus.session.connection"
 
     func install() { UNUserNotificationCenter.current().delegate = self }
 
@@ -19,7 +28,7 @@ final class SessionNotifications: NSObject, UNUserNotificationCenterDelegate {
         content.body = message
         content.sound = .default
         addLogged(UNNotificationRequest(
-            identifier: "locus.session.connection", content: content, trigger: nil))
+            identifier: Self.connectionID, content: content, trigger: nil))
     }
 
     func scheduleReminder(minutes: Int, startedAt: Date) {
@@ -47,13 +56,20 @@ final class SessionNotifications: NSObject, UNUserNotificationCenterDelegate {
                                 withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         DeveloperLogStore.shared.record("notification_foreground_delivery", ["id": notification.request.identifier,
             "title": notification.request.content.title, "body": notification.request.content.body])
-        completionHandler([.banner, .sound])
+        // Connection errors already have an in-app alert. Reminders still need a banner.
+        completionHandler(notification.request.identifier == Self.connectionID ? [] : [.banner, .sound])
     }
 
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse,
                                 withCompletionHandler completionHandler: @escaping () -> Void) {
         DeveloperLogStore.shared.record("notification_response", ["id": response.notification.request.identifier,
             "action": response.actionIdentifier])
+        if response.actionIdentifier == UNNotificationDefaultActionIdentifier,
+           [Self.reminderID, Self.connectionID].contains(response.notification.request.identifier) {
+            Task { @MainActor in
+                SessionNotificationNavigation.shared.pendingSessionDetails = true
+            }
+        }
         completionHandler()
     }
 

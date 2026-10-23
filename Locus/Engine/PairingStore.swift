@@ -1,6 +1,7 @@
 import Foundation
 import UniformTypeIdentifiers
 import UIKit
+import idevice
 
 @MainActor
 final class PairingStore: ObservableObject {
@@ -21,7 +22,7 @@ final class PairingStore: ObservableObject {
                 types.append(t)
             }
         }
-        if let custom = UTType("com.chrismack.locus.rppairing") {
+        if let custom = UTType("com.n3mostudio.shift.rppairing") {
             types.append(custom)
         }
         return types
@@ -54,7 +55,9 @@ final class PairingStore: ObservableObject {
         let accessing = sourceURL.startAccessingSecurityScopedResource()
         defer { if accessing { sourceURL.stopAccessingSecurityScopedResource() } }
 
-        let data = try Data(contentsOf: sourceURL)
+        let file = try FileHandle(forReadingFrom: sourceURL)
+        defer { try? file.close() }
+        let data = try file.read(upToCount: PairingFileImport.maximumBytes + 1) ?? Data()
         try installPairingData(data)
     }
 
@@ -92,27 +95,19 @@ final class PairingStore: ObservableObject {
     }
 
     private func installPairingData(_ data: Data) throws {
-        guard looksLikePairingPlist(data) else {
-            throw PairingImportError.invalidContents
+        try PairingFileImport.install(data, at: pairingURL) { staged in
+            var handle: OpaquePointer?
+            let error = staged.path.withCString { rp_pairing_file_read($0, &handle) }
+            defer { if let handle { rp_pairing_file_free(handle) } }
+            if let error {
+                idevice_error_free(error)
+                throw PairingImportError.invalidContents
+            }
+            guard handle != nil else { throw PairingImportError.invalidContents }
         }
-
-        try FileManager.default.createDirectory(at: directoryURL, withIntermediateDirectories: true)
-        // Atomic replacement keeps the prior file if writing the new one fails.
-        try data.write(to: pairingURL, options: .atomic)
         hasPairingFile = true
         revision = UUID()
-        try FileManager.default.setAttributes([.posixPermissions: 0o600], ofItemAtPath: pairingURL.path)
         lastError = nil
-    }
-
-    private func looksLikePairingPlist(_ data: Data) -> Bool {
-        if let obj = try? PropertyListSerialization.propertyList(from: data, options: [], format: nil) {
-            return obj is [AnyHashable: Any] || obj is [Any]
-        }
-        // XML plist often starts with these markers when copied as text.
-        guard let text = String(data: data, encoding: .utf8)?
-            .trimmingCharacters(in: .whitespacesAndNewlines) else { return false }
-        return text.hasPrefix("<?xml") || text.hasPrefix("bplist") || text.contains("<plist")
     }
 }
 
@@ -125,7 +120,7 @@ enum PairingImportError: LocalizedError {
         case .emptyClipboard:
             return "Clipboard is empty. Copy your RPPairing plist text (or the file), then try Paste again."
         case .invalidContents:
-            return "That doesn’t look like an RPPairing plist. Copy the full pairing file contents and try again."
+            return "That pairing file could not be read. Your existing pairing has not changed. Import the full RPPairing file and try again."
         }
     }
 }
