@@ -37,7 +37,7 @@ struct RoutePracticeSheet: View {
                 .mapStyle(.standard(elevation: .flat)).mapControlVisibility(.hidden)
                 .frame(height: typeSize.isAccessibilitySize ? 220 : 300)
                 .clipShape(RoundedRectangle(cornerRadius: 18)).padding(.horizontal)
-                .accessibilityLabel("Practice route with a preview dot")
+                .accessibilityLabel("Route preview with an orange dot")
                 controls.padding(.horizontal)
             }
             .padding(.bottom)
@@ -191,7 +191,7 @@ struct RouteWaypointEditor: View {
                             .frame(maxWidth: .infinity, minHeight: 44).contentShape(Rectangle())
                     }.disabled(undoFrames.isEmpty)
                 }.buttonStyle(.borderless).padding(.horizontal)
-                Text("Orange dashed lines show the order only. They are not the route. Reorder or remove stops in Advanced options after saving.")
+                Text("Orange dashed lines show the order only. They are not the route. Reorder or remove stops in the route timeline after saving.")
                     .font(.caption).foregroundStyle(.secondary).padding(.horizontal)
             }.padding(.bottom)
             .shiftScreen().loggedNavigationTitle("Edit route on map").navigationBarTitleDisplayMode(.inline)

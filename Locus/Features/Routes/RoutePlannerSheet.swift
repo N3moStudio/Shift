@@ -351,7 +351,10 @@ struct RoutePlannerSheet: View {
                 if planner.hasSectionSettings {
                     Label("Using optional section settings", systemImage: "slider.horizontal.3")
                         .font(.subheadline.weight(.semibold))
-                    Text("Tap a travel section in the timeline to edit it. More settings are in Advanced options.").font(.caption).foregroundStyle(.secondary)
+                    Text(planner.usesStoredPath
+                        ? "This saved path keeps its section settings. Turn them off to use one mode and speed for the whole route."
+                        : "Tap a travel section in the timeline to edit it. More settings are in Advanced options.")
+                        .font(.caption).foregroundStyle(.secondary)
                     if planner.usesStoredPath {
                         Button {
                             planner.setSectionSettings(false, mode: displayMode, speedMPH: displaySpeed)
