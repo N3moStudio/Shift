@@ -55,6 +55,17 @@ struct RouteRehearsal {
     var rate = 10.0
 
     mutating func reset() { self = RouteRehearsal() }
+    /// Seeking is a rehearsal-only action and always pauses playback. Stops
+    /// before the cursor are complete; landing on a stop restores its full wait.
+    mutating func seek(to requestedMetres: Double, length: Double, stops: [RouteStop]) {
+        guard requestedMetres.isFinite, length.isFinite, length > 0 else { return }
+        metres = min(length, max(0, requestedMetres))
+        isPlaying = false
+        completedStops = Set(stops.filter { $0.metres < metres - 0.001 }.map(\.id))
+        let stop = stops.first { abs($0.metres - metres) <= 0.001 }
+        waitingID = stop?.id
+        waitingSeconds = stop?.waitSeconds ?? 0
+    }
     mutating func skipWait() {
         if let waitingID { completedStops.insert(waitingID) }
         waitingID = nil
