@@ -43,10 +43,14 @@ def check(path):
         sdks = {}
         for info_path in [apps[0], app + 'PlugIns/LocusActivity.appex/Info.plist']:
             info = plistlib.loads(archive.read(info_path))
+            expected_id = 'com.n3mostudio.shift' if info_path == apps[0] else 'com.n3mostudio.shift.activity'
+            require(info.get('CFBundleIdentifier') == expected_id, 'Unexpected bundle identity: ' + info_path)
             require(not info.get('UIDesignRequiresCompatibility', False), 'Old UI compatibility is enabled')
             binary = info_path.removesuffix('Info.plist') + info['CFBundleExecutable']
             sdks[info['CFBundleExecutable']] = linked_sdk(archive.read(binary))
         info = plistlib.loads(archive.read(app + 'Info.plist'))
+        schemes = {scheme for item in info.get('CFBundleURLTypes', []) for scheme in item.get('CFBundleURLSchemes', [])}
+        require(schemes == {'shift'}, 'Shift must own its own URL scheme without claiming Locus links')
         has_catalog = app + 'Assets.car' in names and archive.getinfo(app + 'Assets.car').file_size > 0
         for key in ['CFBundleIcons', 'CFBundleIcons~ipad']:
             entries = info.get(key, {})
