@@ -11,7 +11,7 @@ struct LocusApp: App {
     @AppStorage(SetupGate.defaultsKey) private var setupComplete = false
     @AppStorage(SetupGate.deferredKey) private var setupDeferred = false
     @State private var pendingShortcut: LocusShortcut?
-    @State private var pendingSessionDetails = false
+    @StateObject private var notificationNavigation = SessionNotificationNavigation.shared
     @State private var pendingImports: [PendingImport] = []
 
     /// Skipping opens the map without claiming the connection has been verified.
@@ -23,7 +23,7 @@ struct LocusApp: App {
         WindowGroup {
             Group {
                 if showMap {
-                    RootView(incomingShortcut: $pendingShortcut, incomingSessionDetails: $pendingSessionDetails)
+                    RootView(incomingShortcut: $pendingShortcut, incomingSessionDetails: $notificationNavigation.pendingSessionDetails)
                 } else {
                     SetupFlowView(initialStep: SetupGate.initialStep(hasPairingFile: pairing.hasPairingFile), onFinished: {
                         finishInitialSetup(verified: true)
@@ -103,7 +103,7 @@ struct LocusApp: App {
             }
             .onOpenURL { url in
                 if ["shift", "locus"].contains(url.scheme?.lowercased() ?? ""), url.host?.lowercased() == "session" {
-                    pendingSessionDetails = true
+                    notificationNavigation.pendingSessionDetails = true
                 } else { queueIncoming(url) }
             }
             .onAppear {
