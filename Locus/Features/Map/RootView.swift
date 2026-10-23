@@ -6,6 +6,7 @@ struct RootView: View {
     @Binding var incomingSessionDetails: Bool
     @State private var showSessionDetails = false
     @State private var mapPreview: RoutePlace?
+    @State private var searchMap = false
     @EnvironmentObject private var privacy: AppPrivacyController
     @EnvironmentObject private var session: SpoofSession
     @Environment(\.shiftVisualStyle) private var visualStyle
@@ -22,7 +23,7 @@ struct RootView: View {
     var body: some View {
         TabView(selection: $selectedTab) {
         Tab("Map", systemImage: "map.fill", value: RootTab.map) {
-        MapHomeView(isVisible: selectedTab == .map && !planner.isPresented && !showSessionDetails && privacy.canOpenContent, incomingPlace: $mapPreview)
+        MapHomeView(isVisible: selectedTab == .map && !planner.isPresented && !showSessionDetails && privacy.canOpenContent, incomingPlace: $mapPreview, incomingSearch: $searchMap)
         // Keep the native map's viewport fixed while the controls change height.
         // Resizing it through safeAreaInset during a glass animation can expose
         // an empty map frame and also moves its gesture coordinate space.
@@ -48,6 +49,14 @@ struct RootView: View {
             planner.discardPreparedRoute()
             session.selectPin(place.coordinate, name: place.displayName)
             mapPreview = RoutePlace(name: place.name, coordinate: place.coordinate)
+        }, onFindPlace: {
+            guard session.journey == nil, !session.isBusy, !planner.isDrawing else { showNotice("End the current route or close its editor before choosing another place."); return }
+            selectedTab = .map
+            searchMap = true
+        }, onCreateRoute: {
+            guard session.journey == nil, !session.isBusy, !planner.isDrawing else { showNotice("End the current route or close its editor before creating another."); return }
+            selectedTab = .map
+            planner.isPresented = true
         })
         }
         Tab("Settings", systemImage: "gearshape.fill", value: RootTab.settings) {
@@ -101,6 +110,10 @@ struct RootView: View {
             get: { session.lastError != nil },
             set: { if !$0 { session.lastError = nil } }
         )) {
+            Button("Connection details") {
+                session.lastError = nil
+                incomingSessionDetails = true
+            }
             Button("OK", role: .cancel) { session.lastError = nil }
         } message: { Text(session.lastError ?? "") }
         .overlay(alignment: .center) {
@@ -409,7 +422,7 @@ struct BottomControlsView: View {
     private var speedButton: some View {
         Button { showMovementSheet = true } label: {
             HStack(spacing: 7) {
-                Text(String(format: "%.1f mph", session.speedMPH(for: session.travelMode))).monospacedDigit()
+                Text(preferences.speedUnit.formatted(mph: session.speedMPH(for: session.travelMode))).monospacedDigit()
                 Image(systemName: "slider.horizontal.3").font(.caption)
             }.font(.subheadline.weight(.semibold)).frame(minHeight: 44).contentShape(Rectangle())
         }.buttonStyle(.plain).accessibilityLabel("Adjust movement speed")

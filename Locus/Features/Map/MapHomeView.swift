@@ -6,6 +6,7 @@ import UIKit.UIGestureRecognizerSubclass
 struct MapHomeView: View {
     var isVisible = true
     @Binding var incomingPlace: RoutePlace?
+    @Binding var incomingSearch: Bool
     @Environment(\.scenePhase) private var scenePhase
     @EnvironmentObject private var session: SpoofSession
     @EnvironmentObject private var pairing: PairingStore
@@ -343,6 +344,11 @@ struct MapHomeView: View {
             if session.jumpUndo?.expiresAt == undo.expiresAt { undoVisible = false }
         }
         .onReceive(NotificationCenter.default.publisher(for: .locusDrawRoute)) { _ in beginDrawing() }
+        .onChange(of: incomingSearch, initial: true) { _, requested in
+            guard requested else { return }
+            incomingSearch = false
+            showSearch = true
+        }
         .onReceive(NotificationCenter.default.publisher(for: .locusPreviewPlace)) { note in
             guard let place = note.object as? RoutePlace else { return }
             previewPlace(place)
