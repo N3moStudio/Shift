@@ -21,6 +21,7 @@ final class CompanionClient: ObservableObject {
     }
     private weak var session: SpoofSession?
     private var nextCheck = Date.distantPast
+    private var reportedProviders: Set<String> = []
     var endpoint: String? { link?.endpoint }
     func attach(_ session: SpoofSession) { self.session = session }
     func tick() {
@@ -40,8 +41,8 @@ final class CompanionClient: ObservableObject {
     private func activityStatus(provider: String) -> RemoteFindMyActivity? {
         guard enabled, paired, let session, session.remoteCheckSessionRequested else { return nil }
         let report = reports.first { $0.provider == provider }
-        if provider == "life360" && report == nil { return nil }
-        if !reports.isEmpty && report == nil { return nil } // A Life360-only setup has no Find My evidence.
+        if !reportedProviders.isEmpty && !reportedProviders.contains(provider) { return nil }
+        if provider == "life360" && report == nil && !reportedProviders.contains(provider) { return nil }
         var state: RemoteFindMyState = .waiting
         if !session.isSpoofing { state = .paused }
         else if connectedAt == nil || message != nil || Date().timeIntervalSince(connectedAt!) > 90 { state = .unavailable }
@@ -88,7 +89,7 @@ final class CompanionClient: ObservableObject {
     }
     func cancel() {
         generation = UUID(); network?.invalidateAndCancel(); network = nil
-        fetching = false; reports = []; message = nil; connectedAt = nil
+        fetching = false; reports = []; reportedProviders = []; message = nil; connectedAt = nil
     }
     func refresh() async {
         guard let link, !fetching, let base = URL(string: link.endpoint) else { return }
@@ -121,7 +122,8 @@ final class CompanionClient: ObservableObject {
             let payload = try JSONDecoder().decode(CompanionReports.self, from: data)
             guard payload.valid else { throw CompanionConnectionIssue.format }
             guard generation == ticket, !Task.isCancelled else { return }
-            reports = payload.reports; connectedAt = Date(); message = reports.isEmpty ? "No services selected on the computer." : nil
+            reports = payload.reports; reportedProviders = Set(reports.map(\.provider))
+            connectedAt = Date(); message = reports.isEmpty ? "No services selected on the computer." : nil
         } catch {
             guard generation == ticket else { return }
             reports = []

@@ -48,6 +48,7 @@ final class RemoteFindMyController: ObservableObject {
     private var sequence = 0
     private var nextCheck = Date.distantPast
     private var lastFresh = Date()
+    private var lastLifeFresh = Date()
     private var gate = RemoteFindMyAlertGate()
     private var lifeGate = RemoteFindMyAlertGate()
     private var lastLoggedState: RemoteFindMyState?
@@ -192,7 +193,8 @@ final class RemoteFindMyController: ObservableObject {
         monitoring = true
         ticket = UUID(); began = Date(); sequence = 0; nextCheck = .distantPast
         retry.reset(); lastLoggedState = nil
-        lastFresh = Date(); gate = RemoteFindMyAlertGate(); lifeGate = RemoteFindMyAlertGate(); response = nil; transportState = .waiting
+        lastFresh = Date(); lastLifeFresh = lastFresh
+        gate = RemoteFindMyAlertGate(); lifeGate = RemoteFindMyAlertGate(); response = nil; transportState = .waiting
         // Keep connections reusable for this pairing/session. Stop invalidates
         // the client before any new endpoint or access key can be installed.
         if let link { network = Self.client(link) }
@@ -293,7 +295,9 @@ final class RemoteFindMyController: ObservableObject {
             DeveloperLogStore.shared.record("remote_findmy_report", ["state": state.rawValue,
                 "apple_age_seconds": reportDate.map { String(Int(max(0, Date().timeIntervalSince($0)))) } ?? "missing"])
             if [.match, .different].contains(state) || [.match, .different].contains(life360State) {
-                lastFresh = Date(); scheduleDeadline()
+                if [.match, .different].contains(state) { lastFresh = Date() }
+                if [.match, .different].contains(life360State) { lastLifeFresh = Date() }
+                scheduleDeadline()
             }
         } catch {
             guard current == ticket, !Task.isCancelled else { return }
@@ -318,7 +322,7 @@ final class RemoteFindMyController: ObservableObject {
         }
         guard alerts else { return }
         let lifeValue = life360State
-        if lifeGate.shouldNotify(lifeValue, now: Date(), lastFresh: began), let message = lifeValue.life360Warning {
+        if lifeGate.shouldNotify(lifeValue, now: Date(), lastFresh: lastLifeFresh), let message = lifeValue.life360Warning {
             notify(id: "shift.life360.checks", title: lifeValue.life360Title, body: checkMessage ?? message, delay: nil)
         }
         guard let message = value.warning else { return }
