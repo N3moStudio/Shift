@@ -269,7 +269,7 @@ final class RoutePlanner: ObservableObject {
     }
     func setWait(_ id: UUID, seconds: Double) {
         guard seconds.isFinite else { return }
-        let value = min(3600, max(0, seconds))
+        let value = StopDuration.normalized(seconds)
         if let index = waypoints.firstIndex(where: { $0.id == id }) { waypoints[index].waitSeconds = value }
         for index in alternatives.indices {
             if let stop = alternatives[index].stops.firstIndex(where: { $0.id == id }) { alternatives[index].stops[stop].waitSeconds = value }
@@ -289,7 +289,7 @@ final class RoutePlanner: ObservableObject {
         guard let route = selectedRoute, route.stops.count < 20, fraction.isFinite, wait.isFinite else { return }
         let title = String(name.trimmingCharacters(in: .whitespacesAndNewlines).prefix(120))
         let stop = RouteStop(name: title.isEmpty ? "Stop \(route.stops.count + 1)" : title,
-            metres: min(1, max(0, fraction)) * route.track.length, waitSeconds: min(3600, max(0, wait)))
+            metres: min(1, max(0, fraction)) * route.track.length, waitSeconds: StopDuration.normalized(wait))
         guard let index = alternatives.firstIndex(where: { $0.id == route.id }) else { return }
         alternatives[index].stops.append(stop)
         alternatives[index].stops.sort { $0.metres < $1.metres }
@@ -352,7 +352,7 @@ final class RoutePlanner: ObservableObject {
 
     func applyPlaceEdits(_ places: [TripWaypoint], mode: TravelMode) {
         guard places.count >= 2, places.count <= 22, let start = places.first, let end = places.last,
-              places.allSatisfy({ $0.point.isValid && !$0.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && $0.name.count <= 120 && (0...3600).contains($0.waitSeconds) }),
+              places.allSatisfy({ $0.point.isValid && !$0.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && $0.name.count <= 120 && StopDuration.isValid($0.waitSeconds) }),
               let route = selectedRoute else { return }
         let stops = Array(places.dropFirst().dropLast())
         let old = editableWaypoints
