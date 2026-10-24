@@ -65,8 +65,9 @@ Optional [cloud](CloudFindMy/RENDER-SETUP.txt) and
 [Windows](Companion/README.txt) helpers can compare Find My **Devices** and optional Life360 reports.
 Each person supplies their own helper address and credentials. No shared server
 or account is included. These unofficial integrations may stop working.
-The Windows helper also supports in-app Life360 reports. Dynamic Island currently
-shows Find My Devices evidence, not Life360 or Find My People.
+Find My and Life360 reports from either helper can appear inside the existing
+Shift Live Activity, with separate service status rows. Find My People is not
+supported.
 [Verification and free setup options](docs/VERIFICATION.md).
 
 ## Know what the status means

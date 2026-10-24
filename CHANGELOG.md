@@ -6,13 +6,13 @@ maps each build to its changes, source owners, validation and distribution statu
 ## 2.5.3 (51) — prerelease — 23 October 2026
 
 - Add optional Life360 support to the Render helper: protected observer sign-in, Circle/profile selection, read-only requests and disconnect. Apple and Life360 have independent sign-in, polling, errors and freshness. Either can be used alone.
-- Extend the existing Shift Live Activity with separate Find My iPhone and Life360 status/age rows and compact icons. One activity, no duplicate checker. Each visibility switch hides only its status, without stopping checks. Display choices persist and are included in library settings backups.
+- Extend the existing Shift Live Activity with separate Find My iPhone and Life360 status/age rows and compact icons. One activity, no duplicate checker. Expanded Island uses one compact status/age row per service and shows the command timer once. Each visibility switch hides only its status, without stopping checks. Display choices persist and are included in library settings backups.
 - Add per-service cloud checking switches (Life360 defaults off). Older pairings/helpers remain compatible; outdated helpers explain the Life360 upgrade. Windows Life360 reports can also appear in the same activity.
 - Distinguish offline, server wake/timeout, bad address, certificate failure, wrong key, replaced session, rate limit, invalid clock/request and unsupported responses. Connection tests show each provider's readiness without fetching locations.
 - Add a shareable /healthz URL and free cron-job.org guidance. Health pings never poll providers, extend the phone lease or prove a match. No paid hosting or push service was added.
 - Add twelve cloud and six Swift regression tests covering isolation, protected setup, actual report age, stop/lease handling, backward compatibility, local evidence and activity payload size. Refresh the bundled source-only helper.
 - Update the Change Ledger, source map, setup and device checklist. Battery proposals remain separate and await user approval; none are implemented here.
-- Validation: 62 cloud tests pass locally. Mac CI and IPA validation pending; this entry will record the actual result before release.
+- Validation: both build-51 attempts passed 402 tests (307 Swift, 14 packaging/icon, 19 Windows, 62 cloud). Final Mac run 40066390461 built the app and extension and packaged the IPA in 2m 33s. Exact commits, checksums and layout follow-up are in the Change Ledger. Prerelease `v2.5.3-beta.1`; real provider sign-in and physical-iPhone acceptance remain pending.
 
 ## 2.5.2 (50) — prerelease — 23 October 2026
 
