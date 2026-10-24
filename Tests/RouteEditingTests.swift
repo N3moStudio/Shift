@@ -123,6 +123,19 @@ final class RouteEditingTests: XCTestCase {
         preview.seek(to: 10, length: 40, stops: [stop])
         XCTAssertEqual(preview.waitingSeconds, 15)
     }
+    func testPreviewRestoresFullDayWaitAndPausesIt() {
+        let stop = RouteStop(name: "Long stop", metres: 10, waitSeconds: 86_400)
+        var preview = RouteRehearsal()
+        preview.seek(to: 10, length: 40, stops: [stop])
+        preview.advance(seconds: 0.25, length: 40, speed: 10, sections: [], stops: [stop])
+        XCTAssertEqual(preview.waitingSeconds, 86_400)
+        preview.isPlaying = true
+        preview.rate = 1
+        preview.advance(seconds: 0.25, length: 40, speed: 10, sections: [], stops: [stop])
+        XCTAssertEqual(preview.waitingSeconds, 86_399.75)
+        preview.seek(to: 10, length: 40, stops: [stop])
+        XCTAssertEqual(preview.waitingSeconds, 86_400)
+    }
     func testPreviewSeekClampsEndpointsAndRejectsNonFiniteInputs() {
         var preview = RouteRehearsal()
         preview.seek(to: 500, length: 100, stops: [])

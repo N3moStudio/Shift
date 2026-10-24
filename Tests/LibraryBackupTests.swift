@@ -30,6 +30,14 @@ final class LibraryBackupTests: XCTestCase {
         backup.format = "Locus library"
         XCTAssertEqual(try LibraryBackup.decode(JSONEncoder().encode(backup)).places, backup.places)
     }
+    func testFullDayStopsSurviveBackupAndRejectOutOfRangeImports() throws {
+        var backup = fixture()
+        backup.trips[0].stops = [RouteStop(name: "Long stop", metres: 100, waitSeconds: 86_400)]
+        let restored = try LibraryBackup.decode(backup.encoded())
+        XCTAssertEqual(restored.trips[0].stops, backup.trips[0].stops)
+        backup.trips[0].stops[0].waitSeconds = 86_401
+        XCTAssertThrowsError(try LibraryBackup.decode(JSONEncoder().encode(backup)))
+    }
     func testRepeatedImportPreservesLocalChangesWithoutDuplicates() throws {
         var local = fixtureTrip()
         var incoming = local

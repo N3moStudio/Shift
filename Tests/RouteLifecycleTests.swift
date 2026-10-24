@@ -25,8 +25,17 @@ final class RouteLifecycleTests: XCTestCase {
         XCTAssertEqual(failure(make(metres: .nan)), .invalid)
         XCTAssertEqual(failure(make(metres: 1001)), .invalid)
         XCTAssertEqual(failure(make(wait: -1)), .invalid)
-        XCTAssertEqual(failure(make(wait: 3601)), .invalid)
+        XCTAssertEqual(failure(make(wait: 86_401)), .invalid)
         XCTAssertEqual(failure(make(pending: .infinity)), .invalid)
+    }
+    func testLiveStopAcceptsFullDayAndIntermediateSeconds() throws {
+        for seconds in [1.0, 3599, 3601, 86_399, 86_400] {
+            let stop = try make(wait: seconds).get()
+            XCTAssertEqual(stop.waitSeconds, seconds)
+            XCTAssertTrue(stop.isValid(length: 1000))
+        }
+        XCTAssertEqual(failure(make(wait: .infinity)), .invalid)
+        XCTAssertEqual(failure(make(wait: .nan)), .invalid)
     }
     func testAddingFutureStopPreservesCurrentWaitAndCompletedStops() throws {
         let first = RouteStop(name: "First", metres: 10, waitSeconds: 0)

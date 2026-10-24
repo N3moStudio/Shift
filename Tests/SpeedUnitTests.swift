@@ -2,6 +2,36 @@ import XCTest
 @testable import SessionPresentation
 
 final class SpeedUnitTests: XCTestCase {
+    func testEveryWholeSecondThrough24HoursHasLosslessComponents() {
+        for total in 0...86_400 {
+            let seconds = Double(total)
+            let hours = StopDuration.value(.hours, in: seconds)
+            let minutes = StopDuration.value(.minutes, in: seconds)
+            let remainder = StopDuration.value(.seconds, in: seconds)
+            XCTAssertEqual(hours * 3600 + minutes * 60 + remainder, total)
+            XCTAssertTrue(StopDuration.isValid(seconds))
+        }
+    }
+    func testEditingDurationComponentsPreservesOtherUnitsAndCaps24Hours() {
+        XCTAssertEqual(StopDuration.replacing(.minutes, in: 3661, with: 30), 5401)
+        XCTAssertEqual(StopDuration.replacing(.seconds, in: 3661, with: 59), 3719)
+        XCTAssertEqual(StopDuration.replacing(.hours, in: 3661, with: 24), 86_400)
+        XCTAssertEqual(StopDuration.replacing(.hours, in: 86_400, with: 23), 82_800)
+        XCTAssertEqual(StopDuration.replacing(.minutes, in: 86_400, with: 1), 86_400)
+        XCTAssertEqual(StopDuration.replacing(.seconds, in: 0, with: Int.max), 59)
+        XCTAssertEqual(StopDuration.replacing(.hours, in: 3661, with: Int.min), 61)
+    }
+    func testLongDurationLabelsAndUnclampedRouteTotals() {
+        XCTAssertEqual(StopDuration.label(3600), "1 hr")
+        XCTAssertEqual(StopDuration.label(3601), "1 hr 1 sec")
+        XCTAssertEqual(StopDuration.label(86_399), "23 hr 59 min 59 sec")
+        XCTAssertEqual(StopDuration.label(86_400), "24 hr")
+        XCTAssertEqual(StopDuration.formatted(172_815), "48 hr 15 sec")
+        XCTAssertEqual(StopDuration.formatted(0), "0 sec")
+        XCTAssertFalse(StopDuration.isValid(86_401))
+        XCTAssertFalse(StopDuration.isValid(.nan))
+        XCTAssertFalse(StopDuration.isValid(-1))
+    }
     func testExactConversionsAndPhysicalLimits() {
         XCTAssertEqual(SpeedUnit.kilometersPerHour.value(fromMPH: 60), 96.56064, accuracy: 1e-10)
         XCTAssertEqual(SpeedConversion.metresPerSecond(mph: 1), 0.44704, accuracy: 1e-10)

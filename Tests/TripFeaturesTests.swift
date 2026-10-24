@@ -97,7 +97,26 @@ final class TripFeaturesTests: XCTestCase {
         XCTAssertEqual(StopDuration.label(90), "1 min 30 sec")
         XCTAssertEqual(StopDuration.normalized(-1), 0)
         XCTAssertEqual(StopDuration.normalized(.nan), 0)
-        XCTAssertEqual(StopDuration.normalized(5000), 3600)
+        XCTAssertEqual(StopDuration.normalized(5000), 5000)
+        XCTAssertEqual(StopDuration.normalized(86_401), 86_400)
+    }
+    func testFullDayStopSurvivesSavingRecoveryAndAwakeCountdown() throws {
+        var original = trip()
+        original.stops[0].waitSeconds = 86_400
+        let restored = try JSONDecoder().decode(SavedTrip.self, from: JSONEncoder().encode(original))
+        XCTAssertTrue(restored.isValid)
+        XCTAssertEqual(restored.stops, original.stops)
+        var progress = RouteStopProgress()
+        progress.arrive(restored.stops[0])
+        progress.tick(10_000) // Suspension cannot silently consume hours.
+        XCTAssertEqual(progress.remainingSeconds, 86_399.5)
+        let recovered = try JSONDecoder().decode(RouteStopProgress.self, from: JSONEncoder().encode(progress))
+        XCTAssertEqual(recovered, progress)
+        XCTAssertTrue(recovered.isValid(for: restored.stops, at: 100))
+        for _ in 0..<172_798 { progress.tick(0.5) }
+        XCTAssertEqual(progress.remainingSeconds, 0.5)
+        progress.tick(0.5)
+        XCTAssertNil(progress.next(in: restored.stops))
     }
     func testZeroWaitAndCompletedStopsDoNotLoopForever() {
         let stop = RouteStop(name: "Pass", metres: 100, waitSeconds: 0)
