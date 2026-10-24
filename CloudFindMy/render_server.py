@@ -8,6 +8,7 @@ from dataclasses import dataclass
 import hashlib
 import hmac
 import html
+import inspect
 import json
 import logging
 import os
@@ -22,8 +23,9 @@ from aiohttp import web
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "Companion"))
 from reports import failure_state, missing
-from core import Store
+from core import Store, validate_request
 from web_apple import AppleSetupError, WebApple
+from web_life360 import Life360SetupError, WebLife360
 
 COOKIE = "__Host-shift-admin"
 RENDER_HOST = re.compile(r"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.onrender\.com\Z")
@@ -70,8 +72,10 @@ class Limit:
 
 class Owner:
     """All UI/store state belongs to the event loop; Apple work is serialized."""
-    def __init__(self, connector, store):
+    def __init__(self, connector, store, provider="findmy-device"):
         self.connector, self.store = connector, store
+        self.provider = provider
+        self.name = "Apple" if provider == "findmy-device" else "Life360"
         self.stage, self.message = "sign-in", ""
         self.devices, self.target = [], ""
         self.job = None
@@ -95,10 +99,17 @@ class Owner:
         self.message = ""
         self.job = asyncio.create_task(self.run(action, args))
 
+    async def call(self, action, *args):
+        method = getattr(self.connector, action)
+        if inspect.iscoroutinefunction(method):
+            # Cancels async requests cleanly; Apple uses its own bounded HTTP adapter.
+            return await asyncio.wait_for(method(*args), timeout=45)
+        return await asyncio.to_thread(method, *args)
+
     async def run(self, action, args):
         async with self.lock:
             try:
-                result = await asyncio.to_thread(getattr(self.connector, action), *args)
+                result = await self.call(action, *args)
                 self.stage = result or "sign-in"
                 self.devices = [name for _, name in self.connector.choices]
                 self.target = self.connector.target if self.stage == "ready" else ""
@@ -108,14 +119,16 @@ class Owner:
             except Exception as error:
                 self.stage, self.devices, self.target = "sign-in", [], ""
                 self.store.auth_state = "sign-in"
-                if isinstance(error, AppleSetupError):
+                if isinstance(error, (AppleSetupError, Life360SetupError)):
                     self.message = str(error)
                 elif failure_state(error) == "blocked":
-                    self.message = "Apple declined this sign-in. Review your account at iCloud.com, then try later."
+                    self.message = f"{self.name} declined or limited this sign-in. Check the official app, then try later."
+                elif self.provider == "life360":
+                    self.message = "Life360 sign-in could not finish. Check the observer credentials in the official app. Extra verification or blocked unofficial access is not supported; do not disable account protection."
                 else:
                     self.message = "Could not finish that Apple step. Check your connection and sign in again."
                 with suppress(Exception):
-                    await asyncio.to_thread(self.connector.close)
+                    await self.call("close")
 
     async def fetch(self, sid):
         generation = self.generation
@@ -123,18 +136,18 @@ class Owner:
             if self.busy or self.stage != "ready" or generation != self.generation:
                 return
             try:
-                report = (await asyncio.to_thread(self.connector.fetch)).json()
+                report = (await self.call("fetch")).json()
             except Exception as error:
-                report = missing("findmy-device", self.target, failure_state(error)).json()
+                report = missing(self.provider, self.target, failure_state(error)).json()
             if generation != self.generation:
                 return
             self.store.publish(sid, report)
             if self.store.auth_state:
                 self.stage = "sign-in"
                 self.devices, self.target = [], ""
-                self.message = "Apple sign-in needs attention. Sign in again below."
+                self.message = f"{self.name} sign-in needs attention. Check the official app, then reconnect below."
                 with suppress(Exception):
-                    await asyncio.to_thread(self.connector.close)
+                    await self.call("close")
 
 
 def form(action, fields, label, csrf="", secondary=False):
@@ -143,9 +156,35 @@ def form(action, fields, label, csrf="", secondary=False):
     return f'<form method="post" action="{action}">{hidden}{fields}<button{style}>{label}</button></form>'
 
 
-def page(owner=None, csrf="", error=""):
+def life360_panel(owner, csrf):
+    notice = f'<p role="alert" class="notice">{html.escape(owner.message)}</p>' if owner.message else ""
+    if owner.busy:
+        body = "<p>Finishing your Life360 step… This page will refresh.</p>"
+    elif owner.stage in ("circle", "member"):
+        is_circle = owner.stage == "circle"
+        label = "Circle" if is_circle else "Your profile"
+        options = "".join(f'<option value="{i}">{html.escape(name)}</option>' for i, name in enumerate(owner.devices))
+        body = form("/life360/" + ("circle" if is_circle else "select"),
+                    f'<label>{label}<select name="choice">{options}</select></label>',
+                    "Choose Circle" if is_circle else "Check my profile", csrf)
+    elif owner.stage == "ready":
+        body = f'<p>Life360 ready: {html.escape(owner.target)}</p><p class="muted">Enable Life360 checks in Shift. Ready does not mean a location matched.</p>'
+    else:
+        body = ('<p>Use a separate, consenting Circle member’s observer account to check your own phone. Signing in with your phone’s account can sign it out.</p>' +
+                form("/life360/login",
+                     '<label>Observer email or phone<input name="username" autocomplete="username" maxlength="254" required></label>'
+                     '<label>Password<input name="password" type="password" autocomplete="current-password" maxlength="1024" required></label>'
+                     '<label><input class="consent" type="checkbox" name="consent" value="yes" required> I have permission to use this observer account and will select my own profile.</label>',
+                     "Sign in to Life360", csrf))
+        body += '<p class="muted">Optional, unofficial connection. No Life360 subscription required by Shift. Life360 may block access. Credentials go to this private helper and Life360; no password is saved to disk.</p>'
+    if not owner.busy and owner.stage != "sign-in":
+        body += form("/life360/disconnect", "", "Disconnect Life360", csrf, True)
+    return f'<section class="spaced"><div class="eyebrow">LIFE360 · OPTIONAL</div><h2>Check your Life360 profile</h2>{notice}{body}</section>'
+
+
+def page(owner=None, csrf="", error="", life=None):
     busy = owner is not None and owner.busy
-    refresh = '<meta http-equiv="refresh" content="3;url=/">' if busy else ""
+    refresh = '<meta http-equiv="refresh" content="3;url=/">' if busy or (life and life.busy) else ""
     message = error or (owner.message if owner else "")
     notice = f'<p role="alert" class="notice">{html.escape(message)}</p>' if message else ""
     if owner is None:
@@ -183,19 +222,27 @@ def page(owner=None, csrf="", error=""):
         if owner.stage != "sign-in":
             body += form("/apple/disconnect", "", "Disconnect Apple" if owner.stage == "ready" else "Start over", csrf, True)
         body += form("/logout", "", "Lock this page", csrf, True)
-    return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">{refresh}<title>Shift · Find My helper</title><link rel="stylesheet" href="/style.css"></head><body><main><header><span class="brand">Shift</span><span class="muted">by N3mo Studio</span></header><section><div class="eyebrow">REMOTE FIND MY</div><h1>{title}</h1>{notice}{body}</section><footer>Your helper checks locations. It does not control spoofing.</footer></main></body></html>'''
+    extra = life360_panel(life, csrf) if owner and life else ""
+    if owner:
+        extra += '<section class="spaced"><h2>Connect Shift</h2><a class="button" href="/pairing">Download setup file</a><p>Connect either service above, then use Settings → Find My &amp; Life360 → Cloud helper in Shift 2.5.3 or later.</p><p class="muted">For optional free uptime pings, use cron-job.org with this website’s /healthz address every five minutes. No keys, passwords, headers or request body. Pings do not check locations or keep phone monitoring alive.</p></section>'
+    return f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">{refresh}<title>Shift · Cloud checks</title><link rel="stylesheet" href="/style.css"></head><body><main><header><span class="brand">Shift</span><span class="muted">by N3mo Studio</span></header><section><div class="eyebrow">FIND MY IPHONE · DEVICES</div><h1>{title}</h1>{notice}{body}</section>{extra}<footer>Your helper checks locations. It does not control spoofing.</footer></main></body></html>'''
 
 
-STYLE = """*{box-sizing:border-box}html{color-scheme:light dark}body{margin:0;background:var(--canvas);color:var(--ink);font:17px/1.6 system-ui,sans-serif;min-height:100dvh;--canvas:#f5f3f8;--surface:#fff;--ink:#201a2b;--secondary:#625b6d;--accent:#6336c5;--on-accent:#fff;--border:#d3cbdc}main{max-width:560px;margin:auto;padding:40px 20px}header{display:flex;align-items:baseline;flex-wrap:wrap;gap:12px;margin:0 4px 28px}.brand{font-size:34px;font-weight:750;letter-spacing:-1.5px}.muted,footer{color:var(--secondary);font-size:15px}section{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:28px}h1{font-size:30px;line-height:1.2;letter-spacing:-.7px;margin:12px 0 18px;overflow-wrap:anywhere}.eyebrow{font-size:13px;font-weight:650;letter-spacing:1.5px;color:var(--accent)}label{display:block;font-size:16px;font-weight:600;margin:18px 0 8px}input,select{display:block;width:100%;min-height:48px;border:1px solid var(--border);border-radius:12px;background:var(--canvas);color:var(--ink);font:inherit;padding:12px;margin-top:7px}button,.button{display:block;width:100%;border:0;border-radius:14px;background:var(--accent);color:var(--on-accent);text-align:center;text-decoration:none;font:inherit;font-weight:650;padding:14px;margin-top:20px;cursor:pointer;min-height:48px}button.secondary{background:transparent;color:var(--accent);border:1px solid var(--border);margin-top:12px}a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:4px}.notice{padding:14px;border-radius:12px;background:var(--canvas);border-left:4px solid var(--accent)}.device{font-weight:600}footer{text-align:center;margin-top:22px}@media(prefers-color-scheme:dark){body{--canvas:#111015;--surface:#201e26;--ink:#f5f3f8;--secondary:#bdb5c9;--accent:#c5aeff;--on-accent:#1d1136;--border:#51475f}}@media(max-width:360px){main{padding:24px 12px}section{padding:20px}}"""
+STYLE = """.spaced{margin-top:20px}input.consent{width:auto;display:inline;min-height:24px}*{box-sizing:border-box}html{color-scheme:light dark}body{margin:0;background:var(--canvas);color:var(--ink);font:17px/1.6 system-ui,sans-serif;min-height:100dvh;--canvas:#f5f3f8;--surface:#fff;--ink:#201a2b;--secondary:#625b6d;--accent:#6336c5;--on-accent:#fff;--border:#d3cbdc}main{max-width:560px;margin:auto;padding:40px 20px}header{display:flex;align-items:baseline;flex-wrap:wrap;gap:12px;margin:0 4px 28px}.brand{font-size:34px;font-weight:750;letter-spacing:-1.5px}.muted,footer{color:var(--secondary);font-size:15px}section{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:28px}h1{font-size:30px;line-height:1.2;letter-spacing:-.7px;margin:12px 0 18px;overflow-wrap:anywhere}.eyebrow{font-size:13px;font-weight:650;letter-spacing:1.5px;color:var(--accent)}label{display:block;font-size:16px;font-weight:600;margin:18px 0 8px}input,select{display:block;width:100%;min-height:48px;border:1px solid var(--border);border-radius:12px;background:var(--canvas);color:var(--ink);font:inherit;padding:12px;margin-top:7px}button,.button{display:block;width:100%;border:0;border-radius:14px;background:var(--accent);color:var(--on-accent);text-align:center;text-decoration:none;font:inherit;font-weight:650;padding:14px;margin-top:20px;cursor:pointer;min-height:48px}button.secondary{background:transparent;color:var(--accent);border:1px solid var(--border);margin-top:12px}a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:4px}.notice{padding:14px;border-radius:12px;background:var(--canvas);border-left:4px solid var(--accent)}.device{font-weight:600}footer{text-align:center;margin-top:22px}@media(prefers-color-scheme:dark){body{--canvas:#111015;--surface:#201e26;--ink:#f5f3f8;--secondary:#bdb5c9;--accent:#c5aeff;--on-accent:#1d1136;--border:#51475f}}@media(max-width:360px){main{padding:24px 12px}section{padding:20px}}"""
 
 
-def make_render_app(config, connector=None, store=None, interval=60, refresh_wait=4):
+def make_render_app(config, connector=None, store=None, interval=60, refresh_wait=4, life_connector=None, life_store=None):
     store = store or Store()
     owner = Owner(connector or WebApple(), store)
+    life_store = life_store or Store(clock=store.clock)
+    life = Owner(life_connector or WebLife360(), life_store, "life360")
     sessions = {}
     key_limit, apple_limit, check_limit = Limit(10, 60), Limit(6, 300), Limit(1, 1)
+    life_limit = Limit(6, 300)
     refresh_task = None
     last_refresh = float("-inf")
+    life_refresh = None
+    last_life_refresh = float("-inf")
     closing = False
 
     def refresh_due():
@@ -210,6 +257,19 @@ def make_render_app(config, connector=None, store=None, interval=60, refresh_wai
         last_refresh = time.monotonic()
         refresh_task = asyncio.create_task(owner.fetch(sid))
         return refresh_task
+
+    def life_due():
+        nonlocal life_refresh, last_life_refresh
+        sid = life_store.polling_id()
+        if closing or not sid or life.busy:
+            return None
+        if life_refresh is not None and not life_refresh.done():
+            return life_refresh
+        if time.monotonic() - last_life_refresh < interval:
+            return None
+        last_life_refresh = time.monotonic()
+        life_refresh = asyncio.create_task(life.fetch(sid))
+        return life_refresh
 
     def admin(request):
         now = time.monotonic()
@@ -260,7 +320,7 @@ def make_render_app(config, connector=None, store=None, interval=60, refresh_wai
             state = admin(request)
         except web.HTTPUnauthorized:
             return web.Response(text=page(), content_type="text/html")
-        return web.Response(text=page(owner, state["csrf"]), content_type="text/html")
+        return web.Response(text=page(owner, state["csrf"], life=life), content_type="text/html")
 
     async def login(request):
         if not key_limit.take():
@@ -315,10 +375,38 @@ def make_render_app(config, connector=None, store=None, interval=60, refresh_wai
             raise web.HTTPNotFound()
         return web.HTTPSeeOther("/")
 
+    async def life_action(request):
+        admin(request)
+        data = await request.post()
+        action = request.match_info["action"]
+        if life.busy:
+            raise web.HTTPConflict(text="A Life360 step is running. Wait for it to finish.")
+        if action == "disconnect":
+            life.start("close")
+        elif action == "login":
+            if not life_limit.take():
+                raise web.HTTPTooManyRequests(text="Too many Life360 attempts. Wait five minutes and try again.")
+            username, password = str(data.get("username", "")).strip(), str(data.get("password", ""))
+            if data.get("consent") != "yes":
+                raise web.HTTPBadRequest(text="Confirm permission to use the observer account for your own profile.")
+            if not (3 <= len(username) <= 254 and 1 <= len(password) <= 1024):
+                raise web.HTTPBadRequest(text="Enter the observer email or phone and password.")
+            life.start("login", username, password)
+        elif action in ("circle", "select"):
+            choice = str(data.get("choice", ""))
+            expected = "circle" if action == "circle" else "member"
+            if (life.stage != expected or not choice.isascii() or not choice.isdigit()
+                    or len(choice) > 4 or not 0 <= int(choice) < len(life.devices)):
+                raise web.HTTPBadRequest(text="Choose one of the listed Circles or your own profile.")
+            life.start(action, int(choice))
+        else:
+            raise web.HTTPNotFound()
+        return web.HTTPSeeOther("/")
+
     async def pairing(request):
         admin(request)
-        if owner.busy or owner.stage != "ready":
-            raise web.HTTPConflict(text="Connect Apple and choose your iPhone first.")
+        if not any(not o.busy and o.stage == "ready" for o in (owner, life)):
+            raise web.HTTPConflict(text="Connect Apple or Life360 and choose your own device/profile first.")
         return web.Response(text=json.dumps(config.pairing, indent=2), content_type="application/json",
             headers={"Content-Disposition": 'attachment; filename="ShiftFindMyPairing.json"'})
 
@@ -334,7 +422,15 @@ def make_render_app(config, connector=None, store=None, interval=60, refresh_wai
         try:
             async with asyncio.timeout(5):
                 data = await request.json()
-            store.update(data)
+            validate_request(data, store.clock())
+            providers = data.get("providers", ["findmy-device"])
+            if (not isinstance(providers, list) or len(providers) > 2 or
+                    any(p not in ("findmy-device", "life360") for p in providers) or len(set(providers)) != len(providers)):
+                raise ValueError("Invalid providers")
+            # Each provider owns its report/auth state. One expired login must not
+            # stop the other. Legacy clients only activate Apple polling.
+            store.update(dict(data, active=data["active"] and "findmy-device" in providers))
+            life_store.update(dict(data, active=data["active"] and "life360" in providers))
         except RuntimeError:
             raise web.HTTPConflict(text="Session replaced; restart checks.")
         except (ValueError, TypeError, KeyError, AttributeError, TimeoutError):
@@ -342,20 +438,25 @@ def make_render_app(config, connector=None, store=None, interval=60, refresh_wai
         # The old path replied before the polling loop fetched Apple's report,
         # leaving the phone one check behind. Share one rate-limited refresh with
         # the poller and briefly wait for it without cancelling a slow Apple call.
-        pending = refresh_due()
-        if pending is not None:
-            await asyncio.wait({pending}, timeout=refresh_wait)
-        return web.json_response(store.snapshot())
+        pending = {task for task in (refresh_due(), life_due()) if task is not None}
+        if pending:
+            await asyncio.wait(pending, timeout=refresh_wait)
+        result = store.snapshot()
+        secondary = life_store.snapshot()
+        result["life360"] = {k: secondary[k] for k in ("status", "report")}
+        return web.json_response(result)
 
     async def status(request):
         phone(request)
         # Connection testing never polls Apple, shares points, or starts a lease.
         state = "busy" if owner.busy else "ready" if owner.stage == "ready" else "sign-in"
-        return web.json_response({"version": 1, "status": state})
+        secondary = "busy" if life.busy else "ready" if life.stage == "ready" else "sign-in"
+        return web.json_response({"version": 1, "status": state, "life360": secondary})
 
     async def end(request):
         phone(request)
         store.close(request.match_info["sid"])
+        life_store.close(request.match_info["sid"])
         return web.Response(status=204)
 
     async def health(_):
@@ -368,6 +469,7 @@ def make_render_app(config, connector=None, store=None, interval=60, refresh_wai
     async def poll():
         while True:
             refresh_due()
+            life_due()
             await asyncio.sleep(1)
 
     async def lifespan(_):
@@ -388,6 +490,15 @@ def make_render_app(config, connector=None, store=None, interval=60, refresh_wai
         async with owner.lock:
             with suppress(Exception):
                 await asyncio.to_thread(owner.connector.close)
+        if life_refresh:
+            with suppress(Exception):
+                await asyncio.shield(life_refresh)
+        if life.job:
+            with suppress(Exception):
+                await asyncio.shield(life.job)
+        async with life.lock:
+            with suppress(Exception):
+                await life.call("close")
         sessions.clear()
 
     app.cleanup_ctx.append(lifespan)
@@ -397,6 +508,7 @@ def make_render_app(config, connector=None, store=None, interval=60, refresh_wai
     app.router.add_post("/login", login)
     app.router.add_post("/logout", logout)
     app.router.add_post("/apple/{action}", apple)
+    app.router.add_post("/life360/{action}", life_action)
     app.router.add_get("/pairing", pairing)
     app.router.add_post("/v1/check", check)
     app.router.add_get("/v1/status", status)

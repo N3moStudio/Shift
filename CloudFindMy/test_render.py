@@ -270,10 +270,10 @@ class RenderWebTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual((await self.get("/v1/status", headers=headers)).status, 401)
         headers["Authorization"] = "Bearer " + self.config.phone_token
         response = await self.get("/v1/status", headers=headers)
-        self.assertEqual(await response.json(), {"version": 1, "status": "sign-in"})
+        self.assertEqual(await response.json(), {"version": 1, "status": "sign-in", "life360": "sign-in"})
         await self.connect()
         response = await self.get("/v1/status", headers=headers)
-        self.assertEqual(await response.json(), {"version": 1, "status": "ready"})
+        self.assertEqual(await response.json(), {"version": 1, "status": "ready", "life360": "sign-in"})
         self.assertIsNone(self.store.polling_id())
         self.assertEqual(self.fake.fetches, 0)
 

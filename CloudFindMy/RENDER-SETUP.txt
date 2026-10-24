@@ -1,8 +1,8 @@
-SHIFT REMOTE FIND MY — RENDER FREE (Shift 2.3.2 / 40)
+SHIFT REMOTE FIND MY — RENDER FREE (Shift 2.5.3 / 51)
 
 Start here for Render. START-HERE.txt covers the separate Oracle terminal helper.
 Use your own Apple Account and your own iPhone. This checks Find My Devices,
-not People or Life360. A match does not prove what another person sees.
+not People. Life360 is optional through its separate observer sign-in below. A match does not prove what another person sees.
 
 This download contains reusable source only. It includes no deployed service,
 Apple login, helper key, or pairing file. Each user creates their own helper.
@@ -11,7 +11,7 @@ its owner key comes from SHIFT_ADMIN_KEY. Neither is built into the iPhone app.
 
 1. Push this update first
 In GitHub Desktop, commit the Render update and Push origin.
-Build and install Shift 2.3.2 (40), or newer, from GitHub Actions. Earlier app
+Build and install Shift 2.5.3 (51), or newer, from GitHub Actions. Earlier app
 versions reject the Render setup file. Keep the same signing identity and app.
 Do not uninstall your existing app just to update it.
 
@@ -19,7 +19,7 @@ Do not uninstall your existing app just to update it.
 Source Code: your existing Shift source repository
 Name: choose your own unique service name (for example, shift-helper)
 Language: Python 3
-Branch: main
+Branch: codex/shift-2.5.0 for the 2.5.3 prerelease
 Region: choose a region offered for your plan
 Root Directory: EMPTY (the helper also reads Companion/reports.py)
 Build Command: pip install -r CloudFindMy/requirements.txt
@@ -41,8 +41,8 @@ Unlock it with SHIFT_ADMIN_KEY. Sign into Apple on that helper page, complete
 verification, and select YOUR iPhone. This is your own helper, not Apple's site.
 Download ShiftFindMyPairing.json. Keep it private: it contains a helper access key.
 
-In Shift 2.3.2 or later:
-Settings > Find My checks > Cloud helper > Connect your helper.
+In Shift 2.5.3 or later:
+Settings > Find My & Life360 > Cloud helper > Connect your helper.
 Enter your HTTPS onrender.com URL and helper key, then Connect.
 Alternatively, tap Import setup file instead and choose ShiftFindMyPairing.json.
 Existing saved cloud pairings remain compatible. No Render service recreation
@@ -102,3 +102,26 @@ https://render.com/docs/web-services
 https://render.com/docs/free
 https://render.com/docs/faq
 https://cron-job.org/en/faq/
+
+2.5.3 / 51: OPTIONAL LIFE360 AND ONE DYNAMIC ISLAND
+- Redeploy this updated source on your existing Render service. Use branch
+  codex/shift-2.5.0 for this prerelease. Keep the URL and SHIFT_ADMIN_KEY.
+- The dependency list now includes life360==7.2.0. No paid Life360 tier or
+  paid Render service is required by Shift. Unofficial access may be blocked.
+- Unlock the helper website and use its Life360 section. Use a separate,
+  consenting Circle member's observer account that already sees YOUR profile.
+  Using your phone's own account may sign it out. Select the Circle, then yourself.
+- Each provider signs in independently. Either one can be used alone. Browser
+  sign-in is lost on restart; reconnect there without changing the phone pairing.
+- In Shift: Settings > Find My & Life360 > Cloud helper. Enable Check Life360
+  and/or Check Find My iPhone, then Test connection and start a location session.
+- Show Find My iPhone status and Show Life360 status control visibility inside
+  the ONE existing Shift Live Activity (Island and Lock Screen). They do not
+  disable checking; use the Check switches for that.
+- Life360 reports use the actual location timestamp, not the download time.
+  Sign-in, blocked access, old locations and network failures never count as a match.
+- Optional cron-job.org health pings apply to the same helper for both services.
+  They never call either provider, renew a phone lease, or bypass sign-in.
+- Oracle's terminal helper is still Apple-only. Old phone setup files remain valid.
+- Source and helper tests cover these flows with synthetic accounts. Real provider
+  login, background behavior and the Island layout need physical-iPhone testing.

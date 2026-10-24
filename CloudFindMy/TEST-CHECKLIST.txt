@@ -59,3 +59,12 @@ Send back: version/build, which numbered test failed, approximate time,
 Wi-Fi/cellular + Low Power Mode state, exact displayed status and report age,
 and the developer log if useful. Its existing location history is sensitive;
 share it only through the private channel you intend to use.
+
+2.5.3 cloud Life360 acceptance:
+- Pair with Life360 only, Apple only, then both. Ensure only chosen providers poll.
+- Check separate old/match/sign-in states; one failure must not hide the other.
+- Toggle each status visibility: one Shift Live Activity, never a duplicate.
+- Disable a service, stop spoofing, background/force-close, and expire the lease.
+- Ping /healthz without secrets: no location fetch and no lease extension.
+- Restart the server: keys still pair; provider sign-in is required again.
+- Test offline, sleeping server, wrong key, outdated helper and invalid clock errors.
