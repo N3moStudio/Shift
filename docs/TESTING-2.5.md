@@ -1,7 +1,22 @@
 # Shift 2.5.x test builds
 
-This is a development build, not a published release. A successful IPA build is
+These are test builds; any GitHub release is marked prerelease. A successful IPA build is
 separate from testing on a signed iPhone. Record both results before release.
+
+## 2.5.2 (50): waits through 24 hours
+
+1. Create/open a route with a stop. Tap its clock/wait row in the numbered timeline. Also check Edit place → Wait here and Add stop → Wait here; all three use the same Hours / Minutes / Seconds controls.
+2. Choose 0:00:01, 0:00:15, 0:00:59, 0:01:30, 1:00:01, 23:59:59 and 24:00:00. At 24 hours, minutes/seconds become zero and are disabled. Changing hours below 24 makes them available again.
+3. Try every quick preset. Cancel and swipe-dismiss must keep the old value. Done changes only that stop. Apply to all explicitly changes all draft stops.
+4. Save/reopen, duplicate and export/import a trip with a 24-hour stop. Confirm the precise value survives. Older 2.5.0/2.5.1 builds cannot import waits beyond their one-hour limit.
+5. Preview the trip; jump to the long stop, play briefly, pause, then seek back to restore the full duration. Use Skip wait to continue rehearsal without waiting a day. Preview must not send a location command.
+6. Run a short actual stop and pause halfway. The countdown freezes; resume completes it once. Insert a future long stop during travel and verify it is accepted. Test a long stop's initial countdown and recovery without claiming a full-day device run.
+7. Give two stops 24 hours each. Their aggregate wait must show 48 hr, not 24 hr or a raw seconds total. Travel time remains separate.
+8. Check the smallest supported iPhone, landscape, VoiceOver and largest text. Wheels must scroll independently; accessibility text uses readable menus. Done/Cancel and Apply to all stay reachable.
+
+A 24-hour planned stop is not a promise of uninterrupted background operation or
+24-hour Dynamic Island visibility. Countdown time advances only with a running,
+fresh route worker; interruption time is not deducted. See [verification limits](VERIFICATION.md).
 
 ## 2.5.1 (49) interface checks
 
