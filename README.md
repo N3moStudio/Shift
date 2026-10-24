@@ -2,7 +2,7 @@
   <img src="docs/images/shift-cover.png" alt="Shift by N3mo Studio. Make your next move. Location simulation for iPhone." width="100%">
 </p>
 
-<p align="center"><strong>2.5.2 prerelease · iOS 18+ · SwiftUI · MIT licensed</strong></p>
+<p align="center"><strong>2.5.3 prerelease · iOS 18+ · SwiftUI · MIT licensed</strong></p>
 <p align="center">
   <a href="SETUP.md">Get started</a> &nbsp;·&nbsp;
   <a href="CHANGELOG.md">Changelog</a> &nbsp;·&nbsp;
@@ -33,7 +33,13 @@ and accessibility settings.
 
 ## The latest
 
-The **2.5.2 prerelease** lets each route stop last from **0 seconds to 24 hours**,
+The **2.5.3 prerelease** adds optional cloud Life360 checks alongside Find My
+iPhone, with independent status rows inside Shift's existing Dynamic Island and
+Lock Screen activity. Show/hide each service, distinguish cloud connection errors,
+and copy the free cron-job.org uptime URL. Deploy the updated helper first;
+[setup and verification limits](docs/VERIFICATION.md) explain what each check means.
+
+Each route stop can last from **0 seconds to 24 hours**,
 using Hours / Minutes / Seconds controls and quick presets. Long waits survive
 saving and backups, and countdowns show readable hours, minutes and seconds.
 It includes 2.5.1's compact route controls, numbered timeline, scrubbable preview
@@ -56,7 +62,7 @@ target is iOS 18; compatibility still depends on the device, iOS version, and
 signing setup. [Follow the short setup guide →](SETUP.md)
 
 Optional [cloud](CloudFindMy/RENDER-SETUP.txt) and
-[Windows](Companion/README.txt) helpers can compare Find My **Devices** reports.
+[Windows](Companion/README.txt) helpers can compare Find My **Devices** and optional Life360 reports.
 Each person supplies their own helper address and credentials. No shared server
 or account is included. These unofficial integrations may stop working.
 The Windows helper also supports in-app Life360 reports. Dynamic Island currently

@@ -33,8 +33,8 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.n3mostudio.shift
         PRODUCT_NAME: Locus
-        MARKETING_VERSION: "2.5.2"
-        CURRENT_PROJECT_VERSION: "50"
+        MARKETING_VERSION: "2.5.3"
+        CURRENT_PROJECT_VERSION: "51"
         INFOPLIST_FILE: Locus/Resources/Info.plist
         CODE_SIGN_ENTITLEMENTS: Locus/Resources/Locus.entitlements
         CODE_SIGN_STYLE: Automatic
@@ -79,8 +79,8 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.n3mostudio.shift.activity
         PRODUCT_NAME: LocusActivity
-        MARKETING_VERSION: "2.5.2"
-        CURRENT_PROJECT_VERSION: "50"
+        MARKETING_VERSION: "2.5.3"
+        CURRENT_PROJECT_VERSION: "51"
         CODE_SIGN_ENTITLEMENTS: LocusActivity/LocusActivity.entitlements
         INFOPLIST_FILE: LocusActivity/Info.plist
         GENERATE_INFOPLIST_FILE: false
