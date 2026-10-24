@@ -1,31 +1,50 @@
 import SwiftUI
 
-/// One-second adjustment plus direct entry, so both short and long stops are easy.
+/// Native time wheels keep seconds precise without making people convert hours.
 struct StopDurationControl: View {
     @Binding var seconds: Double
     @Environment(\.dynamicTypeSize) private var typeSize
-    @FocusState private var editing: Bool
-    private var value: Binding<Double> {
-        Binding(get: { seconds }, set: { seconds = StopDuration.normalized($0) })
+    private func selection(_ component: StopDuration.Component) -> Binding<Int> {
+        Binding(get: { StopDuration.value(component, in: seconds) }, set: {
+            seconds = StopDuration.replacing(component, in: seconds, with: $0)
+        })
+    }
+    private func picker(_ component: StopDuration.Component) -> some View {
+        Picker(component.title, selection: selection(component)) {
+            ForEach(0...component.maximum, id: \.self) { number in
+                Text("\(number)").tag(number)
+            }
+        }
+        .disabled(component != .hours && seconds >= StopDuration.range.upperBound)
+        .accessibilityLabel(component.title)
+        .accessibilityHint(component == .hours ? "Up to 24 hours" : "Choose hours below 24 to adjust")
     }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            LabeledContent("Wait (seconds)") {
-                TextField("Seconds", value: value, format: .number.precision(.fractionLength(0)).grouping(.never))
-                    .keyboardType(.numberPad)
-                    .multilineTextAlignment(.trailing)
-                    .frame(minWidth: 70)
-                    .focused($editing)
-                    .accessibilityLabel("Wait in seconds")
+            Text(StopDuration.label(seconds)).font(.headline).monospacedDigit()
+                .accessibilityLabel("Wait: \(StopDuration.label(seconds))")
+            if typeSize.isAccessibilitySize {
+                ForEach(StopDuration.Component.allCases, id: \.self) { component in
+                    picker(component).pickerStyle(.menu).frame(minHeight: 44)
+                }
+            } else {
+                HStack(spacing: 0) {
+                    ForEach(StopDuration.Component.allCases, id: \.self) { component in
+                        VStack(spacing: 0) {
+                            Text(component.title).font(.caption).foregroundStyle(.secondary)
+                            picker(component).pickerStyle(.wheel).labelsHidden()
+                                .frame(maxWidth: .infinity).frame(height: 132).clipped()
+                                .contentShape(Rectangle())
+                        }
+                    }
+                }
+                .frame(height: 160)
             }
-            Stepper(StopDuration.label(seconds), value: value, in: StopDuration.range, step: 1)
-                .accessibilityLabel("Adjust wait by one second")
-                .accessibilityValue(StopDuration.label(seconds))
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: typeSize.isAccessibilitySize ? 88 : 48), spacing: 8)], spacing: 8) {
-                ForEach([0.0, 5, 15, 30, 60], id: \.self) { preset in
-                    Button { editing = false; value.wrappedValue = preset } label: {
-                        Text("\(Int(preset))")
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: typeSize.isAccessibilitySize ? 110 : 76), spacing: 8)], spacing: 8) {
+                ForEach([0.0, 15, 60, 300, 3600, 86_400], id: \.self) { preset in
+                    Button { seconds = preset } label: {
+                        Text(preset == 0 ? "No wait" : StopDuration.label(preset))
                             .font(.subheadline.weight(.semibold)).monospacedDigit()
                             .frame(maxWidth: .infinity, minHeight: 44)
                             .foregroundStyle(seconds == preset ? LocusTheme.onAccent : Color.primary)
@@ -33,20 +52,14 @@ struct StopDurationControl: View {
                             .contentShape(Capsule())
                     }
                     .buttonStyle(.borderless)
-                    .accessibilityLabel(preset == 0 ? "Pass through without waiting" : "Wait \(Int(preset)) seconds")
+                    .accessibilityLabel(preset == 0 ? "Pass through without waiting" : "Wait \(StopDuration.label(preset))")
                     .accessibilityAddTraits(seconds == preset ? .isSelected : [])
                 }
             }
-            Text("0 passes through · up to 3,600 seconds")
+            Text("No wait passes straight through. Maximum: 24 hours. At 24 hours, minutes and seconds are zero.")
                 .font(.caption).foregroundStyle(.secondary)
-        }
-        .toolbar {
-            if editing {
-                ToolbarItemGroup(placement: .keyboard) {
-                    Spacer()
-                    Button("Done") { editing = false }
-                }
-            }
+            Text("The countdown pauses when the route is paused or interrupted.")
+                .font(.caption).foregroundStyle(.secondary)
         }
     }
 }

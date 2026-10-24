@@ -606,7 +606,7 @@ struct RoutePlannerSheet: View {
             }.padding(.vertical, 5)
             let waiting = route.stops.reduce(0) { $0 + $1.waitSeconds }
             let moving = max(0, route.estimate(speed: SpeedConversion.metresPerSecond(mph: displaySpeed)) - waiting)
-            Text("Travel \(JourneyText.duration(moving)) · Stops \(Int(waiting.rounded())) sec")
+            Text("Travel \(JourneyText.duration(moving)) · Stops \(StopDuration.formatted(waiting))")
                 .font(.caption).foregroundStyle(.secondary)
             Button {
                 tripName = library.trips.first(where: { $0.id == (hasJourney ? session.activeSavedTripID : planner.editingTripID) })?.name ?? route.name

@@ -194,7 +194,7 @@ struct RouteExtrasControls: View {
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(stop.name).lineLimit(1)
-                    Text("\(session.routePaused ? "Paused · " : "")\(Int(ceil(session.stopProgress.remainingSeconds))) sec left")
+                    Text("\(session.routePaused ? "Paused · " : "")\(StopDuration.formatted(ceil(session.stopProgress.remainingSeconds))) left")
                         .font(.footnote).foregroundStyle(.secondary)
                 }
                 Spacer()

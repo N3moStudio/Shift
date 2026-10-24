@@ -93,7 +93,7 @@ struct RoutePracticeSheet: View {
             }
             if preview.waitingID != nil {
                 HStack {
-                    Text("Planned stop · \(Int(ceil(preview.waitingSeconds))) sec remaining").font(.caption)
+                    Text("Planned stop · \(StopDuration.formatted(ceil(preview.waitingSeconds))) remaining").font(.caption)
                     Spacer()
                     Button { preview.skipWait() } label: {
                         Text("Skip wait").padding(.horizontal, 8).frame(minHeight: 44).contentShape(Rectangle())
