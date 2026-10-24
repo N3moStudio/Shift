@@ -16,7 +16,7 @@ WINDOWS_FILES = (
 CLOUD_FILES = (
     ".gitignore", "RENDER-SETUP.txt", "START-HERE.txt", "TEST-CHECKLIST.txt",
     "core.py", "render_server.py", "requirements.txt", "server.py",
-    "test_cloud.py", "test_render.py", "web_apple.py",
+    "test_cloud.py", "test_render.py", "web_apple.py", "web_life360.py", "test_life360.py",
 )
 
 
