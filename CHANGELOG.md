@@ -1,6 +1,18 @@
 # Changelog
 
-## 2.5.1 (49) — development
+Dates below use America/Los_Angeles. The [Shift Change Ledger](docs/CHANGE-LEDGER.md)
+maps each build to its changes, source owners, validation and distribution status.
+
+## 2.5.2 (50) — prerelease — 23 October 2026
+
+- Replace raw stop-seconds entry with labeled Hours / Minutes / Seconds wheels. Every whole second from no wait to 24 hours is selectable; 24 hours resets the smaller units to zero. Large accessibility text uses labeled menus.
+- Offer No wait, 15 sec, 1 min, 5 min, 1 hr and 24 hr shortcuts. Keep Cancel/Done and explicit Apply to all stops. The shared editor appears in the timeline, Edit place and Add stop screens.
+- Remove the old one-hour cap from route planning, path stops, live stop insertion, saved-trip validation and backup imports. Existing durations keep their meaning; older builds may reject backups with waits over one hour.
+- Display hours/minutes/seconds in route wait totals, rehearsal countdowns and active-stop countdowns. Totals can exceed 24 hours across multiple stops.
+- Add regression coverage for all 86,401 selectable durations, component edits, 24-hour countdown/recovery, preview waits, save/backup round trips and invalid inputs. Pauses and suspension still do not silently consume a wait.
+- Add a maintained Change Ledger, app source map, verification/setup recommendations and device checklist. Document that Find My Devices reaches Dynamic Island; Life360 currently stays in the in-app Windows-helper reports. No new monitoring service or verification guarantee is introduced.
+
+## 2.5.1 (49) — test build — 23 October 2026
 
 - Keep active route controls compact: target speed, distance, progress, Pause/Resume and Stop spoofing. Route details, movement tools and End route remain in the menu; connection warnings and stop countdowns stay visible.
 - Show starts, stops and destinations in a numbered route timeline. Open wait editing only when needed and keep optional movement settings collapsed.
@@ -8,7 +20,7 @@
 - Scrub the isolated route preview or jump directly to a stop; seeking pauses the preview and restores waits when moving backwards.
 - Defer icon preference updates until iOS returns the app to the active state, keep selection feedback local, and preserve the selected tab across scene restoration. Physical-device confirmation of the reported flicker is still required.
 
-## 2.5.0 (48) — development
+## 2.5.0 (48) — test build — 22 October 2026
 
 - Enter route-stop waits in seconds (0–3,600), including stops under a minute.
 - Choose mph or km/h throughout planning, movement controls, saved trips and history. Conversion uses exact factors; stored trip speeds keep full precision and remain backward compatible.
