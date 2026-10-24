@@ -76,3 +76,23 @@ cover exact metric conversion, real playback distance/ETA, short-stop completion
 old/new backup compatibility, pairing replacement, logging defaults and compiled
 bundle identity. Build/test results are recorded in the chat that produced the IPA;
 this checklist is not a claim that device testing has passed.
+
+## 2.5.3 (51): cloud checks
+
+- Deploy the updated Render helper from codex/shift-2.5.0; keep the existing URL
+  and helper key. Sign into Apple and/or the authorized Life360 observer account.
+- Settings → Find My & Life360 → Cloud helper: Test connection, enable each
+  desired service and start a location session. Check Apple-only, Life360-only,
+  and both. Confirm report age is separate from helper response age.
+- Press and hold the ONE Shift Dynamic Island. Find My and Life360 should appear
+  independently. Toggle each Show status preference; checks should continue.
+  Disable each Check preference separately; its provider polling must stop.
+- Compare with the actual authorized provider view, including its timestamp.
+  An old report, missing accuracy, sign-in failure or mismatch must not be green.
+- Background Shift, lose connectivity, let the helper sleep, restart the helper,
+  and try an old helper version. Messages should describe the correct recovery.
+- Use cron-job.org GET /healthz every 5 minutes with no secrets. Stop Shift updates:
+  the helper must expire its 150-second lease despite continuing health pings.
+- Keep the app extension when signing. Dynamic Island layout, VoiceOver,
+  larger text and background execution require a physical supported iPhone.
+- Battery proposals in BATTERY-OPTIONS.md are not applied in this build.

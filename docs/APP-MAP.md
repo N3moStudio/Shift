@@ -1,7 +1,7 @@
 # Shift app map
 
 Maintained alongside the [Shift Change Ledger](CHANGE-LEDGER.md). Source paths
-are relative to the repository. Current snapshot: 2.5.2 (50), 23 October 2026.
+are relative to the repository. Current snapshot: 2.5.3 (51), 23 October 2026.
 This continues the original source/branding catalog without treating historical
 Locus identifiers as safe search-and-replace targets.
 
@@ -16,8 +16,8 @@ Locus identifiers as safe search-and-replace targets.
 | Units / library | `Shared/SpeedUnit.swift`, `Locus/Features/Settings/UsualSpeedsSettingsView.swift`, `SettingsView.swift`, `Shared/LibraryBackup.swift` | MPH/KPH at display boundary; saved speeds remain MPH; places/trips/backups |
 | Interface / icons | `Shared/ShiftAppearance.swift`, `Locus/Support/ShiftAppearanceController.swift`, `Locus/Features/Settings/AppearanceSettingsView.swift` | Style, palette, icon preferences, native appearance transition |
 | iPhone verification | `Locus/Support/LocationVerificationController.swift`, `Shared/LocationVerification.swift` | Fresh iOS location report compared to timestamped sent points; not proof of another app |
-| External reports | `Locus/Support/CompanionClient.swift`, `RemoteFindMyController.swift`, `Companion/`, `CloudFindMy/` | Windows Apple/Life360 adapters and cloud Find My Devices; auth/error/freshness states |
-| Live Activities / Island | `Locus/Engine/SessionActivityController.swift`, `Shared/SessionPresentation.swift`, `Shared/RemoteFindMy.swift`, `LocusActivity/LocusLiveActivity.swift` | Session evidence and Find My Devices state, stale handling, app links; no Life360 Island state yet |
+| External reports | `Locus/Support/CompanionClient.swift`, `RemoteFindMyController.swift`, `Companion/`, `CloudFindMy/` | Windows Apple/Life360 adapters and Render Apple/Life360 adapters; independent auth/error/freshness states |
+| Live Activities / Island | `Locus/Engine/SessionActivityController.swift`, `Shared/SessionPresentation.swift`, `Shared/RemoteFindMy.swift`, `Shared/CloudServiceChecks.swift`, `LocusActivity/LocusLiveActivity.swift` | One activity with separate Find My and Life360 evidence, visibility preferences, stale handling and app links |
 | Packaging / validation | `project.yml`, `Locus.xcodeproj/project.pbxproj`, `.github/workflows/build-ipa.yml`, `scripts/`, `Tests/` | Versions, identities, sources, model/helper tests, app/extension build, IPA validation |
 
 ## Branding boundaries

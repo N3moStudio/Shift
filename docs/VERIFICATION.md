@@ -1,68 +1,75 @@
-# Location verification and free setup options
+# Location verification and free setup
 
-Reviewed against the 2.5.2 source on 23 October 2026. This is a capability map and
-proposal, not a claim that every external service was tested on a phone.
+Source capability map for **2.5.3 (51)**, 23 October 2026. External account access
+and iPhone background behavior still require device acceptance tests.
 
-| Evidence | What it confirms | Current surface |
+| Evidence | What it confirms | Where it appears |
 | --- | --- | --- |
-| Command accepted | The simulation connection accepted Shift's command | App, Live Activity, Dynamic Island |
-| This iPhone | A recent Core Location result delivered to Shift agreed with the sent point | In-app checks |
-| Find My Devices | A fresh Apple device report agreed with Shift's point at that report's timestamp | App and Dynamic Island, using cloud or Windows helper |
-| Find My People | Separate service meaning; Devices is not proof of what a person sees | No current People connector; unavailable must remain unavailable |
-| Life360 | The Windows helper reads the selected member's report using an authorized observer account and compares its timestamp/location | In-app service checks; not yet sent to Dynamic Island |
+| Command accepted | Developer connection accepted Shift's command | App and the existing Shift Live Activity |
+| This iPhone | Core Location delivered a recent matching fix to Shift | In-app checks; not proof of another app |
+| Find My iPhone | Fresh Find My **Devices** report matched the point sent at that report's time | Cloud or Windows helper; app, Lock Screen and Dynamic Island |
+| Life360 | Selected profile's report matched the point sent at that report's time | Updated Render cloud helper or Windows helper; app, Lock Screen and Dynamic Island |
+| Find My People | What a person sees in the People tab | No connector; Devices is not proof of People |
 
-The existing Life360 adapter uses the unofficial Python `life360` library. Its
-setup asks for a separate consenting observer account because using the phone's
-own account can interfere with its login. It makes read-only requests; it cannot
-force a fresh service location. External adapters may be blocked or need sign-in.
+## One activity, independent evidence
 
-## Free setup today
+There is **one Shift Live Activity**, with one Find My status and one Life360
+status inside it. Expanded Dynamic Island and Lock Screen show source names and
+location ages. Compact Island uses separately labeled cloud/profile icons;
+it never combines both services into one green verdict.
 
-Both helper choices remain supported. If you already use the cloud helper, keep
-Settings → Find My checks → Cloud helper selected; Windows is an alternative,
-not a required replacement. The cloud helper can send Find My Devices evidence
-to Dynamic Island while the laptop is off. No deployment or account changes are
-part of this app update.
+Settings → **Find My & Life360 → Cloud helper**:
+- **Check Find My iPhone / Check Life360** control provider polling. Life360 is
+  off until enabled. One provider's expired login does not stop the other.
+- **Show Find My iPhone status / Show Life360 status** control visibility in the
+  existing Live Activity. The same settings are available in Live Activities.
+- **Test connection** checks access and each provider's setup without sending
+  points, fetching locations, or starting a monitoring lease.
+- **Check now** requests current helper evidence, with provider reads limited to
+  about once per minute. It cannot force either provider to refresh a location.
 
-Use Settings → Find My checks → Windows helper on an already-owned, awake Windows
-computer on the same Wi-Fi. Choose Find My Devices and/or Life360 during helper
-setup and import its pairing file. There is no Shift subscription or cloud hosting
-bill; the computer still uses power and must remain reachable. See
-[Windows setup](../Companion/README.txt). A Life360-only helper currently has no
-Find My evidence to show on the Island.
+The existing v1 envelope now has an optional Life360 report. Old helpers remain
+readable; Life360 asks for a helper update instead of borrowing Apple evidence.
+The app never activates an old Apple-only helper for a Life360-only request.
+Existing setup files and Keychain identities remain compatible. The Oracle
+terminal helper remains Find My Devices only.
 
-The cloud helper supports Find My Devices when the laptop is off. Render's free
-service sleeps after 15 minutes without inbound traffic, can take about a minute
-to wake, and does not offer a persistent disk; restarts lose local state. Treat it
-as a hobby/test option, not an always-available verifier. See
-[Render's free-service limits](https://render.com/docs/free) and
-[cloud setup](../CloudFindMy/RENDER-SETUP.txt).
+## Free Render setup and uptime pinger
 
-## Proposed next improvements — not implemented in build 50
+Deploy the updated helper from `codex/shift-2.5.0` for this prerelease, using
+[RENDER-SETUP.txt](../CloudFindMy/RENDER-SETUP.txt). Keep the service URL and
+SHIFT_ADMIN_KEY to preserve pairing. Redeploys/restarts require provider sign-in
+again. Apple uses your own account/iPhone; Life360 uses a separate consenting
+observer account that already sees your own profile. Signing in with the phone's
+Life360 account can interfere with its login. Both adapters are unofficial and
+can be blocked; the helper does not bypass account protection.
 
-1. Add separate Find My / Life360 rows to expanded Dynamic Island and session
-   details, with a source name, Match/Different/Old/Unavailable state and actual
-   service location age. A compact summary should prioritize a mismatch or stale
-   source rather than imply that a single green check covers every service.
-2. Keep service location time separate from helper reply time. Preserve existing
-   freshness expiry, pending/sign-in/blocked states and bounded polling; a reply
-   from the helper is not a fresh Apple/Life360 report.
-3. Simplify Windows setup with a single readiness screen: helper reachable,
-   provider signed in, target selected, report fresh. Provide one manual retry
-   after backoff, without continuous aggressive refreshes.
-   Give the cloud helper the same clarity, separating wake-up/reconnect from
-   expired Apple sign-in and an old Apple report, with timestamps for each.
-4. Consider a personally owned always-on home helper with authenticated private
-   remote access for use away from Wi-Fi. That needs a separate networking/security
-   implementation and testing; it is not a feature of the current LAN helper.
+The free pinger is **[cron-job.org](https://cron-job.org/en/faq/)**. Copy/share the
+uptime URL from Cloud helper; configure GET `/healthz` every five minutes, with
+no authentication, secret headers or request body. It returns only `ok`.
+The FAQ describes free schedules as frequent as once per minute and a 30-second
+request timeout. A first request can time out while Render wakes.
 
-Apple documents that Live Activities cannot fetch the network or receive location
-updates themselves. Updates come from the app or ActivityKit pushes. An activity
-lasts at most eight hours in Dynamic Island, so a 24-hour stop cannot promise one
-uninterrupted 24-hour Island display. Background execution remains system-controlled.
-[Apple ActivityKit constraints](https://developer.apple.com/documentation/activitykit/displaying-live-data-with-live-activities).
+[Render's free plan](https://render.com/docs/free) sleeps after 15 minutes without
+inbound traffic, usually needs about a minute to wake, has ephemeral storage,
+and shares 750 free instance hours per workspace per month. Pings reduce idle
+sleep but cannot prevent restarts, limits, sign-in expiry or outages. No paid
+plan, push service, database or Shift subscription is required by this implementation.
 
-A meaningful device test compares Shift's labeled service evidence with the
-corresponding authorized observer view, including timestamps, then repeats with
-old reports, loss of Wi-Fi, app backgrounding and expired sign-in. Unknown evidence
-must never become a claimed match.
+Uptime pings **never poll Apple or Life360, upload points, extend the 150-second
+phone lease, or prove a location match**. If the app stops updating, monitoring
+expires and its point history is cleared. Location timestamps, reply timestamps,
+accuracy, active-session evidence and independent freshness limits stay mandatory.
+
+## Limits and device acceptance
+
+[Apple's ActivityKit documentation](https://developer.apple.com/documentation/activitykit/displaying-live-data-with-live-activities)
+states that an activity cannot fetch the network or location itself. Shift must
+be allowed to run to deliver local updates. There is no independent server-to-Island
+push service in this build. Dynamic Island activities last at most eight hours;
+a 24-hour stop does not promise an uninterrupted 24-hour Island display.
+
+Compare each labeled status with the authorized observer view and timestamp.
+Repeat with old reports, provider sign-out, server sleep, lost internet,
+backgrounding, turning checks off, and each visibility switch. Unknown evidence
+must never become a claimed match. See [the device checklist](TESTING-2.5.md).

@@ -22,6 +22,7 @@ name the behavior changed and the affected area.
 | 2.5.0 / 48 | 22 Oct 2026 | Seconds-based stops; mph/km/h with exact conversions; separate Shift app/extension IDs and app group; notification routing; pairing validation; logging opt-in; Library empty states and About accessibility | [Run 39913718958](https://github.com/N3moStudio/Shift/actions/runs/39913718958), commit `9525f0916ee7a99d3e85a2eb75c351049404db8b`: 373 tests passed (290 Swift, 14 packaging, 19 Windows, 50 cloud); app + extension + packaged IPA passed. Actions artifact only. |
 | 2.5.1 / 49 | 23 Oct 2026 | Compact active-route controls; numbered planner; wait presets / Apply to all; preview scrubbing / stop jumps; deferred icon preferences and restored tab | [Run 39986538008](https://github.com/N3moStudio/Shift/actions/runs/39986538008), commit `275eb1791ed6d18df049e8f3852eff6370d41bd6`: 377 tests passed (294 Swift, 14 packaging, 19 Windows, 50 cloud); app + extension + packaged IPA passed. User confirmed installation; icon smoothness and full device matrix remain unverified. Actions artifact only. |
 | 2.5.2 / 50 | 23 Oct 2026 | Hours/minutes/seconds up to 24 hours throughout route waits; long-duration display; validation and persistence coverage; maintained source/change map and verification guidance | [Run 40052908812](https://github.com/N3moStudio/Shift/actions/runs/40052908812), commit `b451c9d2362eed965a4f591ece96609d019b74da`: 384 tests passed (301 Swift, 14 packaging, 19 Windows, 50 cloud); Xcode 27.1 app + extension + packaged IPA passed in 3m 23s. Prerelease `v2.5.2-beta.1`; device acceptance pending. |
+| 2.5.3 / 51 | 23 Oct 2026 | Cloud Life360 alongside Find My; one Live Activity with separate service statuses and visibility; clearer cloud recovery; free uptime setup | 62 cloud tests passed locally. Mac CI and IPA validation pending. Planned prerelease v2.5.3-beta.1. |
 
 Build 48 IPA SHA256: `48db5d6715a90dc5f31551653f0f09020f3de6ae71948a0948e0f0a876827848`.
 Build 49 IPA SHA256: `e9e6741540732baa2a6def85a9bb3497d8f8f3c48c32f4306e7722a5174be23e`.
@@ -64,3 +65,24 @@ Older versions may reject backups containing stops longer than one hour.
 
 See [App map](APP-MAP.md) for the broader catalog and [device checks](TESTING-2.5.md)
 for what an automated build does not prove.
+
+## 2.5.3 change inventory
+
+| Files | Exact responsibility / change |
+| --- | --- |
+| `CloudFindMy/web_life360.py`, `render_server.py`, `requirements.txt` | Async memory-only Life360 observer adapter; protected browser setup, independent provider stores/polling; optional response/capability fields; legacy Apple clients remain valid |
+| `CloudFindMy/test_life360.py`, `test_render.py` | Twelve new tests for consent/auth/CSRF, report time, selected profile, provider isolation, lease expiry, stop races, readiness and pinned-library API; extend existing status expectations |
+| `Shared/RemoteFindMy.swift`, `CloudServiceChecks.swift` | Optional provider-validated Life360 response; local/cloud verdict agreement, independent freshness, source language and transport error mapping |
+| `Locus/Support/RemoteFindMyController.swift`, `CompanionClient.swift` | Per-service cloud consent, old-helper handling, independent evidence and Life360 warnings; existing Windows reports also reach the activity |
+| `LocusActivity/LocusLiveActivity.swift`, `Shared/SessionPresentation.swift`, `Locus/Engine/SessionActivityController.swift`, `SpoofSession.swift` | One activity containing both services, separate compact icons and ages; clear both when ending |
+| `Locus/Support/SessionPreferences.swift`, `Locus/App/LocusApp.swift`, `Shared/LibraryBackup.swift` | Persist visibility, refresh immediately, optional backup fields without copying service consent or secrets |
+| `Locus/Features/Settings/RemoteFindMyView.swift`, `FindMyChecksView.swift`, `ConnectionDetailsView.swift`, `SessionSettingsSections.swift`, `Shared/Personalization.swift` | Find My & Life360 entry, readiness/errors, checking versus visibility, uptime URL sharing and free setup |
+| `Tests/CloudServiceChecksTests.swift` | Six tests for compatibility, isolated failures/freshness, local evidence, provider identity, bounded activity payload and errors |
+| `scripts/package_helpers.py`, `Locus/Resources/Shift-FindMy-Cloud.zip` | Deterministic source-only cloud download includes Life360 adapter/tests |
+| `project.yml`, `Locus.xcodeproj/project.pbxproj` | App/extension 2.5.3 build 51; shared service model in both targets |
+| `README.md`, `CHANGELOG.md`, cloud setup/checklist, `docs/APP-MAP.md`, `TESTING-2.5.md`, `VERIFICATION.md`, this ledger | Current capabilities, helper upgrade, limits, ownership and acceptance checks |
+| `docs/BATTERY-OPTIONS.md` | Twelve proposals for approval only; no battery optimization implementation |
+
+External Apple/Life360 login and physical-iPhone Island/background behavior are
+not claimed as verified by unit tests. No cloud account was provisioned or paid
+plan selected. Deploy the updated helper separately and sign in to each provider.
