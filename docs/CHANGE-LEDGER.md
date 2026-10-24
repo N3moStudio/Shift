@@ -22,7 +22,7 @@ name the behavior changed and the affected area.
 | 2.5.0 / 48 | 22 Oct 2026 | Seconds-based stops; mph/km/h with exact conversions; separate Shift app/extension IDs and app group; notification routing; pairing validation; logging opt-in; Library empty states and About accessibility | [Run 39913718958](https://github.com/N3moStudio/Shift/actions/runs/39913718958), commit `9525f0916ee7a99d3e85a2eb75c351049404db8b`: 373 tests passed (290 Swift, 14 packaging, 19 Windows, 50 cloud); app + extension + packaged IPA passed. Actions artifact only. |
 | 2.5.1 / 49 | 23 Oct 2026 | Compact active-route controls; numbered planner; wait presets / Apply to all; preview scrubbing / stop jumps; deferred icon preferences and restored tab | [Run 39986538008](https://github.com/N3moStudio/Shift/actions/runs/39986538008), commit `275eb1791ed6d18df049e8f3852eff6370d41bd6`: 377 tests passed (294 Swift, 14 packaging, 19 Windows, 50 cloud); app + extension + packaged IPA passed. User confirmed installation; icon smoothness and full device matrix remain unverified. Actions artifact only. |
 | 2.5.2 / 50 | 23 Oct 2026 | Hours/minutes/seconds up to 24 hours throughout route waits; long-duration display; validation and persistence coverage; maintained source/change map and verification guidance | [Run 40052908812](https://github.com/N3moStudio/Shift/actions/runs/40052908812), commit `b451c9d2362eed965a4f591ece96609d019b74da`: 384 tests passed (301 Swift, 14 packaging, 19 Windows, 50 cloud); Xcode 27.1 app + extension + packaged IPA passed in 3m 23s. Prerelease `v2.5.2-beta.1`; device acceptance pending. |
-| 2.5.3 / 51 | 23 Oct 2026 | Cloud Life360 alongside Find My; one Live Activity with separate service statuses and visibility; clearer cloud recovery; free uptime setup | 62 cloud tests passed locally. Mac CI and IPA validation pending. Planned prerelease v2.5.3-beta.1. |
+| 2.5.3 / 51 | 23 Oct 2026 | Cloud Life360 alongside Find My; one Live Activity with separate service statuses and visibility; clearer cloud recovery; free uptime setup | [Run 40066390461](https://github.com/N3moStudio/Shift/actions/runs/40066390461), commit `fe62fb4e11493fff14fdc663ba0f2bbb1e6da579`: 402 tests passed (307 Swift, 14 packaging/icon, 19 Windows, 62 cloud); Xcode 27.1 app + extension + packaged IPA passed in 2m 33s. Prerelease `v2.5.3-beta.1`; real provider sign-in and device acceptance pending. |
 
 Build 48 IPA SHA256: `48db5d6715a90dc5f31551653f0f09020f3de6ae71948a0948e0f0a876827848`.
 Build 49 IPA SHA256: `e9e6741540732baa2a6def85a9bb3497d8f8f3c48c32f4306e7722a5174be23e`.
@@ -43,6 +43,27 @@ the tested commit above.
   orange preview dot accurately for accessibility, direct reordering help to the
   route timeline, and explain retained section settings on saved paths. This is
   the build 49 IPA delivered to the user. No additional version number was assigned.
+
+### Build 51 attempts
+
+- 22:22 PDT: [run 40066022555](https://github.com/N3moStudio/Shift/actions/runs/40066022555),
+  commit `8611c80f80df895688f0365b003debbef003cf7f`, succeeded in 2m 39s.
+  Initial cloud/dual-provider activity build: 402 tests passed (307 Swift,
+  14 packaging/icon, 19 Windows-helper, 62 cloud-helper), then Xcode 27.1
+  compiled the app and extension and packaged the IPA. Artifact: 9,008,015 bytes;
+  SHA256 `2f478350807aeada584b34363d6eef6ba8296ab734ec53328e332c69f261d645`.
+- 22:28 PDT: [run 40066390461](https://github.com/N3moStudio/Shift/actions/runs/40066390461),
+  commit `fe62fb4e11493fff14fdc663ba0f2bbb1e6da579`, succeeded in 2m 33s.
+  The same 402 tests passed; Xcode 27.1 built the app/extension and the final IPA
+  passed packaging checks. Downloaded IPA: 9,012,586 bytes; SHA256
+  `dcd0bfb046019014acca9140bcc6464068abcd639f5089faed308a915a53507b`.
+  Both app and extension identify as version 2.5.3, build 51.
+  Follow-up in `LocusActivity/LocusLiveActivity.swift`: one compact status/age
+  row per service in the expanded Island, and the command timer appears only
+  in its existing top corner. Full descriptions remain on the Lock Screen and
+  in accessibility labels. This is the IPA delivered in prerelease
+  `v2.5.3-beta.1`. The release source adds documentation-only result updates;
+  executable and bundled helper sources remain identical to the tested commit.
 
 ## 2.5.2 change inventory
 
@@ -74,7 +95,7 @@ for what an automated build does not prove.
 | `CloudFindMy/test_life360.py`, `test_render.py` | Twelve new tests for consent/auth/CSRF, report time, selected profile, provider isolation, lease expiry, stop races, readiness and pinned-library API; extend existing status expectations |
 | `Shared/RemoteFindMy.swift`, `CloudServiceChecks.swift` | Optional provider-validated Life360 response; local/cloud verdict agreement, independent freshness, source language and transport error mapping |
 | `Locus/Support/RemoteFindMyController.swift`, `CompanionClient.swift` | Per-service cloud consent, old-helper handling, independent evidence and Life360 warnings; existing Windows reports also reach the activity |
-| `LocusActivity/LocusLiveActivity.swift`, `Shared/SessionPresentation.swift`, `Locus/Engine/SessionActivityController.swift`, `SpoofSession.swift` | One activity containing both services, separate compact icons and ages; clear both when ending |
+| `LocusActivity/LocusLiveActivity.swift`, `Shared/SessionPresentation.swift`, `Locus/Engine/SessionActivityController.swift`, `SpoofSession.swift` | One activity containing both services, separate compact icons and ages; one compact row per service and one command timer in expanded Island; clear both when ending |
 | `Locus/Support/SessionPreferences.swift`, `Locus/App/LocusApp.swift`, `Shared/LibraryBackup.swift` | Persist visibility, refresh immediately, optional backup fields without copying service consent or secrets |
 | `Locus/Features/Settings/RemoteFindMyView.swift`, `FindMyChecksView.swift`, `ConnectionDetailsView.swift`, `SessionSettingsSections.swift`, `Shared/Personalization.swift` | Find My & Life360 entry, readiness/errors, checking versus visibility, uptime URL sharing and free setup |
 | `Tests/CloudServiceChecksTests.swift` | Six tests for compatibility, isolated failures/freshness, local evidence, provider identity, bounded activity payload and errors |
