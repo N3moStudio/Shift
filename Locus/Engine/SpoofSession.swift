@@ -225,7 +225,8 @@ final class SpoofSession: ObservableObject {
                 islandProgress: preferences.islandProgress, islandTimer: preferences.islandTimer,
                 connectionAlerts: preferences.connectionAlerts, reminderMinutes: preferences.reminderMinutes,
                 saveRecentLocations: preferences.saveRecentLocations, recentHistoryRetention: preferences.recentHistoryRetention,
-                mapStyle: mapStyleIndex, connectionCheckSeconds: preferences.connectionCheckSeconds), speedUnit: preferences.speedUnit)
+                mapStyle: mapStyleIndex, connectionCheckSeconds: preferences.connectionCheckSeconds,
+                showFindMyStatus: preferences.showFindMyStatus, showLife360Status: preferences.showLife360Status), speedUnit: preferences.speedUnit)
     }
     func importLibraryPlaces(_ places: [BackupPlace], settings: BackupPreferences?) {
         favorites = places.map { SavedPlace(name: $0.name, latitude: $0.latitude, longitude: $0.longitude, folder: $0.folder, icon: $0.icon, color: $0.color) }
@@ -244,6 +245,8 @@ final class SpoofSession: ObservableObject {
                 preferences.lockScreenProgress = display.lockScreenProgress
                 preferences.islandProgress = display.islandProgress
                 preferences.islandTimer = display.islandTimer
+                if let show = display.showFindMyStatus { preferences.showFindMyStatus = show }
+                if let show = display.showLife360Status { preferences.showLife360Status = show }
                 preferences.connectionAlerts = display.connectionAlerts
                 preferences.reminderMinutes = display.reminderMinutes
                 if let seconds = display.connectionCheckSeconds { preferences.connectionCheckSeconds = seconds }
@@ -1299,8 +1302,9 @@ final class SpoofSession: ObservableObject {
                       lowPower: lowPower, journey: trip, islandPlace: preferences.hideIslandLocation ? nil : place,
                       lockScreenShowsProgress: preferences.lockScreenProgress, islandShowsProgress: preferences.islandProgress,
                       islandShowsTimer: preferences.islandTimer,
-                      remoteFindMy: RemoteFindMyController.shared.activityStatus ?? CompanionClient.shared.activityStatus, connectionCheckSeconds: preferences.connectionCheckSeconds,
-                      visualStyle: preferences.visualStyle.rawValue, iconDesign: preferences.iconSelection.design.rawValue))
+                      remoteFindMy: preferences.showFindMyStatus ? (RemoteFindMyController.shared.activityStatus ?? CompanionClient.shared.activityStatus) : nil, connectionCheckSeconds: preferences.connectionCheckSeconds,
+                      visualStyle: preferences.visualStyle.rawValue, iconDesign: preferences.iconSelection.design.rawValue,
+                      remoteLife360: preferences.showLife360Status ? (RemoteFindMyController.shared.life360ActivityStatus ?? CompanionClient.shared.life360ActivityStatus) : nil))
     }
 
     private func warn(title: String, message: String) {

@@ -38,6 +38,8 @@ final class SessionActivityController: ObservableObject {
             endingState.islandPlace = nil
             endingState.expiresAt = nil
             endingState.journey = nil
+            endingState.remoteFindMy = nil
+            endingState.remoteLife360 = nil
             await activity.end(ActivityContent(state: endingState, staleDate: nil), dismissalPolicy: .immediate)
         }
         guard var snapshot = request.snapshot else { issue = nil; return }
