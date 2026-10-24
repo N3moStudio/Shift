@@ -11,8 +11,8 @@ its owner key comes from SHIFT_ADMIN_KEY. Neither is built into the iPhone app.
 
 1. Push this update first
 In GitHub Desktop, commit the Render update and Push origin.
-Build and install Shift 2.5.3 (51), or newer, from GitHub Actions. Earlier app
-versions reject the Render setup file. Keep the same signing identity and app.
+Build and install Shift 2.5.3 (51) for cloud Life360 support. Versions before
+2.3.2 reject Render setup files; later Apple-only versions remain compatible. Keep the same signing identity and app.
 Do not uninstall your existing app just to update it.
 
 2. Render service form, top to bottom
