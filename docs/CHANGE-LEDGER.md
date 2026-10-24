@@ -21,10 +21,27 @@ name the behavior changed and the affected area.
 | --- | --- | --- | --- |
 | 2.5.0 / 48 | 22 Oct 2026 | Seconds-based stops; mph/km/h with exact conversions; separate Shift app/extension IDs and app group; notification routing; pairing validation; logging opt-in; Library empty states and About accessibility | [Run 39913718958](https://github.com/N3moStudio/Shift/actions/runs/39913718958), commit `9525f0916ee7a99d3e85a2eb75c351049404db8b`: 373 tests passed (290 Swift, 14 packaging, 19 Windows, 50 cloud); app + extension + packaged IPA passed. Actions artifact only. |
 | 2.5.1 / 49 | 23 Oct 2026 | Compact active-route controls; numbered planner; wait presets / Apply to all; preview scrubbing / stop jumps; deferred icon preferences and restored tab | [Run 39986538008](https://github.com/N3moStudio/Shift/actions/runs/39986538008), commit `275eb1791ed6d18df049e8f3852eff6370d41bd6`: 377 tests passed (294 Swift, 14 packaging, 19 Windows, 50 cloud); app + extension + packaged IPA passed. User confirmed installation; icon smoothness and full device matrix remain unverified. Actions artifact only. |
-| 2.5.2 / 50 | 23 Oct 2026 | Hours/minutes/seconds up to 24 hours throughout route waits; long-duration display; validation and persistence coverage; maintained source/change map and verification guidance | Mac build pending. Intended distribution: prerelease. Device acceptance pending. |
+| 2.5.2 / 50 | 23 Oct 2026 | Hours/minutes/seconds up to 24 hours throughout route waits; long-duration display; validation and persistence coverage; maintained source/change map and verification guidance | [Run 40052908812](https://github.com/N3moStudio/Shift/actions/runs/40052908812), commit `b451c9d2362eed965a4f591ece96609d019b74da`: 384 tests passed (301 Swift, 14 packaging, 19 Windows, 50 cloud); Xcode 27.1 app + extension + packaged IPA passed in 3m 23s. Prerelease `v2.5.2-beta.1`; device acceptance pending. |
 
 Build 48 IPA SHA256: `48db5d6715a90dc5f31551653f0f09020f3de6ae71948a0948e0f0a876827848`.
 Build 49 IPA SHA256: `e9e6741540732baa2a6def85a9bb3497d8f8f3c48c32f4306e7722a5174be23e`.
+Build 50 IPA SHA256: `28a918c6b78f244966a8761e61800d9ef2d1f767c3f74ab5755946880f8ac916`
+(8,958,279 bytes). The release source includes documentation-only follow-ups
+recording this result and build 49's earlier attempt; executable sources match
+the tested commit above.
+
+### Build 49 attempts
+
+- 09:21 PDT: [run 39986065262](https://github.com/N3moStudio/Shift/actions/runs/39986065262),
+  commit `eeec785f480badc5e81d4b3066bc733c9ff2a12c`, succeeded in 2m 44s.
+  Initial interface build; IPA SHA256
+  `fd400d8842c27ac668fba2b3fa36ed26e14e081ddb6f7b6184b278e020b11470`.
+- 09:24 PDT: [run 39986538008](https://github.com/N3moStudio/Shift/actions/runs/39986538008),
+  commit `275eb1791ed6d18df049e8f3852eff6370d41bd6`, succeeded in 2m 58s.
+  Follow-up in `RouteEditorViews.swift` and `RoutePlannerSheet.swift`: name the
+  orange preview dot accurately for accessibility, direct reordering help to the
+  route timeline, and explain retained section settings on saved paths. This is
+  the build 49 IPA delivered to the user. No additional version number was assigned.
 
 ## 2.5.2 change inventory
 
