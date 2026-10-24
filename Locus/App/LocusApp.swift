@@ -93,6 +93,8 @@ struct LocusApp: App {
             .onChange(of: preferences.lockScreenProgress) { _, _ in session.preferencesChanged() }
             .onChange(of: preferences.islandProgress) { _, _ in session.preferencesChanged() }
             .onChange(of: preferences.islandTimer) { _, _ in session.preferencesChanged() }
+            .onChange(of: preferences.showFindMyStatus) { _, _ in session.preferencesChanged() }
+            .onChange(of: preferences.showLife360Status) { _, _ in session.preferencesChanged() }
             .onChange(of: preferences.connectionAlerts) { _, enabled in
                 session.preferencesChanged()
                 if enabled { session.enableNotifications() }
