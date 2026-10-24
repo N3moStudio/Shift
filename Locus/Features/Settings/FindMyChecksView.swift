@@ -18,14 +18,14 @@ struct FindMyChecksView: View {
                 Text("Use one helper at a time. You can keep both setups saved and switch here.")
             }.shiftSettingsRows()
             Section {
-                Text("Find My reports appear in Shift and its Live Activity during a location session.")
+                Text("Find My iPhone and Life360 have separate statuses inside Shift’s single Live Activity during a location session.")
                 SettingsHelp(title: "What does a match mean?", lines: [
                     "A recent Apple location agreed with the point Shift sent at that time. This checks Devices, not People.",
                     "Helpers check about once a minute while iOS lets Shift run. Apple's location can be older than the helper's reply.",
                     "The 3–15 second setting checks Shift's own connection. It does not make Apple refresh faster."
                 ])
             }.shiftSettingsRows()
-        }.shiftSettingsScreen().loggedNavigationTitle("Find My checks").navigationBarTitleDisplayMode(.inline)
+        }.shiftSettingsScreen().loggedNavigationTitle("Find My & Life360").navigationBarTitleDisplayMode(.inline)
     }
     private func helper(_ title: String, detail: String, icon: String, status: String) -> some View {
         HStack(spacing: 12) {

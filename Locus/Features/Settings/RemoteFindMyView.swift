@@ -3,6 +3,7 @@ import UniformTypeIdentifiers
 
 struct RemoteFindMyView: View {
     @EnvironmentObject private var session: SpoofSession
+    @EnvironmentObject private var preferences: SessionPreferences
     @ObservedObject private var remote = RemoteFindMyController.shared
     @State private var confirmDisconnect = false
     var body: some View {
@@ -17,7 +18,9 @@ struct RemoteFindMyView: View {
                         .onChange(of: remote.alerts) { _, value in
                             if value { Task { _ = await SessionNotifications.shared.requestPermission() } }
                         }
-                    FindMyEvidenceSummary()
+                    if let message = remote.checkMessage { Text(message).font(.subheadline).foregroundStyle(.secondary) }
+                    if remote.findMyEnabled { FindMyEvidenceSummary() }
+                    if remote.life360Enabled { FindMyEvidenceSummary(life360: true) }
                     Button { remote.checkNow() } label: {
                         Label(remote.checking ? "Checking…" : "Check now", systemImage: "arrow.clockwise")
                             .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading).contentShape(Rectangle())
@@ -25,7 +28,7 @@ struct RemoteFindMyView: View {
                     if !remote.enabled {
                         Text("Turn on checks to request a report.").font(.subheadline).foregroundStyle(.secondary)
                     } else if !session.isSpoofing {
-                        Text("Start a location session on the Map to compare Find My with the locations sent.").font(.subheadline).foregroundStyle(.secondary)
+                        Text("Start a location session on the Map to compare enabled services with the locations sent.").font(.subheadline).foregroundStyle(.secondary)
                     }
                     if let website = remote.helperWebsite {
                         Link(destination: website) {
@@ -35,15 +38,44 @@ struct RemoteFindMyView: View {
                     }
                     Button("Disconnect helper", role: .destructive) { confirmDisconnect = true }.frame(minHeight: 44)
                 }.shiftSettingsRows()
+                Section {
+                    Toggle("Check Find My iPhone", isOn: $remote.findMyEnabled)
+                    Toggle("Check Life360", isOn: $remote.life360Enabled).disabled(remote.helperWebsite == nil)
+                    if remote.life360Enabled && remote.supportsLife360 == false {
+                        Text("Update your Render helper to Shift 2.5.3 or later for Life360. Your existing Find My setup still works.")
+                            .font(.footnote).foregroundStyle(.secondary)
+                    }
+                    if remote.helperWebsite == nil {
+                        Text("Life360 cloud checks need the updated Render browser helper. This server connection supports Find My Devices.").font(.footnote)
+                    }
+                } header: { Text("Services to check") } footer: {
+                    Text("Connect each service on your helper website. Life360 uses a separate authorized observer account to read your own profile. Turning a service off stops its cloud polling.")
+                }.shiftSettingsRows()
+                Section {
+                    Toggle("Show Find My iPhone status", isOn: $preferences.showFindMyStatus)
+                    Toggle("Show Life360 status", isOn: $preferences.showLife360Status)
+                } header: { Text("Dynamic Island & Lock Screen") } footer: {
+                    Text("Both appear inside Shift’s existing Live Activity. These switches only hide the status; they do not turn off checks. Enable Live Activities in Settings to see them.")
+                }.shiftSettingsRows()
+                if let website = remote.helperWebsite {
+                    Section {
+                        ShareLink(item: website.appendingPathComponent("healthz")) {
+                            Label("Copy or share uptime URL", systemImage: "square.and.arrow.up")
+                        }
+                        Link("Open cron-job.org", destination: URL(string: "https://cron-job.org/")!)
+                        Text("Optional free setup: add this uptime URL as a GET request every 5 minutes. Leave headers, login and body empty. Never include a helper key or password.").font(.footnote)
+                        Text("Pings can reduce idle sleep. They do not refresh Apple or Life360, extend Shift’s monitoring session, or prevent server restarts and free-plan limits.").font(.footnote).foregroundStyle(.secondary)
+                    } header: { Text("Keep your free helper responsive") }.shiftSettingsRows()
+                }
             } else {
                 Section {
-                    Text("Check Find My while your laptop is off.").font(.headline)
-                    Text("Needs your own cloud server and Apple sign-in.").foregroundStyle(.secondary)
+                    Text("Check Find My and Life360 with your laptop off.").font(.headline)
+                    Text("Needs your own cloud helper and sign-in for each service you choose.").foregroundStyle(.secondary)
                 }.shiftSettingsRows()
             }
             Section {
                 NavigationLink(remote.paired ? "Reconnect or import setup" : "Connect your helper") { RemoteFindMySetupView() }
-            } footer: { Text("Find My Devices only. This does not check the People tab.") }.shiftSettingsRows()
+            } footer: { Text("Find My iPhone uses Devices, not the People tab. Life360 checks your selected profile separately.") }.shiftSettingsRows()
             Section {
                 SettingsHelp(lines: [
                     "Your cloud helper compares Apple's location report with the locations Shift sent. Your iPhone can use cellular.",
@@ -64,7 +96,7 @@ struct RemoteFindMyView: View {
                 ])
             }.shiftSettingsRows()
         }.shiftSettingsScreen().loggedNavigationTitle("Cloud helper").navigationBarTitleDisplayMode(.inline)
-        .loggedConfirmationDialog("Disconnect Find My checks?", isPresented: $confirmDisconnect, titleVisibility: .visible) {
+        .loggedConfirmationDialog("Disconnect cloud checks?", isPresented: $confirmDisconnect, titleVisibility: .visible) {
             Button("Disconnect helper", role: .destructive) { remote.unpair() }
         } message: { Text("Location spoofing continues. To reconnect checks, import your helper’s setup file again.") }
     }
@@ -73,22 +105,26 @@ struct RemoteFindMyView: View {
 /// The Apple report and the helper response are separate pieces of evidence.
 struct FindMyEvidenceSummary: View {
     var useWindows = false
+    var life360 = false
     @ObservedObject private var remote = RemoteFindMyController.shared
     @ObservedObject private var computer = CompanionClient.shared
-    private var state: RemoteFindMyState { useWindows ? computer.activityStatus?.state ?? .ready : remote.state }
+    private var state: RemoteFindMyState {
+        if life360 { return useWindows ? computer.life360ActivityStatus?.state ?? .ready : remote.life360State }
+        return useWindows ? computer.activityStatus?.state ?? .ready : remote.state
+    }
     private var reportDate: Date? {
-        useWindows ? computer.reports.first { $0.provider == "findmy-device" }?.locatedAt.map { Date(timeIntervalSince1970: $0) } : remote.reportDate
+        useWindows ? computer.reports.first { $0.provider == (life360 ? "life360" : "findmy-device") }?.locatedAt.map { Date(timeIntervalSince1970: $0) } : (life360 ? remote.life360ReportDate : remote.reportDate)
     }
     private var repliedAt: Date? { useWindows ? computer.connectedAt : remote.checkedAt }
     var body: some View {
         ForegroundTimeline { _ in
             VStack(alignment: .leading, spacing: 12) {
-                Label(state.title, systemImage: state == .match ? "checkmark.circle.fill" : "clock")
+                Label(life360 ? state.life360Title : state.title, systemImage: state == .match ? "checkmark.circle.fill" : "clock")
                     .font(.headline).foregroundStyle(state == .match ? LocusTheme.statusGood : .primary)
-                if let date = reportDate { evidenceDate("Apple’s location report", date: date) }
+                if let date = reportDate { evidenceDate(life360 ? "Life360’s location report" : "Apple’s location report", date: date) }
                 if let date = repliedAt { evidenceDate("Helper response", date: date) }
-                if let message = useWindows ? computer.message ?? state.warning : state.warning { Text(message).font(.subheadline).foregroundStyle(.secondary) }
-                Text("A new helper response can contain an older Apple location. Check now cannot force Apple to refresh it.")
+                if let message = useWindows ? computer.message ?? state.warning : (life360 ? state.life360Warning : state.warning) { Text(message).font(.subheadline).foregroundStyle(.secondary) }
+                Text(life360 ? "A new helper response can contain an older Life360 location. Check now cannot force Life360 to refresh it." : "A new helper response can contain an older Apple location. Check now cannot force Apple to refresh it.")
                     .font(.footnote).foregroundStyle(.secondary)
             }.padding(.vertical, 6)
         }
@@ -122,7 +158,7 @@ private struct RemoteFindMySetupView: View {
                     catch { self.error = "Enter your HTTPS onrender.com address and the helper key from Render’s Environment settings." }
                 }.frame(minHeight: 44).disabled(endpoint.isEmpty || helperKey.isEmpty)
             } header: { Text("Connect Render") } footer: {
-                Text("Use SHIFT_ADMIN_KEY from your own Render service. Your Apple password belongs on your helper’s sign-in page.")
+                Text("Use SHIFT_ADMIN_KEY from your own Render service. Apple and Life360 passwords belong on your helper’s sign-in page.")
             }.shiftSettingsRows()
             Section {
                 Button { showImport = true } label: {
@@ -160,7 +196,7 @@ private struct RemoteFindMySetupView: View {
                 pending = nil
             }
         } message: {
-            Text("Only connect your own helper. Turning on checks shares recent spoofed points and their times with that server during your session. It reads Find My Devices; it cannot control spoofing.")
+            Text("Only connect your own helper. Turning on checks shares recent spoofed points and their times with that server during your session. It reads Find My Devices and/or your selected Life360 profile; it cannot control spoofing.")
         }
         .loggedAlert("Cloud helper", isPresented: Binding(get: { error != nil }, set: { if !$0 { error = nil } })) {
             Button("OK", role: .cancel) { error = nil }

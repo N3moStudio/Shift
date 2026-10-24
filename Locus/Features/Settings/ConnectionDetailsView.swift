@@ -8,7 +8,7 @@ struct ConnectionDetailsView: View {
             SessionSettingsSections(category: .connection)
             Section("Find My evidence") {
                 FindMyEvidenceSummary(useWindows: computer.enabled)
-                NavigationLink("Find My checks & helper") { FindMyChecksView() }
+                NavigationLink("Find My & Life360 checks") { FindMyChecksView() }
             }.shiftSettingsRows()
             Section { NavigationLink("Connection settings") { ConnectionSettingsView() } }.shiftSettingsRows()
         }.shiftSettingsScreen().loggedNavigationTitle("Connection details").navigationBarTitleDisplayMode(.inline)

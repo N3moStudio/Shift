@@ -29,6 +29,12 @@ struct SessionSettingsSections: View {
                 Toggle("Show update timer", isOn: $preferences.islandTimer)
             }.shiftSettingsRows().disabled(!preferences.liveActivities)
             Section {
+                Toggle("Show Find My iPhone status", isOn: $preferences.showFindMyStatus)
+                Toggle("Show Life360 status", isOn: $preferences.showLife360Status)
+            } header: { Text("Service status") } footer: {
+                Text("Shown inside Shift’s existing Dynamic Island and Lock Screen activity. Hiding a status does not stop its checks. Set up checking in Find My & Life360.")
+            }.shiftSettingsRows().disabled(!preferences.liveActivities)
+            Section {
                 SettingsHelp(lines: [
                     "Touch and hold the Dynamic Island for details. iOS decides where the activity appears.",
                     "Use the tag on the map to name a spot. That name covers about 5 meters. Library → Areas can cover a bigger place.",
