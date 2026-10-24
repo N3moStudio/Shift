@@ -43,8 +43,8 @@ struct LocusLiveActivity: Widget {
             } compactTrailing: {
                 // A system-rendered timer reports the age of a historical fact,
                 // even when iOS delays host updates or the stale presentation.
-                if let remote = context.state.remoteFindMy {
-                    FindMyActivityStatus(remote: remote, systemIsStale: context.isStale, compact: true)
+                if context.state.remoteFindMy != nil || context.state.remoteLife360 != nil {
+                    ServiceActivityIcons(state: context.state, systemIsStale: context.isStale)
                 } else if let last = context.state.lastConfirmedAt, context.state.islandShowsTimer != false,
                    phase == .active || phase == .unverified {
                     Text(last, style: .timer).monospacedDigit()
@@ -54,8 +54,8 @@ struct LocusLiveActivity: Widget {
                     Image(systemName: phase.symbol).font(.caption2).foregroundStyle(phase.tint(style: ShiftVisualStyle(storedValue: context.state.visualStyle)))
                 }
             } minimal: {
-                if let remote = context.state.remoteFindMy {
-                    FindMyActivityStatus(remote: remote, systemIsStale: context.isStale, compact: true)
+                if context.state.remoteFindMy != nil || context.state.remoteLife360 != nil {
+                    ServiceActivityIcons(state: context.state, systemIsStale: context.isStale)
                 } else {
                     Image(systemName: phase.symbol).foregroundStyle(phase.tint(style: ShiftVisualStyle(storedValue: context.state.visualStyle)))
                 }
@@ -106,7 +106,11 @@ private struct ActivityDetails: View {
             Text(phase.title).font(.headline).foregroundStyle(phase.tint(style: ShiftVisualStyle(storedValue: state.visualStyle)))
             if let remote = state.remoteFindMy {
                 FindMyActivityStatus(remote: remote, systemIsStale: systemIsStale)
-            } else if phase == .active {
+            }
+            if let remote = state.remoteLife360 {
+                FindMyActivityStatus(remote: remote, systemIsStale: systemIsStale, life360: true)
+            }
+            if state.remoteFindMy == nil && state.remoteLife360 == nil && phase == .active {
                 Text("Check other apps separately.")
                     .font(.caption2).foregroundStyle(.secondary)
             }
@@ -146,10 +150,26 @@ private struct ActivityDetails: View {
     }
 }
 
+private struct ServiceActivityIcons: View {
+    let state: SessionSnapshot
+    let systemIsStale: Bool
+    var body: some View {
+        HStack(spacing: 3) {
+            if let remote = state.remoteFindMy {
+                FindMyActivityStatus(remote: remote, systemIsStale: systemIsStale, compact: true)
+            }
+            if let remote = state.remoteLife360 {
+                FindMyActivityStatus(remote: remote, systemIsStale: systemIsStale, compact: true, life360: true)
+            }
+        }.font(.caption2).accessibilityElement(children: .combine)
+    }
+}
+
 private struct FindMyActivityStatus: View {
     let remote: RemoteFindMyActivity
     var systemIsStale = false
     var compact = false
+    var life360 = false
     private var status: RemoteFindMyState { remote.presented(at: Date(), systemIsStale: systemIsStale) }
     private var tint: Color {
         switch status {
@@ -160,6 +180,13 @@ private struct FindMyActivityStatus: View {
         }
     }
     private var symbol: String {
+        if life360 {
+            switch status {
+            case .match: return "person.crop.circle.badge.checkmark"
+            case .different, .old, .blocked: return "person.crop.circle.badge.exclamationmark"
+            default: return "person.crop.circle.badge.questionmark"
+            }
+        }
         switch status {
         case .match: return "checkmark.icloud"
         case .different: return "exclamationmark.icloud"
@@ -171,13 +198,13 @@ private struct FindMyActivityStatus: View {
     var body: some View {
         if compact {
             Image(systemName: symbol).foregroundStyle(tint)
-                .accessibilityLabel(remote.title(at: Date(), systemIsStale: systemIsStale))
+                .accessibilityLabel(remote.title(at: Date(), systemIsStale: systemIsStale, life360: life360))
         } else {
             VStack(alignment: .leading, spacing: 2) {
-                Label(remote.title(at: Date(), systemIsStale: systemIsStale), systemImage: symbol)
+                Label(remote.title(at: Date(), systemIsStale: systemIsStale, life360: life360), systemImage: symbol)
                     .font(.caption).foregroundStyle(tint)
                 if let date = remote.reportedAt {
-                    HStack(spacing: 4) { Text("Apple location age:"); Text(date, style: .relative) }
+                    HStack(spacing: 4) { Text(life360 ? "Life360 location age:" : "Apple location age:"); Text(date, style: .relative) }
                         .font(.caption2).foregroundStyle(.secondary)
                 }
             }
