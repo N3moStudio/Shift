@@ -32,8 +32,15 @@ final class CompanionClient: ObservableObject {
         enabled && paired && session?.remoteCheckSessionRequested == true && !fetching ? nextCheck : nil
     }
     var activityStatus: RemoteFindMyActivity? {
+        activityStatus(provider: "findmy-device")
+    }
+    var life360ActivityStatus: RemoteFindMyActivity? {
+        activityStatus(provider: "life360")
+    }
+    private func activityStatus(provider: String) -> RemoteFindMyActivity? {
         guard enabled, paired, let session, session.remoteCheckSessionRequested else { return nil }
-        let report = reports.first { $0.provider == "findmy-device" }
+        let report = reports.first { $0.provider == provider }
+        if provider == "life360" && report == nil { return nil }
         if !reports.isEmpty && report == nil { return nil } // A Life360-only setup has no Find My evidence.
         var state: RemoteFindMyState = .waiting
         if !session.isSpoofing { state = .paused }

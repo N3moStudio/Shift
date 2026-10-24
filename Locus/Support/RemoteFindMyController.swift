@@ -14,6 +14,14 @@ final class RemoteFindMyController: ObservableObject {
     @Published private(set) var checking = false
     @Published private(set) var testingConnection = false
     @Published private(set) var connectionMessage: String?
+    @Published private(set) var checkMessage: String?
+    @Published private(set) var supportsLife360: Bool?
+    @Published var findMyEnabled: Bool = UserDefaults.standard.object(forKey: "shift.cloud.findMy") as? Bool ?? true {
+        didSet { UserDefaults.standard.set(findMyEnabled, forKey: "shift.cloud.findMy"); servicesChanged() }
+    }
+    @Published var life360Enabled: Bool = UserDefaults.standard.bool(forKey: "shift.cloud.life360") {
+        didSet { UserDefaults.standard.set(life360Enabled, forKey: "shift.cloud.life360"); servicesChanged() }
+    }
     @Published var enabled: Bool {
         didSet {
             UserDefaults.standard.set(enabled, forKey: "locus.remoteFindMy.enabled")
@@ -41,7 +49,9 @@ final class RemoteFindMyController: ObservableObject {
     private var nextCheck = Date.distantPast
     private var lastFresh = Date()
     private var gate = RemoteFindMyAlertGate()
+    private var lifeGate = RemoteFindMyAlertGate()
     private var lastLoggedState: RemoteFindMyState?
+    private var lastLoggedLifeState: RemoteFindMyState?
     private let notificationID = "locus.findmy.checks"
     private let deadlineID = "locus.findmy.deadline"
     private let key: [String: Any] = [kSecClass as String: kSecClassGenericPassword,
@@ -65,7 +75,7 @@ final class RemoteFindMyController: ObservableObject {
         return URL(string: link.endpoint)
     }
     var state: RemoteFindMyState {
-        guard enabled else { return .off }
+        guard enabled, findMyEnabled else { return .off }
         guard paired else { return .pairing }
         guard let session, session.remoteCheckSessionRequested else { return .ready }
         guard session.isSpoofing else { return .paused }
@@ -74,8 +84,25 @@ final class RemoteFindMyController: ObservableObject {
     }
     var reportDate: Date? { response?.report?.locatedAt.map { Date(timeIntervalSince1970: $0) } }
     var activityStatus: RemoteFindMyActivity? {
-        guard enabled, paired, session?.remoteCheckSessionRequested == true else { return nil }
+        guard enabled, findMyEnabled, paired, session?.remoteCheckSessionRequested == true else { return nil }
         return RemoteFindMyActivity(state: state, reportedAt: reportDate, repliedAt: checkedAt)
+    }
+    var life360State: RemoteFindMyState {
+        guard enabled, life360Enabled else { return .off }
+        guard paired else { return .pairing }
+        guard let session, session.remoteCheckSessionRequested else { return .ready }
+        guard session.isSpoofing else { return .paused }
+        guard response != nil else { return transportState }
+        return RemoteFindMyState.evaluate(response, history: session.verification.history, now: Date(), active: true, life360: true)
+    }
+    var life360ReportDate: Date? { response?.life360?.report?.locatedAt.map { Date(timeIntervalSince1970: $0) } }
+    var life360ActivityStatus: RemoteFindMyActivity? {
+        guard enabled, life360Enabled, paired, session?.remoteCheckSessionRequested == true else { return nil }
+        return RemoteFindMyActivity(state: life360State, reportedAt: life360ReportDate, repliedAt: checkedAt)
+    }
+    private func servicesChanged() {
+        // Cancelling invalidates the old session before changing provider consent.
+        stop(); refreshLifecycle(); session?.remoteCheckDidChange()
     }
 
     func pair(_ data: Data) throws {
@@ -88,7 +115,8 @@ final class RemoteFindMyController: ObservableObject {
             guard SecItemAdd(added as CFDictionary, nil) == errSecSuccess else { throw RemoteError.storage }
         } else if result != errSecSuccess { throw RemoteError.storage }
         connectionTest?.invalidateAndCancel()
-        stop(); link = value; paired = true; connectionMessage = nil
+        stop(); link = value; paired = true; connectionMessage = nil; supportsLife360 = nil
+        if !value.usesManagedHTTPS { life360Enabled = false }
         enabled = true
         Task { _ = await SessionNotifications.shared.requestPermission() }
     }
@@ -129,30 +157,33 @@ final class RemoteFindMyController: ObservableObject {
                 connectionMessage = "Your helper needs the latest update for this connection test. Existing location checks still work."
                 return
             }
-            guard http.statusCode == 200 else { throw RemoteError.unavailable }
+            if let issue = CloudConnectionIssue.http(http.statusCode) { throw issue }
             var data = Data()
             for try await byte in bytes { guard data.count < 2048 else { throw RemoteError.invalid }; data.append(byte) }
             let status = try JSONDecoder().decode(HelperStatus.self, from: data)
             guard status.version == 1, ["ready", "sign-in", "busy"].contains(status.status) else { throw RemoteError.invalid }
+            guard status.life360.map({ ["ready", "sign-in", "busy"].contains($0) }) ?? true else { throw CloudConnectionIssue.format }
             guard self.link == link, !Task.isCancelled else { return }
-            connectionMessage = status.status == "ready" ? "Connected. Apple is signed in. Start a location session to compare reports." :
-                status.status == "busy" ? "Connected. Apple sign-in is still finishing in your helper." : "Connected. Open your helper to sign in to Apple and choose your iPhone."
+            supportsLife360 = status.life360 != nil
+            let apple = status.status == "ready" ? "Find My iPhone: signed in." : status.status == "busy" ? "Find My iPhone: setup in progress." : "Find My iPhone: sign in and select your iPhone."
+            let life = status.life360 == "ready" ? "Life360: signed in." : status.life360 == "busy" ? "Life360: setup in progress." : status.life360 == nil ? "Update the helper for Life360 support." : "Life360: sign in and select your profile."
+            connectionMessage = "Helper connected. \(apple) \(life) A connection test does not verify locations."
         } catch {
             guard self.link == link, !Task.isCancelled else { return }
-            connectionMessage = "Couldn't reach your helper. Check its URL and server status, then try again. A sleeping server may need more time."
+            connectionMessage = CloudConnectionIssue.transport(error).localizedDescription
         }
     }
-    private struct HelperStatus: Decodable { let version: Int; let status: String }
+    private struct HelperStatus: Decodable { let version: Int; let status: String; let life360: String? }
     func unpair() {
         let result = SecItemDelete(key as CFDictionary)
         guard result == errSecSuccess || result == errSecItemNotFound else { return }
         connectionTest?.invalidateAndCancel(); connectionMessage = nil
-        enabled = false; link = nil; paired = false
+        enabled = false; link = nil; paired = false; supportsLife360 = nil
     }
     func refreshLifecycle() {
-        guard enabled, paired, let session, session.remoteCheckSessionRequested else { stop(); return }
+        guard enabled, findMyEnabled || life360Enabled, paired, let session, session.remoteCheckSessionRequested else { stop(); return }
         guard !monitoring else {
-            if response?.status == "paused", session.isSpoofing, !checking {
+            if ((findMyEnabled && response?.status == "paused") || (life360Enabled && response?.life360?.status == "paused")), session.isSpoofing, !checking {
                 nextCheck = Date()
                 tick()
             }
@@ -161,7 +192,7 @@ final class RemoteFindMyController: ObservableObject {
         monitoring = true
         ticket = UUID(); began = Date(); sequence = 0; nextCheck = .distantPast
         retry.reset(); lastLoggedState = nil
-        lastFresh = Date(); gate = RemoteFindMyAlertGate(); response = nil; transportState = .waiting
+        lastFresh = Date(); gate = RemoteFindMyAlertGate(); lifeGate = RemoteFindMyAlertGate(); response = nil; transportState = .waiting
         // Keep connections reusable for this pairing/session. Stop invalidates
         // the client before any new endpoint or access key can be installed.
         if let link { network = Self.client(link) }
@@ -193,6 +224,7 @@ final class RemoteFindMyController: ObservableObject {
         var dates = checking || task != nil ? [] : [nextCheck]
         if let response { dates.append(Date(timeIntervalSince1970: response.serverTime + 90)) }
         if let reportDate { dates.append(reportDate.addingTimeInterval(90)) }
+        if let life360ReportDate { dates.append(life360ReportDate.addingTimeInterval(90)) }
         return dates.filter { $0 > now }.min()
     }
     func stop() {
@@ -200,9 +232,9 @@ final class RemoteFindMyController: ObservableObject {
         let oldID = ticket; let oldLink = link
         monitoring = false
         ticket = UUID(); task?.cancel(); task = nil; network?.invalidateAndCancel(); network = nil
-        response = nil; checking = false; checkedAt = nil; transportState = .ready; cancelDeadline()
+        response = nil; checking = false; checkedAt = nil; checkMessage = nil; transportState = .ready; cancelDeadline()
         session?.remoteCheckDidChange()
-        UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: [notificationID, deadlineID])
+        UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: [notificationID, deadlineID, "shift.life360.checks"])
         // Best effort deletion; the helper also expires the lease without a reply.
         if let oldLink {
             Task {
@@ -220,9 +252,13 @@ final class RemoteFindMyController: ObservableObject {
         nextCheck = Date().addingTimeInterval(60); checking = true; sequence += 1
         let expected = sequence
         let samples = session.verification.history.filter { $0.confirmedAt >= began }
+        // An old helper ignores provider selection. Never activate it for a
+        // Life360-only request until its response confirms that capability.
+        let active = session.isSpoofing && (findMyEnabled || supportsLife360 == true)
         let payload = RemoteFindMyRequest(sessionID: current, startedAt: began.timeIntervalSince1970,
-            sequence: expected, sentAt: Date().timeIntervalSince1970, active: session.isSpoofing,
-            samples: session.isSpoofing ? samples.map(RemoteFindMySample.init) : [])
+            sequence: expected, sentAt: Date().timeIntervalSince1970, active: active,
+            samples: active ? samples.map(RemoteFindMySample.init) : [],
+            providers: (findMyEnabled ? ["findmy-device"] : []) + (life360Enabled ? ["life360"] : []))
         defer {
             if current == ticket {
                 checking = false
@@ -239,50 +275,66 @@ final class RemoteFindMyController: ObservableObject {
             var fullyRead = false
             defer { if !fullyRead { bytes.task.cancel() } }
             guard let http = reply as? HTTPURLResponse else { throw RemoteError.unavailable }
-            if [401, 409].contains(http.statusCode) { throw RemoteError.pairing }
-            guard http.statusCode == 200 else { throw RemoteError.unavailable }
+            if let issue = CloudConnectionIssue.http(http.statusCode) { throw issue }
             var body = Data()
             for try await byte in bytes { guard body.count < 32768 else { throw RemoteError.invalid }; body.append(byte) }
             fullyRead = true
             let value = try JSONDecoder().decode(RemoteFindMyResponse.self, from: body)
-            guard value.valid(for: current, sequence: expected, now: Date()) else { throw RemoteError.invalid }
+            guard value.valid(for: current, sequence: expected, now: Date()) else { throw CloudConnectionIssue.format }
             guard current == ticket, !Task.isCancelled else { return }
-            response = value; checkedAt = Date(); transportState = .waiting
-            if ["unavailable", "blocked", "sign-in"].contains(value.status) {
+            let discoveredLife360 = supportsLife360 != true && value.life360 != nil
+            supportsLife360 = value.life360 != nil
+            response = value; checkedAt = Date(); transportState = .waiting; checkMessage = nil
+            if (!findMyEnabled || ["unavailable", "blocked", "sign-in"].contains(value.status)) &&
+                (!life360Enabled || ["unavailable", "blocked", "sign-in"].contains(value.life360?.status ?? "unavailable")) {
                 nextCheck = Date().addingTimeInterval(retry.failureDelay())
             } else { retry.reset() }
+            if discoveredLife360 && life360Enabled && !findMyEnabled { nextCheck = Date().addingTimeInterval(2) }
             DeveloperLogStore.shared.record("remote_findmy_report", ["state": state.rawValue,
                 "apple_age_seconds": reportDate.map { String(Int(max(0, Date().timeIntervalSince($0)))) } ?? "missing"])
-            if [.match, .different].contains(state) {
+            if [.match, .different].contains(state) || [.match, .different].contains(life360State) {
                 lastFresh = Date(); scheduleDeadline()
             }
         } catch {
             guard current == ticket, !Task.isCancelled else { return }
             response = nil
-            transportState = (error as? RemoteError) == .pairing ? .pairing : .unavailable
+            let issue = CloudConnectionIssue.transport(error)
+            checkMessage = issue.localizedDescription
+            transportState = issue == .key || issue == .session ? .pairing : .unavailable
             nextCheck = Date().addingTimeInterval(retry.failureDelay())
         }
     }
     private func updateWarning() {
         let value = state
+        if life360State != lastLoggedLifeState {
+            lastLoggedLifeState = life360State
+            DeveloperLogStore.shared.record("remote_life360_state", ["state": life360State.rawValue])
+            session?.remoteCheckDidChange()
+        }
         if value != lastLoggedState {
             DeveloperLogStore.shared.record("remote_findmy_state", ["state": value.rawValue])
             lastLoggedState = value
             session?.remoteCheckDidChange()
         }
-        guard alerts, let message = value.warning else { return }
+        guard alerts else { return }
+        let lifeValue = life360State
+        if lifeGate.shouldNotify(lifeValue, now: Date(), lastFresh: began), let message = lifeValue.life360Warning {
+            notify(id: "shift.life360.checks", title: lifeValue.life360Title, body: checkMessage ?? message, delay: nil)
+        }
+        guard let message = value.warning else { return }
         if gate.shouldNotify(value, now: Date(), lastFresh: lastFresh) {
             cancelDeadline()
-            notify(id: notificationID, title: value.title, body: message, delay: nil)
+            notify(id: notificationID, title: value.title, body: checkMessage ?? message, delay: nil)
         }
     }
     private func scheduleDeadline() {
         guard alerts else { return }
         // Downloading an older matching fix must not buy a new 3-minute window.
-        let sourceTime = reportDate ?? began
+        let dates = (findMyEnabled ? [reportDate ?? began] : []) + (life360Enabled ? [life360ReportDate ?? began] : [])
+        let sourceTime = dates.min() ?? began
         let delay = max(1, sourceTime.addingTimeInterval(180).timeIntervalSinceNow)
-        notify(id: deadlineID, title: "Find My freshness reminder",
-            body: "No fresh Find My report was confirmed before this reminder. Apple may still be showing an older location, or checks may have paused. Open Shift for the latest status.", delay: delay)
+        notify(id: deadlineID, title: "Cloud checks freshness reminder",
+            body: "One or more enabled services may have an old location report, or checks may have paused. Open Shift for the latest Find My and Life360 status.", delay: delay)
     }
     private func cancelDeadline() { UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [deadlineID]) }
     private func notify(id: String, title: String, body: String, delay: TimeInterval?) {

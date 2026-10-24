@@ -11,6 +11,8 @@ final class SessionPreferences: ObservableObject {
     @Published var lockScreenProgress: Bool { didSet { save(lockScreenProgress, "lockScreenProgress") } }
     @Published var islandProgress: Bool { didSet { save(islandProgress, "islandProgress") } }
     @Published var islandTimer: Bool { didSet { save(islandTimer, "islandTimer") } }
+    @Published var showFindMyStatus: Bool { didSet { save(showFindMyStatus, "showFindMyStatus") } }
+    @Published var showLife360Status: Bool { didSet { save(showLife360Status, "showLife360Status") } }
     @Published var glassPanel: Bool { didSet { save(glassPanel, "glassPanel") } }
     @Published var connectionAlerts: Bool { didSet { save(connectionAlerts, "connectionAlerts") } }
     @Published var connectionCheckSeconds: Int {
@@ -77,6 +79,7 @@ final class SessionPreferences: ObservableObject {
             "locus.connectionAlerts": true, "locus.reminderMinutes": 0,
             "locus.appearance": "system", "locus.lockScreenProgress": true,
             "locus.islandProgress": true, "locus.islandTimer": true, "locus.glassPanel": true,
+            "locus.showFindMyStatus": true, "locus.showLife360Status": true,
             "locus.appLockEnabled": false, "locus.hideInAppSwitcher": false,
             "locus.saveRecentLocations": true, "locus.recentHistoryRetention": RecentHistoryRetention.forever.rawValue
         ])
@@ -86,6 +89,8 @@ final class SessionPreferences: ObservableObject {
         lockScreenProgress = defaults.bool(forKey: "locus.lockScreenProgress")
         islandProgress = defaults.bool(forKey: "locus.islandProgress")
         islandTimer = defaults.bool(forKey: "locus.islandTimer")
+        showFindMyStatus = defaults.bool(forKey: "locus.showFindMyStatus")
+        showLife360Status = defaults.bool(forKey: "locus.showLife360Status")
         glassPanel = defaults.bool(forKey: "locus.glassPanel")
         connectionAlerts = defaults.bool(forKey: "locus.connectionAlerts")
         reminderMinutes = defaults.integer(forKey: "locus.reminderMinutes")
