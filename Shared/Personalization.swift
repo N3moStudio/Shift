@@ -32,7 +32,7 @@ enum SettingsDestination: String, CaseIterable, Identifiable {
         case .privacy: return "Privacy & history"; case .speeds: return "Usual speeds"
         case .shortcuts: return "Panel shortcuts"; case .widgets: return "Home Screen widgets"
         case .recovery: return "Trip recovery"; case .experimental: return "Advanced & experimental"
-        case .remoteFindMy: return "Find My checks"; case .report: return "Report a problem"
+        case .remoteFindMy: return "Find My & Life360"; case .report: return "Report a problem"
         case .diagnostics: return "Diagnostics"; case .about: return "About Shift"; case .backup: return "Files & backups"
         }
     }
@@ -59,7 +59,7 @@ enum SettingsDestination: String, CaseIterable, Identifiable {
         case .widgets: return "home screen shortcuts favorite favorites saved places routes"
         case .recovery: return "recover restore interrupted route session trip"
         case .experimental: return "find my life360 life 360 companion computer checks verification"
-        case .remoteFindMy: return "remote find my experimental apple icloud cloud helper server login findmy"
+        case .remoteFindMy: return "remote find my experimental apple icloud cloud helper server login findmy life360 cron uptime"
         case .report: return "bug bugs issue issues feedback diagnostics"
         case .diagnostics: return "developer dev log logs timeline recording diagnostics export"
         case .about: return "version build license credits n3mo nemo"

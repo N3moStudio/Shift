@@ -58,6 +58,8 @@ struct BackupDisplayPreferences: Codable, Equatable {
     var recentHistoryRetention: RecentHistoryRetention
     var mapStyle: Int
     var connectionCheckSeconds: Int? = nil
+    var showFindMyStatus: Bool? = nil
+    var showLife360Status: Bool? = nil
     var isValid: Bool {
         [0, 15, 30, 60, 120].contains(reminderMinutes) && (0...2).contains(mapStyle) &&
             (connectionCheckSeconds.map { (3...15).contains($0) } ?? true)

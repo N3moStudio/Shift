@@ -93,6 +93,7 @@ struct SessionSnapshot: Codable, Hashable {
     var connectionCheckSeconds: Int? = nil
     var visualStyle: String? = nil
     var iconDesign: String? = nil
+    var remoteLife360: RemoteFindMyActivity? = nil
 
     func visibleJourney(onIsland: Bool, at now: Date, systemIsStale: Bool = false) -> JourneyActivity? {
         let enabled = onIsland ? islandShowsProgress : lockScreenShowsProgress

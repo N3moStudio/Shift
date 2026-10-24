@@ -60,6 +60,7 @@ struct RemoteFindMyRequest: Encodable {
     let sentAt: Double
     let active: Bool
     let samples: [RemoteFindMySample]
+    var providers: [String]? = nil
 }
 
 struct RemoteFindMyResponse: Decodable {
@@ -69,11 +70,13 @@ struct RemoteFindMyResponse: Decodable {
     let serverTime: Double
     let status: String
     let report: LocationReport?
+    var life360: CloudServiceReport? = nil
     func valid(for id: UUID, sequence expected: Int, now: Date) -> Bool {
         version == 1 && sessionID == id && sequence == expected && serverTime.isFinite &&
         abs(serverTime - now.timeIntervalSince1970) <= 30 &&
         ["match", "different", "waiting", "old", "sign-in", "blocked", "unavailable", "paused"].contains(status) &&
-        (report.map { $0.valid && $0.provider == "findmy-device" } ?? true)
+        (report.map { $0.valid && $0.provider == "findmy-device" } ?? true) &&
+        (life360?.valid(provider: "life360") ?? true)
     }
 }
 
@@ -106,20 +109,23 @@ enum RemoteFindMyState: String, Codable, Hashable {
         default: return nil
         }
     }
-    static func evaluate(_ response: RemoteFindMyResponse?, history: [SentLocationSample], now: Date, active: Bool) -> Self {
+    static func evaluate(_ response: RemoteFindMyResponse?, history: [SentLocationSample], now: Date, active: Bool,
+                         life360: Bool = false) -> Self {
         guard active else { return .paused }
         guard let response, abs(response.serverTime - now.timeIntervalSince1970) <= 90 else { return .unavailable }
-        switch response.status {
+        guard !life360 || response.life360 != nil else { return .unavailable }
+        let status = life360 ? response.life360!.status : response.status
+        switch status {
         case "sign-in": return .signIn
         case "blocked": return .blocked
         case "unavailable": return .unavailable
         case "paused": return .paused
         default: break
         }
-        guard let report = response.report else { return .waiting }
+        guard let report = life360 ? response.life360?.report : response.report else { return .waiting }
         switch VerificationResult.evaluate(report, history: history, now: now, active: active).kind {
-        case .match: return response.status == "match" ? .match : .waiting
-        case .different: return response.status == "different" ? .different : .waiting
+        case .match: return status == "match" ? .match : .waiting
+        case .different: return status == "different" ? .different : .waiting
         case .old: return .old
         case .unknown: return .waiting
         }
@@ -147,7 +153,14 @@ struct RemoteFindMyActivity: Codable, Hashable {
         return state
     }
 
-    func title(at now: Date, systemIsStale: Bool = false) -> String {
+    func title(at now: Date, systemIsStale: Bool = false, life360: Bool = false) -> String {
+        if life360 {
+            switch presented(at: now, systemIsStale: systemIsStale) {
+            case .match: return "Last Life360 report matched"
+            case .different: return "Last Life360 report differed"
+            default: return presented(at: now, systemIsStale: systemIsStale).life360Title
+            }
+        }
         switch presented(at: now, systemIsStale: systemIsStale) {
         case .match: return "Last Find My report matched"
         case .different: return "Last Find My report differed"
