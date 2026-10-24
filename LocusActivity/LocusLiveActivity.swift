@@ -34,8 +34,8 @@ struct LocusLiveActivity: Widget {
                 DynamicIslandExpandedRegion(.bottom) {
                     ActivityDetails(state: context.state, phase: phase, place: context.state.islandPlace,
                                     journey: context.state.visibleJourney(onIsland: true, at: Date(), systemIsStale: context.isStale),
-                                    showCommandTime: context.state.islandShowsTimer != false,
-                                    systemIsStale: context.isStale)
+                                    showCommandTime: false,
+                                    systemIsStale: context.isStale, compactServiceRows: true)
                         .padding(.horizontal, 14).padding(.top, 4).padding(.bottom, 6)
                 }
             } compactLeading: {
@@ -101,14 +101,15 @@ private struct ActivityDetails: View {
     let journey: JourneyActivity?
     var showCommandTime = true
     var systemIsStale = false
+    var compactServiceRows = false
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
             Text(phase.title).font(.headline).foregroundStyle(phase.tint(style: ShiftVisualStyle(storedValue: state.visualStyle)))
             if let remote = state.remoteFindMy {
-                FindMyActivityStatus(remote: remote, systemIsStale: systemIsStale)
+                FindMyActivityStatus(remote: remote, systemIsStale: systemIsStale, inlineAge: compactServiceRows)
             }
             if let remote = state.remoteLife360 {
-                FindMyActivityStatus(remote: remote, systemIsStale: systemIsStale, life360: true)
+                FindMyActivityStatus(remote: remote, systemIsStale: systemIsStale, life360: true, inlineAge: compactServiceRows)
             }
             if state.remoteFindMy == nil && state.remoteLife360 == nil && phase == .active {
                 Text("Check other apps separately.")
@@ -170,6 +171,7 @@ private struct FindMyActivityStatus: View {
     var systemIsStale = false
     var compact = false
     var life360 = false
+    var inlineAge = false
     private var status: RemoteFindMyState { remote.presented(at: Date(), systemIsStale: systemIsStale) }
     private var tint: Color {
         switch status {
@@ -195,10 +197,36 @@ private struct FindMyActivityStatus: View {
         default: return "icloud"
         }
     }
+    private var shortStatus: String {
+        switch status {
+        case .match: return "matched"
+        case .different: return "differed"
+        case .old: return "old report"
+        case .signIn: return "sign in"
+        case .blocked: return "blocked"
+        case .unavailable: return "no recent check"
+        case .waiting: return "waiting"
+        case .ready: return "ready"
+        case .paused: return "paused"
+        case .pairing: return "reconnect"
+        case .off: return "off"
+        }
+    }
     var body: some View {
         if compact {
             Image(systemName: symbol).foregroundStyle(tint)
                 .accessibilityLabel(remote.title(at: Date(), systemIsStale: systemIsStale, life360: life360))
+        } else if inlineAge {
+            HStack(spacing: 6) {
+                Label("\(life360 ? "Life360" : "Find My"): \(shortStatus)", systemImage: symbol)
+                    .foregroundStyle(tint)
+                    .accessibilityLabel(remote.title(at: Date(), systemIsStale: systemIsStale, life360: life360))
+                Spacer(minLength: 0)
+                if let date = remote.reportedAt {
+                    Text(date, style: .relative).foregroundStyle(.secondary)
+                        .accessibilityLabel(Text("Location report age: ") + Text(date, style: .relative))
+                }
+            }.font(.caption2)
         } else {
             VStack(alignment: .leading, spacing: 2) {
                 Label(remote.title(at: Date(), systemIsStale: systemIsStale, life360: life360), systemImage: symbol)
