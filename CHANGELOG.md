@@ -11,6 +11,7 @@ maps each build to its changes, source owners, validation and distribution statu
 - Display hours/minutes/seconds in route wait totals, rehearsal countdowns and active-stop countdowns. Totals can exceed 24 hours across multiple stops.
 - Add regression coverage for all 86,401 selectable durations, component edits, 24-hour countdown/recovery, preview waits, save/backup round trips and invalid inputs. Pauses and suspension still do not silently consume a wait.
 - Add a maintained Change Ledger, app source map, verification/setup recommendations and device checklist. Document that Find My Devices reaches Dynamic Island; Life360 currently stays in the in-app Windows-helper reports. No new monitoring service or verification guarantee is introduced.
+- Validated by Mac run 40052908812: 384 tests passed, app and Live Activity extension built, and packaged IPA checks passed. Prerelease tag: `v2.5.2-beta.1`. The new controls and a full-day session still need physical-iPhone acceptance testing.
 
 ## 2.5.1 (49) — test build — 23 October 2026
 
@@ -19,6 +20,7 @@ maps each build to its changes, source owners, validation and distribution statu
 - Add 0/5/15/30/60-second stop presets and an explicit Apply to all stops action. Cancel leaves the draft unchanged.
 - Scrub the isolated route preview or jump directly to a stop; seeking pauses the preview and restores waits when moving backwards.
 - Defer icon preference updates until iOS returns the app to the active state, keep selection feedback local, and preserve the selected tab across scene restoration. Physical-device confirmation of the reported flicker is still required.
+- Build 49 was built twice successfully: the 09:21 PDT attempt, then the delivered 09:24 PDT attempt after correcting preview accessibility text, route-reordering help and saved-path section guidance. Both runs and their exact commits are recorded in the Change Ledger.
 
 ## 2.5.0 (48) — test build — 22 October 2026
 
