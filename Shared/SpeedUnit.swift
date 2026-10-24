@@ -37,17 +37,54 @@ enum SpeedConversion {
 }
 
 enum StopDuration {
-    static let range: ClosedRange<Double> = 0...3600
+    static let range: ClosedRange<Double> = 0...86_400
+    enum Component: CaseIterable {
+        case hours, minutes, seconds
+        var title: String {
+            switch self {
+            case .hours: return "Hours"
+            case .minutes: return "Minutes"
+            case .seconds: return "Seconds"
+            }
+        }
+        var maximum: Int { self == .hours ? 24 : 59 }
+        var multiplier: Int {
+            switch self {
+            case .hours: return 3600
+            case .minutes: return 60
+            case .seconds: return 1
+            }
+        }
+    }
+    static func isValid(_ seconds: Double) -> Bool { seconds.isFinite && range.contains(seconds) }
     static func normalized(_ seconds: Double) -> Double {
         guard seconds.isFinite else { return 0 }
         return min(range.upperBound, max(range.lowerBound, seconds.rounded()))
     }
+    static func value(_ component: Component, in seconds: Double) -> Int {
+        let total = Int(normalized(seconds))
+        return component == .hours ? total / 3600 : (total / component.multiplier) % 60
+    }
+    static func replacing(_ component: Component, in seconds: Double, with value: Int) -> Double {
+        let total = Int(normalized(seconds))
+        let previous = self.value(component, in: seconds)
+        let next = min(component.maximum, max(0, value))
+        return normalized(Double(total + (next - previous) * component.multiplier))
+    }
     static func label(_ seconds: Double) -> String {
         let total = Int(normalized(seconds))
         if total == 0 { return "Pass through" }
-        let minutes = total / 60, remainder = total % 60
-        if minutes == 0 { return "\(remainder) sec" }
-        if remainder == 0 { return "\(minutes) min" }
-        return "\(minutes) min \(remainder) sec"
+        return formatted(Double(total))
+    }
+    /// Aggregate route waits may exceed the per-stop limit; do not clamp display totals.
+    static func formatted(_ seconds: Double) -> String {
+        guard seconds.isFinite, seconds >= 0, seconds < Double(Int.max) else { return "—" }
+        let total = Int(seconds.rounded())
+        let hours = total / 3600, minutes = (total % 3600) / 60, remainder = total % 60
+        var parts: [String] = []
+        if hours > 0 { parts.append("\(hours) hr") }
+        if minutes > 0 { parts.append("\(minutes) min") }
+        if remainder > 0 || parts.isEmpty { parts.append("\(remainder) sec") }
+        return parts.joined(separator: " ")
     }
 }

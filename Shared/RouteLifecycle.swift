@@ -61,7 +61,7 @@ enum LiveRouteStopInsertion {
     static func make(name: String, metres: Double, waitSeconds: Double, length: Double,
                      travelled: Double, pendingMetres: Double?, existingCount: Int) -> Result<RouteStop, Failure> {
         guard length.isFinite, length > 0, travelled.isFinite, travelled >= 0,
-              metres.isFinite, metres <= length, waitSeconds.isFinite, (0...3600).contains(waitSeconds),
+              metres.isFinite, metres <= length, StopDuration.isValid(waitSeconds),
               pendingMetres.map({ $0.isFinite && $0 >= 0 }) ?? true else { return .failure(.invalid) }
         guard existingCount < 20 else { return .failure(.limit) }
         // A command already in flight may land beyond the last confirmed point.

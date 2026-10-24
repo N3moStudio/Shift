@@ -29,7 +29,7 @@ struct RouteStop: Identifiable, Codable, Equatable {
     var waitSeconds: Double
 
     func isValid(length: Double) -> Bool {
-        metres.isFinite && metres >= 0 && metres <= length && waitSeconds.isFinite && (0...3600).contains(waitSeconds)
+        metres.isFinite && metres >= 0 && metres <= length && StopDuration.isValid(waitSeconds)
     }
 }
 
